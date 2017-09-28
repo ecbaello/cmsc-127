@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1440 900" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <rect x="65.802" y="51.148" width="275.015" height="275.015" style="fill:rgb(235,235,235);stroke:rgb(87,87,87);stroke-width:3px;stroke-dasharray:12,9,0,0;"/>
+    <g transform="matrix(1,0,0,1,-153.098,-285.851)">
+        <text x="248.957px" y="488.012px" style="font-family:'Quicksand-Regular', 'Quicksand';font-size:53.067px;">widget 1</text>
+    </g>
+    <g transform="matrix(1,0,0,1,330.288,-5.68434e-14)">
+        <rect x="65.802" y="51.148" width="275.015" height="275.015" style="fill:rgb(235,235,235);stroke:rgb(89,89,89);stroke-width:3px;stroke-dasharray:12,9,0,0;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,660.576,-5.68434e-14)">
+        <rect x="65.802" y="51.148" width="275.015" height="275.015" style="fill:rgb(235,235,235);stroke:rgb(89,89,89);stroke-width:3px;stroke-dasharray:12,9,0,0;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,169.99,-285.851)">
+        <text x="248.957px" y="488.012px" style="font-family:'Quicksand-Regular', 'Quicksand';font-size:53.067px;">widget 2</text>
+    </g>
+    <g transform="matrix(1,0,0,1,500.278,-285.851)">
+        <text x="248.957px" y="488.012px" style="font-family:'Quicksand-Regular', 'Quicksand';font-size:53.067px;">widget 3</text>
+    </g>
+    <g transform="matrix(0.984008,0,0,1,0,0)">
+        <rect x="0" y="387.344" width="1463.4" height="512.656" style="fill:rgb(235,235,235);"/>
+    </g>
+    <path d="M219.135,488.333C219.135,467.177 201.959,450 180.802,450L104.136,450C82.979,450 65.802,467.177 65.802,488.333L65.802,565C65.802,586.157 82.979,603.333 104.136,603.333L180.802,603.333C201.959,603.333 219.135,586.157 219.135,565L219.135,488.333Z" style="fill:rgb(82,82,82);"/>
+    <path d="M219.135,488.333C219.135,467.177 201.959,450 180.802,450L104.136,450C82.979,450 65.802,467.177 65.802,488.333L65.802,565C65.802,586.157 82.979,603.333 104.136,603.333L180.802,603.333C201.959,603.333 219.135,586.157 219.135,565L219.135,488.333Z" style="fill:rgb(82,82,82);"/>
+    <g transform="matrix(1,0,0,1,203.049,0)">
+        <path d="M219.135,488.333C219.135,467.177 201.959,450 180.802,450L104.136,450C82.979,450 65.802,467.177 65.802,488.333L65.802,565C65.802,586.157 82.979,603.333 104.136,603.333L180.802,603.333C201.959,603.333 219.135,586.157 219.135,565L219.135,488.333Z" style="fill:rgb(82,82,82);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,406.098,0)">
+        <path d="M219.135,488.333C219.135,467.177 201.959,450 180.802,450L104.136,450C82.979,450 65.802,467.177 65.802,488.333L65.802,565C65.802,586.157 82.979,603.333 104.136,603.333L180.802,603.333C201.959,603.333 219.135,586.157 219.135,565L219.135,488.333Z" style="fill:rgb(82,82,82);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,609.148,0)">
+        <path d="M219.135,488.333C219.135,467.177 201.959,450 180.802,450L104.136,450C82.979,450 65.802,467.177 65.802,488.333L65.802,565C65.802,586.157 82.979,603.333 104.136,603.333L180.802,603.333C201.959,603.333 219.135,586.157 219.135,565L219.135,488.333Z" style="fill:rgb(82,82,82);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,812.197,0)">
+        <path d="M219.135,488.333C219.135,467.177 201.959,450 180.802,450L104.136,450C82.979,450 65.802,467.177 65.802,488.333L65.802,565C65.802,586.157 82.979,603.333 104.136,603.333L180.802,603.333C201.959,603.333 219.135,586.157 219.135,565L219.135,488.333Z" style="fill:rgb(82,82,82);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,1015.25,0)">
+        <path d="M219.135,488.333C219.135,467.177 201.959,450 180.802,450L104.136,450C82.979,450 65.802,467.177 65.802,488.333L65.802,565C65.802,586.157 82.979,603.333 104.136,603.333L180.802,603.333C201.959,603.333 219.135,586.157 219.135,565L219.135,488.333Z" style="fill:rgb(82,82,82);"/>
+    </g>
+    <g transform="matrix(0.918222,0,0,0.918222,13.7812,52.638)">
+        <text x="64.476px" y="680.818px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:53.067px;">t<tspan x="83.049px 113.244px 145.615px 156.175px 185.839px 199.106px " y="680.818px 680.818px 680.818px 680.818px 680.818px 680.818px ">able 1</tspan></text>
+    </g>
+    <g transform="matrix(0.918222,0,0,0.918222,216.83,52.638)">
+        <text x="57.71px" y="680.818px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:53.067px;">t<tspan x="76.283px 106.478px 138.849px 149.409px 179.073px 192.34px " y="680.818px 680.818px 680.818px 680.818px 680.818px 680.818px ">able 2</tspan></text>
+    </g>
+    <g transform="matrix(0.918222,0,0,0.918222,419.88,52.638)">
+        <text x="57.179px" y="680.818px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:53.067px;">t<tspan x="75.752px 105.947px 138.318px 148.878px 178.543px 191.809px " y="680.818px 680.818px 680.818px 680.818px 680.818px 680.818px ">able 3</tspan></text>
+    </g>
+    <g transform="matrix(0.918222,0,0,0.918222,622.929,52.638)">
+        <text x="55.746px" y="680.818px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:53.067px;">t<tspan x="74.32px 104.515px 136.885px 147.445px 177.11px 190.376px " y="680.818px 680.818px 680.818px 680.818px 680.818px 680.818px ">able 4</tspan></text>
+    </g>
+    <g transform="matrix(0.918222,0,0,0.918222,825.978,52.638)">
+        <text x="57.312px" y="680.818px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:53.067px;">t<tspan x="75.885px 106.08px 138.451px 149.011px 178.675px 191.942px " y="680.818px 680.818px 680.818px 680.818px 680.818px 680.818px ">able 5</tspan></text>
+    </g>
+    <g transform="matrix(0.918222,0,0,0.918222,1034.22,52.5893)">
+        <text x="56.33px" y="680.818px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:53.067px;">t<tspan x="74.903px 105.098px 137.469px 148.029px 177.693px 190.96px " y="680.818px 680.818px 680.818px 680.818px 680.818px 680.818px ">able 6</tspan></text>
+    </g>
+</svg>

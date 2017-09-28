@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1440 900" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <g transform="matrix(1,0,0,1,1.25836,168.127)">
+        <rect x="50.955" y="88.176" width="1143.16" height="116.541" style="fill:rgb(235,235,235);"/>
+    </g>
+    <g transform="matrix(0.565286,0,0,1,23.409,379.405)">
+        <rect x="50.955" y="88.176" width="1143.16" height="116.541" style="fill:rgb(235,235,235);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,0,95.8426)">
+        <rect x="52.213" y="554.175" width="1143.16" height="116.541" style="fill:rgb(48,180,0);"/>
+    </g>
+    <g transform="matrix(0.372067,0,0,1,751.084,379.405)">
+        <rect x="50.955" y="88.176" width="1143.16" height="116.541" style="fill:rgb(235,235,235);"/>
+    </g>
+    <g transform="matrix(0.675127,0,0,0.675127,12.3195,185.533)">
+        <text x="52.213px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">FIELD 2</text>
+    </g>
+    <g transform="matrix(1.23768,0,0,1.23768,404.634,250.6)">
+        <text x="15.875px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:white;">ADD ITEM</text>
+    </g>
+    <g transform="matrix(0.675127,0,0,0.675127,730.149,185.533)">
+        <text x="52.213px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">DROP 1</text>
+    </g>
+    <g transform="matrix(0.675127,0,0,0.675127,12.3195,-25.7451)">
+        <text x="52.213px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">FIELD 1</text>
+    </g>
+    <g transform="matrix(-1,1.22465e-16,-6.56803e-17,-0.53632,2188.36,782.821)">
+        <path d="M1050.86,450L1080,508.271L1021.73,508.271L1050.86,450Z" style="fill:rgb(115,115,115);"/>
+    </g>
+</svg>

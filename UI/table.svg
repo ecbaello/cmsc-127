@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1440 900" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <g transform="matrix(0.959292,0,0,6.79672,-2.77954,-1180.24)">
+        <rect x="65.41" y="204.755" width="1325.31" height="88.302" style="fill:rgb(234,234,234);"/>
+    </g>
+    <g transform="matrix(0.959292,0,0,-1.12312,-2.77954,441.393)">
+        <rect x="65.41" y="204.755" width="1325.31" height="88.302" style="fill:rgb(165,165,165);"/>
+    </g>
+    <g transform="matrix(153.102,0,0,1,-59665.3,0)">
+        <rect x="392.27" y="112.255" width="2.802" height="699.338" style="fill:white;fill-opacity:0.5;"/>
+    </g>
+    <g transform="matrix(0.487312,0,0,0.487312,49.8788,665.846)">
+        <text x="15.875px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">CLICK ITEM TO ACCESS AND EDIT DATA</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,78.5656,-123.387)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">COLUMN</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,78.5656,-23.9489)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:rgb(129,129,129);">ITEM</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,412.896,-23.9489)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:rgb(129,129,129);">ITEM</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,837.675,-23.9489)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:rgb(129,129,129);">ITEM</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,411.719,-122.875)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">COLUMN</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,836.498,-122.875)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">COLUMN</text>
+    </g>
+    <g transform="matrix(1,0,0,0.826971,0,52.1053)">
+        <rect x="59.967" y="301.136" width="1271.36" height="118.905" style="fill:rgb(0,159,255);fill-opacity:0.74902;"/>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,78.5656,64.3873)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:white;">ITEM</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,412.896,64.3873)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:white;">ITEM</text>
+    </g>
+    <g transform="matrix(0.773849,0,0,0.773849,837.675,64.3873)">
+        <text x="21.199px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:white;">ITEM</text>
+    </g>
+</svg>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1440 900" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <g transform="matrix(1,0,0,1,2.95786,-102.305)">
+        <rect x="53.985" y="171.772" width="1326.11" height="126.955" style="fill:rgb(235,235,235);"/>
+    </g>
+    <g transform="matrix(1.33166,0,0,1.17697,-43.0461,-145.641)">
+        <path d="M455.889,220.678C455.889,211.858 449.56,204.697 441.764,204.697L108.79,204.697C100.994,204.697 94.665,211.858 94.665,220.678L94.665,252.64C94.665,261.46 100.994,268.621 108.79,268.621L441.764,268.621C449.56,268.621 455.889,261.46 455.889,252.64L455.889,220.678Z" style="fill:rgb(0,178,255);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,1.13687e-13,-103.759)">
+        <clipPath id="_clip1">
+            <path d="M569.03,217.85C569.03,207.469 560.602,199.041 550.221,199.041L101.824,199.041C91.443,199.041 83.015,207.469 83.015,217.85L83.015,255.468C83.015,265.849 91.443,274.277 101.824,274.277L550.221,274.277C560.602,274.277 569.03,265.849 569.03,255.468L569.03,217.85Z"/>
+        </clipPath>
+        <g clip-path="url(#_clip1)">
+            <g transform="matrix(1.89606,0,0,0.723034,-335.845,80.7566)">
+                <rect x="341.715" y="127.89" width="271.05" height="163.685" style="fill:rgb(154,225,255);"/>
+            </g>
+        </g>
+    </g>
+    <g transform="matrix(0.866184,0,0,0.866184,45.2658,-186.362)">
+        <text x="81.64px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:white;">FIELD</text>
+    </g>
+    <g transform="matrix(0.866184,0,0,0.866184,267.01,-186.318)">
+        <text x="81.64px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">VALUE</text>
+    </g>
+    <g transform="matrix(1.33166,0,0,1.17697,472.706,-145.597)">
+        <path d="M455.889,220.678C455.889,211.858 449.56,204.697 441.764,204.697L108.79,204.697C100.994,204.697 94.665,211.858 94.665,220.678L94.665,252.64C94.665,261.46 100.994,268.621 108.79,268.621L441.764,268.621C449.56,268.621 455.889,261.46 455.889,252.64L455.889,220.678Z" style="fill:rgb(0,178,255);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,515.752,-103.715)">
+        <clipPath id="_clip2">
+            <path d="M569.03,217.85C569.03,207.469 560.602,199.041 550.221,199.041L101.824,199.041C91.443,199.041 83.015,207.469 83.015,217.85L83.015,255.468C83.015,265.849 91.443,274.277 101.824,274.277L550.221,274.277C560.602,274.277 569.03,265.849 569.03,255.468L569.03,217.85Z"/>
+        </clipPath>
+        <g clip-path="url(#_clip2)">
+            <g transform="matrix(1.89606,0,0,0.723034,-335.845,80.7566)">
+                <rect x="341.715" y="127.89" width="271.05" height="163.685" style="fill:rgb(154,225,255);"/>
+            </g>
+        </g>
+    </g>
+    <g transform="matrix(0.866184,0,0,0.866184,561.018,-186.318)">
+        <text x="81.64px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:white;">FIELD</text>
+    </g>
+    <g transform="matrix(0.866184,0,0,0.866184,782.762,-186.274)">
+        <text x="81.64px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;">VALUE</text>
+    </g>
+    <g transform="matrix(1,0,0,1,1.13687e-13,-103.759)">
+        <rect x="56.943" y="300.18" width="1326.11" height="551.555" style="fill:rgb(205,205,205);"/>
+    </g>
+    <g transform="matrix(0.866184,0,0,0.866184,45.2658,-62.5401)">
+        <text x="81.64px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:rgb(71,71,71);">FIELD 1</text>
+    </g>
+    <g transform="matrix(1,0,0,1.28514,-23.4612,-172.398)">
+        <text x="1114.52px" y="274.321px" style="font-family:'Quicksand-Regular', 'Quicksand';font-size:105.033px;">I</text>
+    </g>
+    <g transform="matrix(1,0,0,0.850352,1.13687e-13,-45.7646)">
+        <rect x="56.943" y="402.963" width="1326.11" height="94.488" style="fill:white;fill-opacity:0.427451;"/>
+    </g>
+    <g transform="matrix(0.866184,0,0,0.866184,45.2658,17.8079)">
+        <text x="81.64px" y="391.729px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:66.129px;fill:rgb(71,71,71);">FIELD 2</text>
+    </g>
+    <g transform="matrix(1,0,0,1,-28.8866,-5.23574)">
+        <text x="83.015px" y="792.823px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:27.061px;">ENTER TO COMPLETE TOKEN</text>
+    </g>
+    <g transform="matrix(1,0,0,1,-27.937,34.3747)">
+        <text x="83.015px" y="792.823px" style="font-family:'Quicksand-Bold', 'Quicksand';font-weight:700;font-size:27.061px;">&quot;:&quot; TO COMPLETE FIELD</text>
+    </g>
+</svg>
