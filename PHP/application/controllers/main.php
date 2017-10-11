@@ -9,13 +9,16 @@ class Main extends CI_Controller {
 		$this->load->model('database_pcf_model');
 		$this->load->model('database_pcfrr_model');
 
-		$this->load->library('table');
+		$this->load->view('header');
+		
 		$result = $this->database_pcf_model->getTypeTable('General');
 
 		$data = array(
 			'tablehtml' => $this->makeTable($result)
 		);
 		$this->load->view('table_view', $data);
+
+		$this->load->view('footer');
 		
 	}
 
@@ -36,6 +39,8 @@ class Main extends CI_Controller {
 
 	public function makeTable($query)
 	{
+		$this->load->library('table');
+
 		$fields = $query->list_fields();
 		$headers = $this->database_model->convertFields($fields);
 

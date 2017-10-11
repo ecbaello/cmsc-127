@@ -29,7 +29,7 @@ class Database_pcfrr_model extends CI_Model
 			$this->dbforge->add_field		("pcf_rr_request_id INT NOT NULL");
 			$this->dbforge->add_field		("pcf_rr_date DATE NOT NULL");
 
-			$this->dbforge->add_field		("pcf_rr_pcf_id INT NOT NULL");
+			$this->dbforge->add_field		("pcf_rr_pcf_type INT NOT NULL");
 
 			$this->dbforge->add_field		("pcf_rr_particulars VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("pcf_rr_supporting_documents VARCHAR(100) DEFAULT ''");
@@ -60,6 +60,11 @@ class Database_pcfrr_model extends CI_Model
 			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_op_desc', 'Other Description');
 
 		}
+	}
+
+	public function generateTable() {
+		$this->load->model('database_model');
+		return $this->database_model->makeTable($this->db->get(self::PCF_RRTableName) );
 	}
 
 }

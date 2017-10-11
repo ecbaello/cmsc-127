@@ -32,14 +32,14 @@ class Database_pcf_model extends CI_Model
 		if (!($this->db->table_exists(self::PCF_MetaTableName)))
 		{
 			$fields = array(
-        		'pcf_id' => array(
+        		'pcf_type' => array(
 	                'type' => 'INT',
 	                'auto_increment' => TRUE
 	            )
        		);
 			$this->dbforge->add_field		($fields);
 			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL");
-			$this->dbforge->add_key 		('pcf_id', TRUE);
+			$this->dbforge->add_key 		('pcf_type', TRUE);
 			$this->dbforge->create_table	(self::PCF_MetaTableName);
 		}
 	}
@@ -52,8 +52,15 @@ class Database_pcf_model extends CI_Model
 	{
 		if (!($this->db->table_exists(self::PCFTableName)))
 		{
-			$this->dbforge->add_field		("pcf_id INT NOT NULL");
+			$this->dbforge->add_field		("pcf_type INT NOT NULL");
 
+			$fields = array(
+        		'pcf_id' => array(
+	                'type' => 'INT',
+	                'auto_increment' => TRUE
+	            )
+       		);
+			$this->dbforge->add_field		($fields);
 			$this->dbforge->add_field		("pcf_particulars VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("pcf_supporting_documents VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("pcf_screening_training FLOAT DEFAULT 0.0");
@@ -63,11 +70,12 @@ class Database_pcf_model extends CI_Model
 			$this->dbforge->add_field		("pcf_communications FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_medical_supplies FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_other_expenses FLOAT DEFAULT 0.0");
-			
+			$this->dbforge->add_key 		('pcf_id', TRUE);
 			$this->dbforge->create_table	(self::PCFTableName);
 
 			$this->load->model('database_model');
 
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_id', 'ID');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_particulars', 'Particulars');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_supporting_documents', 'Supporting Documents');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_screening_training', 'Screening/Training');
@@ -81,19 +89,17 @@ class Database_pcf_model extends CI_Model
 	}
 
 	public function getTypeTable($query) {
-		$this->db->select('*');
+		$this->load->model('database_model');
+		$this->db->select($this->database_model->getFields(self::PCFTableName));
 		$this->db->from(self::PCFTableName);
-		$this->db->join(self::PCF_MetaTableName, self::PCFTableName.'.pcf_id = '.self::PCF_MetaTableName.'.pcf_id');
+		$this->db->join(self::PCF_MetaTableName, self::PCFTableName.'.pcf_type = '.self::PCF_MetaTableName.'.pcf_type');
 		$this->db->where('pcf_name', $query);
 		$query = $this->db->get();
 		return $query;
 	}
 
 	public function registerTypeTable($name) {
-		$this->db->where('pcf_name', $name);
-		$query = $this->db->get(self::PCF_MetaTableName);
-		// Check availability
-		if ( empty( $query->result_array() ) ) {
+		if ( !$this->checkExists($name) ) {
 
 			$data = array(
 			    'pcf_name' => $name
@@ -103,15 +109,23 @@ class Database_pcf_model extends CI_Model
 		
 	}
 
+	public function checkExists($name) {
+		$this->db->where('pcf_name', $name);
+		$query = $this->db->get(self::PCF_MetaTableName);
+		// Check availability
+		return !empty( $query->result_array() );
+		
+	}
+
 	public function insertIntoTypeTable($name, $values) {
-		$this->db->select('pcf_id');
+		$this->db->select('pcf_type');
 		$this->db->where('pcf_name', $name);
 		$query = $this->db->get(self::PCF_MetaTableName);
 
 		$query = $query->result_array();
 		$query = $query[0];
 
-		$values['pcf_id'] = $query['pcf_id'];
+		$values['pcf_type'] = $query['pcf_type'];
 
 
 		$this->db->insert(self::PCFTableName, $values);

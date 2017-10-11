@@ -46,6 +46,19 @@ class Database_model extends CI_Model
 		$this->db->insert(self::DB_LabelMetaTableName, $data);
 	}
 
+	public function getFields( $table ) {
+		$this->db->select('table_field');
+		$this->db->where('table_name', $table);
+		$query = $this->db->get(self::DB_LabelMetaTableName)->result_array();
+		if ( empty($query) ) return $query;
+
+		$arr = array();
+		foreach ($query as $field) {
+			array_push( $arr,  $field['table_field']);
+		}
+		return $arr;
+	}
+
 	public function getFieldTitle( $table_field ) {
 		$this->db->select('table_field_title');
 		$this->db->where('table_field', $table_field);
@@ -63,6 +76,23 @@ class Database_model extends CI_Model
 			array_push( $arr,  $item);
 		}
 		return $arr;
+	}
+
+	public function makeTable($query)
+	{
+		$this->load->library('table');
+
+		$fields = $query->list_fields();
+		$headers = $this->database_model->convertFields($fields);
+
+		$this->table->set_heading($headers);
+
+		return $this->table->generate($query);
+	}
+
+	public function getData($tableName)
+	{
+		return $this->db->get($tableName)->result_array();
 	}
 }
 
