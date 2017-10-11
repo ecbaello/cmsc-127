@@ -28,7 +28,7 @@ class Database_pcf_model extends CI_Model
 	{
 		if (!($this->db->table_exists(self::PCF_MetaTableName)))
 		{
-			$this->dbforge->add_field		("pcf_id INT NOT NULL AUTO_INCREMENT");
+			$this->dbforge->add_field		("pcf_id SMALLINT NOT NULL AUTO_INCREMENT");
 			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL");
 			$this->dbforge->add_key 		('pcf_id', TRUE);
 			$this->dbforge->add_key 		('pcf_name', TRUE);
@@ -44,7 +44,7 @@ class Database_pcf_model extends CI_Model
 	{
 		if (!($this->db->table_exists(self::PCFTableName)))
 		{
-			$this->dbforge->add_field		("pcf_id INT NOT NULL");
+			$this->dbforge->add_field		("pcf_id SMALLINT NOT NULL");
 			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL DEFAULT ''");
 
 			$this->dbforge->add_field		("pcf_particulars VARCHAR(100) DEFAULT ''");
