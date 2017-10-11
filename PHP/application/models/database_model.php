@@ -52,8 +52,8 @@ class Database_model extends CI_Model
 	{
 		if (!($this->db->table_exists('pcf')))
 		{
-			$this->dbforge->add_field		("pcf_id INT NOT NULL");
-			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL DEFAULT ''");
+			$this->dbforge->add_field		("pcf_id SMALLINT NOT NULL");
+			$this->dbforge->add_field		("pcf_type VARCHAR(100) NOT NULL DEFAULT ''");
 
 			$this->dbforge->add_field		("pcf_particulars VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("pcf_supporting_documents VARCHAR(100) DEFAULT ''");
