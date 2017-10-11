@@ -16,8 +16,11 @@ class Database_pcf_model extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
-		$this->makePCFTypeTable();
+		
 		$this->makePCFTable();
+		$this->makePCFTypeTable();
+
+		$this->registerTypeTable('General');
 	}
 
 	/**
@@ -28,10 +31,15 @@ class Database_pcf_model extends CI_Model
 	{
 		if (!($this->db->table_exists(self::PCF_MetaTableName)))
 		{
-			$this->dbforge->add_field		("pcf_id SMALLINT NOT NULL AUTO_INCREMENT");
+			$fields = array(
+        		'pcf_id' => array(
+	                'type' => 'INT',
+	                'auto_increment' => TRUE
+	            )
+       		);
+			$this->dbforge->add_field		($fields);
 			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL");
 			$this->dbforge->add_key 		('pcf_id', TRUE);
-			$this->dbforge->add_key 		('pcf_name', TRUE);
 			$this->dbforge->create_table	(self::PCF_MetaTableName);
 		}
 	}
@@ -44,7 +52,7 @@ class Database_pcf_model extends CI_Model
 	{
 		if (!($this->db->table_exists(self::PCFTableName)))
 		{
-			$this->dbforge->add_field		("pcf_id SMALLINT NOT NULL");
+			$this->dbforge->add_field		("pcf_id INT NOT NULL");
 			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL DEFAULT ''");
 
 			$this->dbforge->add_field		("pcf_particulars VARCHAR(100) DEFAULT ''");
@@ -83,19 +91,26 @@ class Database_pcf_model extends CI_Model
 	}
 
 	public function registerTypeTable($name) {
-		$data = array(
-		    'pcf_name' => $name
-		);
+		$this->db->where('pcf_name', $name);
+		$query = $this->db->get(self::PCF_MetaTableName);
+		// Check availability
+		if ( empty( $query->result_array() ) ) {
 
-		$this->db->insert(self::PCF_MetaTableName, $data);
+			$data = array(
+			    'pcf_name' => $name
+			);
+			$this->db->insert(self::PCF_MetaTableName, $data);
+		}
+		
 	}
 
 	public function insertIntoTypeTable($name, $data) {
-		$this->db->get(self::PCF_MetaTableName);
+		$this->db->select('pcf_id');
 		$this->db->where('pcf_name', $name);
+		$query = $this->db->get(self::PCF_MetaTableName);
 
-		$query = $this->db->result_array();
-		$query = $query[0];
+		$query = $query->result_array();
+		$query = $query[0][0];
 
 		$data['pcf_id'] = $query;
 
