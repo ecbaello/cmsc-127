@@ -16,6 +16,7 @@ class Database_pcf_model extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
+		$this->load->model('database_model');
 		
 		$this->makePCFTable();
 		$this->makePCFTypeTable();
@@ -75,7 +76,6 @@ class Database_pcf_model extends CI_Model
 
 			$this->load->model('database_model');
 
-			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_id', 'ID');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_particulars', 'Particulars');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_supporting_documents', 'Supporting Documents');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_screening_training', 'Screening/Training');
@@ -89,7 +89,7 @@ class Database_pcf_model extends CI_Model
 	}
 
 	public function getTypeTable($query) {
-		$this->load->model('database_model');
+		
 		$this->db->select($this->database_model->getFields(self::PCFTableName));
 		$this->db->from(self::PCFTableName);
 		$this->db->join(self::PCF_MetaTableName, self::PCFTableName.'.pcf_type = '.self::PCF_MetaTableName.'.pcf_type');
@@ -129,6 +129,14 @@ class Database_pcf_model extends CI_Model
 
 
 		$this->db->insert(self::PCFTableName, $values);
+	}
+
+	public function getFieldAssociations() {
+		return $this->database_model->getFieldAssociations(self::PCFTableName);
+	}
+
+	public function getFields() {
+		return $this->database_model->getFields(self::PCFTableName);
 	}
 }
 

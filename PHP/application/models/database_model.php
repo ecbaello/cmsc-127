@@ -59,6 +59,12 @@ class Database_model extends CI_Model
 		return $arr;
 	}
 
+	public function getFieldAssociations( $table ) {
+		$this->db->select('table_field, table_field_title');
+		$this->db->where('table_name', $table);
+		return $this->db->get(self::DB_LabelMetaTableName)->result_array();
+	}
+
 	public function getFieldTitle( $table_field ) {
 		$this->db->select('table_field_title');
 		$this->db->where('table_field', $table_field);

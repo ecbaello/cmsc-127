@@ -62,9 +62,12 @@ class Database_pcfrr_model extends CI_Model
 		}
 	}
 
-	public function generateTable() {
-		$this->load->model('database_model');
-		return $this->database_model->makeTable($this->db->get(self::PCF_RRTableName) );
+	public function getTable() {
+		return $this->db->get(self::PCF_RRTableName);
+	}
+
+	public function insertIntoTable($data) {
+		$this->db->insert(self::PCF_RRTableName, $data);
 	}
 
 }
