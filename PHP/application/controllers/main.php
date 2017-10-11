@@ -7,13 +7,10 @@ class Main extends CI_Controller {
 	{
 		echo 'test';
 		$this->load->model('database_model');
-		$this->database_model->test_main();
-		$data['sample'] = "hello world";
-		$data['table'] = array
-							(
-								array(1, 2, 3),
-								array(2, 3, 4)
-							);
+		$model = $this->database_model;
+
+		$data['table_header'] = $model->getFields($model::PCFTableName);
+		$data['table'] = $model->getData($model::PCFTableName);
 		$this->load->view('table_view', $data);
 		
 	}
@@ -21,5 +18,15 @@ class Main extends CI_Controller {
 	public function test1()
 	{
 		echo 'test output';
+	}
+
+	public function getFields($tableName)
+	{
+		return $this->db->list_fields($tableName);
+	}
+
+	public function getData($tableName)
+	{
+		return $this->db->get($tableName)->result_array();
 	}
 }

@@ -12,13 +12,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div id="container">
 	<table>
 		<?php 
+			echo '<tr>';
+			foreach ($table_header as $header){
+				echo '<th>';
+				echo $header;
+				echo '</th>';
+			}
+			echo '</tr>';
 			foreach ($table as $row)
 			{
 				echo '<tr>';
-				foreach ($row as $column) 
-				{
+				foreach ($table_header as $header){
 					echo '<td>';
-					echo $column;
+					echo $row->{$header};
 					echo '</td>';
 				}
 				echo '</tr>';
