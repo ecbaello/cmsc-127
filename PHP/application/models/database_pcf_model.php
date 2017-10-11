@@ -58,6 +58,18 @@ class Database_pcf_model extends CI_Model
 			$this->dbforge->add_field		("pcf_other_expenses FLOAT DEFAULT 0.0");
 			
 			$this->dbforge->create_table	(self::PCFTableName);
+
+			$this->load->model('database_model');
+
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_particulars', 'Particulars');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_supporting_documents', 'Supporting Documents');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_screening_training', 'Screening/Training');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_meals_snacks', 'Meals/Snacks');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_travel', 'Travel');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_office_supplies', 'Office Supplies');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_communications', 'Communications');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_medical_supplies', 'Medical Supplies');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_other_expenses', 'Other Expenses');
 		}
 	}
 

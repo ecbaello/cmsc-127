@@ -1,6 +1,6 @@
 <?php
 
-class Database_model extends CI_Model
+class Database_pcfrr_model extends CI_Model
 {
 	const PCF_RRTableName = 'pcf_replenishment_request';
 
@@ -43,6 +43,22 @@ class Database_model extends CI_Model
 			$this->dbforge->add_field		("pcf_rr_op_desc VARCHAR(100) DEFAULT ''");
 			
 			$this->dbforge->create_table	(self::PCF_RRTableName);
+
+			$this->load->model('database_model');
+
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_request_id', 'Request ID');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_date', 'Request Date');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_particulars', 'Particulars');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_supporting_documents', 'Supporting Documents');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_screening_training', 'Screening/Training');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_meals_snacks', 'Meals/Snacks');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_travel', 'Travel');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_office_supplies', 'Office Supplies');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_communications', 'Communications');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_medical_supplies', 'Medical Supplies');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_other_expenses', 'Other Expenses');
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_op_desc', 'Other Description');
+
 		}
 	}
 

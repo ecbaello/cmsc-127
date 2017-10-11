@@ -8,10 +8,8 @@ class Main extends CI_Controller {
 		echo 'test';
 		$this->load->model('database_model');
 		$model = $this->database_model;
-
-		$data['table_header'] = $model->getFields($model::PCFTableName);
-		$data['table'] = $model->getData($model::PCFTableName);
-		$this->load->view('table_view', $data);
+		$this->load->model('database_pcf_model');
+		$this->load->model('database_pcfrr_model');
 		
 	}
 
