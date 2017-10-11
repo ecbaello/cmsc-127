@@ -40,7 +40,7 @@ class Database_model extends CI_Model
 		        'table_field_title' => $field_title
 		);
 
-		$this->db->insert('mytable', $data);
+		$this->db->insert(self::DB_LabelMetaTableName, $data);
 	}
 }
 
