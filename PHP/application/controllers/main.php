@@ -7,9 +7,14 @@ class Main extends CI_Controller {
 	{
 		echo 'test';
 		$this->load->model('database_model');
-		$model = $this->database_model;
 		$this->load->model('database_pcf_model');
 		$this->load->model('database_pcfrr_model');
+
+		$data = array(
+			'pcf_particulars' => 'Hello Sample',
+			'pcf_medical_supplies' => 4.5
+		);
+		$this->database_pcf_model->insertIntoTypeTable('General', $data);
 		
 	}
 

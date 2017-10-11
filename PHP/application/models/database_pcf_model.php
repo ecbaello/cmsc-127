@@ -53,7 +53,6 @@ class Database_pcf_model extends CI_Model
 		if (!($this->db->table_exists(self::PCFTableName)))
 		{
 			$this->dbforge->add_field		("pcf_id INT NOT NULL");
-			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL DEFAULT ''");
 
 			$this->dbforge->add_field		("pcf_particulars VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("pcf_supporting_documents VARCHAR(100) DEFAULT ''");
@@ -104,17 +103,18 @@ class Database_pcf_model extends CI_Model
 		
 	}
 
-	public function insertIntoTypeTable($name, $data) {
+	public function insertIntoTypeTable($name, $values) {
 		$this->db->select('pcf_id');
 		$this->db->where('pcf_name', $name);
 		$query = $this->db->get(self::PCF_MetaTableName);
 
 		$query = $query->result_array();
-		$query = $query[0][0];
+		$query = $query[0];
 
-		$data['pcf_id'] = $query;
+		$values['pcf_id'] = $query['pcf_id'];
+		
 
-		$this->db->insert(self::PCF_MetaTableName, $data);
+		$this->db->insert(self::PCFTableName, $values);
 	}
 }
 
