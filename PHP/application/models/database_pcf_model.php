@@ -76,6 +76,7 @@ class Database_pcf_model extends CI_Model
 
 			$this->load->model('database_model');
 
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_id', 'ID');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_particulars', 'Particulars');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_supporting_documents', 'Supporting Documents');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_screening_training', 'Screening/Training');
@@ -132,7 +133,9 @@ class Database_pcf_model extends CI_Model
 	}
 
 	public function getFieldAssociations() {
-		return $this->database_model->getFieldAssociations(self::PCFTableName);
+		$arr = $this->database_model->getFieldAssociations(self::PCFTableName);
+		unset($arr['pcf_id']);
+		return $arr;
 	}
 
 	public function getFields() {

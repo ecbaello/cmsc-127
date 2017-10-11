@@ -16,8 +16,6 @@ class Pcf extends CI_Controller {
 		if ( empty($table) ) {
 			echo 'Select table';
 		} else {
-			
-
 			if ($this->database_pcf_model->checkExists($table)){
 				if ($hasInput) {
 					$this->takeInput ($table);

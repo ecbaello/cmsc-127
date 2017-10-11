@@ -62,7 +62,13 @@ class Database_model extends CI_Model
 	public function getFieldAssociations( $table ) {
 		$this->db->select('table_field, table_field_title');
 		$this->db->where('table_name', $table);
-		return $this->db->get(self::DB_LabelMetaTableName)->result_array();
+
+		$inp = $this->db->get(self::DB_LabelMetaTableName)->result_array();
+		$arr = array();
+		foreach ($inp as $assoc) {
+			$arr[ $assoc['table_field'] ] = $assoc['table_field_title'];
+		}
+		return $arr;
 	}
 
 	public function getFieldTitle( $table_field ) {
