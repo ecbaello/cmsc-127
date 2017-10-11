@@ -33,7 +33,7 @@ class Database_model extends CI_Model
 		}
 	}
 
-	public function registerFieldTitle($table_name, $table_field, $field_title) {
+	public function registerFieldTitle( $table_name, $table_field, $field_title ) {
 		$data = array(
 		        'table_name' => $table_name,
 		        'table_field' => $table_field,
@@ -41,6 +41,25 @@ class Database_model extends CI_Model
 		);
 
 		$this->db->insert(self::DB_LabelMetaTableName, $data);
+	}
+
+	public function getFieldTitle( $table_field ) {
+		$this->db->select('table_field_title');
+		$this->db->where('table_field', $table_field);
+		$query = $this->db->get(self::DB_LabelMetaTableName)->result_array();
+		if ( empty($query) ) return $query;
+		return $query[0]['table_field_title'];
+	}
+
+
+	public function convertFields( $fields ) {
+		$arr = array();
+		foreach ($fields as $field) {
+			$item = $this->getFieldTitle($field);
+			if ( empty($item) )  $item = '';
+			array_push( $arr,  $item);
+		}
+		return $arr;
 	}
 }
 

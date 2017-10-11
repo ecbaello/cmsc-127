@@ -83,10 +83,10 @@ class Database_pcf_model extends CI_Model
 	public function getTypeTable($query) {
 		$this->db->select('*');
 		$this->db->from(self::PCFTableName);
-		$this->db->join(self::PCF_MetaTableName, self::PCFTableName+'.id = '+self::PCF_MetaTableName+'.id');
+		$this->db->join(self::PCF_MetaTableName, self::PCFTableName.'.pcf_id = '.self::PCF_MetaTableName.'.pcf_id');
 		$this->db->where('pcf_name', $query);
 		$query = $this->db->get();
-		return $query->result_array();
+		return $query;
 	}
 
 	public function registerTypeTable($name) {
@@ -112,7 +112,7 @@ class Database_pcf_model extends CI_Model
 		$query = $query[0];
 
 		$values['pcf_id'] = $query['pcf_id'];
-		
+
 
 		$this->db->insert(self::PCFTableName, $values);
 	}

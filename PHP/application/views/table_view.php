@@ -10,27 +10,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>
 
 <div id="container">
-	<table>
-		<?php 
-			echo '<tr>';
-			foreach ($table_header as $header){
-				echo '<th>';
-				echo $header;
-				echo '</th>';
-			}
-			echo '</tr>';
-			foreach ($table as $row)
-			{
-				echo '<tr>';
-				foreach ($table_header as $header){
-					echo '<td>';
-					echo $row->{$header};
-					echo '</td>';
-				}
-				echo '</tr>';
-			};
+	<?php 
+		echo $tablehtml	
 		?>
-	</table>
 </div>
 
  <script src="<?= FOUNDATION ?>js/vendor/jquery.js"></script>
