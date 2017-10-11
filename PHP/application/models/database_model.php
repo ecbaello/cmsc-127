@@ -28,16 +28,19 @@ class Database_model extends CI_Model
 			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
+			$this->dbforge->add_field		("table_field_inputs BOOLEAN NOT NULL DEFAULT TRUE");
 
 			$this->dbforge->create_table	(self::DB_LabelMetaTableName);
 		}
 	}
 
-	public function registerFieldTitle( $table_name, $table_field, $field_title ) {
+	public function registerFieldTitle( $table_name, $table_field, $field_title, $isInput = true ) {
+
 		$data = array(
 		        'table_name' => $table_name,
 		        'table_field' => $table_field,
-		        'table_field_title' => $field_title
+		        'table_field_title' => $field_title,
+		        'table_field_inputs' => $isInput
 		);
 
 		$this->db->insert(self::DB_LabelMetaTableName, $data);

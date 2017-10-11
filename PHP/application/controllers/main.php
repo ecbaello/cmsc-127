@@ -9,8 +9,6 @@ class Main extends CI_Controller {
 		$this->load->model('database_pcf_model');
 		$this->load->model('database_pcfrr_model');
 
-
-
 		$this->load->library('table');
 		$result = $this->database_pcf_model->getTypeTable('General');
 
