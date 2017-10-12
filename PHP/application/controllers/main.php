@@ -8,6 +8,8 @@ class Main extends CI_Controller {
 		$this->load->model('database_model');
 		$this->load->model('database_pcf_model');
 		$this->load->model('database_pcfrr_model');
+		$this->load->model('database_patient_expenses_model');
+		//$this->load->model('database_detailed_charges_model'); <-- not yet
 
 		$this->load->view('header');
 		
