@@ -68,6 +68,7 @@ class Database_pcf_model extends CI_Model
 			$this->dbforge->add_field		("pcf_meals_snacks FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_travel FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_office_supplies FLOAT DEFAULT 0.0");
+			$this->dbforge->add_field		("pcf_water FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_communications FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_medical_supplies FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_other_expenses FLOAT DEFAULT 0.0");
@@ -83,6 +84,7 @@ class Database_pcf_model extends CI_Model
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_meals_snacks', 'Meals/Snacks');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_travel', 'Travel');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_office_supplies', 'Office Supplies');
+			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_water', 'Water');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_communications', 'Communications');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_medical_supplies', 'Medical Supplies');
 			$this->database_model->registerFieldTitle(self::PCFTableName, 'pcf_other_expenses', 'Other Expenses');
