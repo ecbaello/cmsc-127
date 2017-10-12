@@ -1,12 +1,20 @@
+body {
+	background: #eeeeee;
+}
+
 #capsule {
-	padding: 0 5% 5%;
+	padding: 20px 5%;
+	background: white;
 }
 
 .title-bar {
 	padding: 10px 5%;
 	text-transform: uppercase;
-	text-align: center;
 	background: #4C9B59;
+}
+
+.title-bar a {
+	color: white;
 }
 
 .title-bar h1 {

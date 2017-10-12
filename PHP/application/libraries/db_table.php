@@ -26,11 +26,6 @@ class Db_table extends CI_Table {
 		// Compile and validate the template date
 		$this->_compile_template();
 
-		// Validate a possibly existing custom cell manipulation function
-		if (isset($this->function) && ! is_callable($this->function))
-		{
-			$this->function = NULL;
-		}
 
 		$script =
 		'
@@ -80,7 +75,9 @@ class Db_table extends CI_Table {
 				}
 
 				$out .= $temp.(isset($heading['data']) ? $heading['data'] : '').$this->template['heading_cell_end'];
+
 			}
+			$out .= $this->template['heading_cell_start'].$this->template['heading_cell_end'];
 
 			$out .= $this->template['heading_row_end'].$this->newline.$this->template['thead_close'].$this->newline;
 		}
@@ -109,10 +106,6 @@ class Db_table extends CI_Table {
 					if ($cell === '' OR $cell === NULL)
 					{
 						$out .= $this->empty_cells;
-					}
-					elseif (isset($this->function))
-					{
-						$out .= call_user_func($this->function, $cell);
 					}
 					else
 					{

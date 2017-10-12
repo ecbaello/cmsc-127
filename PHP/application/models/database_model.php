@@ -31,6 +31,7 @@ class Database_model extends CI_Model
 			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_inputs BOOLEAN NOT NULL DEFAULT TRUE");
+			$this->dbforge->add_field		("table_field_input_type INT NOT NULL DEFAULT TRUE");
 
 			$this->dbforge->create_table	(self::DB_LabelMetaTableName);
 		}

@@ -14,7 +14,6 @@ $newline		= "\n";
 				echo '<label for="'.$key .'">'.$value.'<input type="text" name="'.$key.'" ></label>'.$newline;
 				echo '</div>'.$newline;
 			}
-
 		?>
 	</div>
 	<div class="grid-padding-x" style="text-align: center;"><input class="button" style="width: 100%" type="submit" value="Insert"></div>

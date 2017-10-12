@@ -22,6 +22,13 @@ class Database_patient_expenses_model extends CI_Model
 	{
 		if (!($this->db->table_exists(self::PETableName)))
 		{
+			$fields = array(
+        		'pe_transaction_id' => array(
+	                'type' => 'INT',
+	                'auto_increment' => TRUE
+	            )
+       		);
+			$this->dbforge->add_field		($fields);
 			$this->dbforge->add_field		("pe_hospital_bill float DEFAULT 0.0");
 			$this->dbforge->add_field		("pe_laboratory FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pe_medical_supplies FLOAT DEFAULT 0.0");
@@ -58,7 +65,9 @@ class Database_patient_expenses_model extends CI_Model
 	}
 
 	public function getFieldAssociations() {
-		return $this->database_model->getFieldAssociations(self::PETableName);
+		$arr = $this->database_model->getFieldAssociations(self::PETableName);
+		unset($arr['pe_transaction_id']);
+		return $arr;
 	}
 
 	public function getFields() {

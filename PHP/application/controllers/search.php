@@ -11,30 +11,12 @@ class Search extends CI_Controller {
 		$table = $this->input->get('t');
 		if (!empty ($submit) && !empty ($table)){
 			$queries = explode ( "," , $submit);
-			
+
 		}
+		$this->load->view('header');
+		$this->load->view('search-form');
+		$this->load->view('footer');
 
 	}
 
-	public function getFields($tableName)
-	{
-		return $this->db->list_fields($tableName);
-	}
-
-	public function getData($tableName)
-	{
-		return $this->db->get($tableName)->result_array();
-	}
-
-	public function makeTable($query)
-	{
-		$this->load->library('table');
-
-		$fields = $query->list_fields();
-		$headers = $this->database_model->convertFields($fields);
-
-		$this->table->set_heading($headers);
-
-		return $this->table->generate($query);
-	}
 }

@@ -22,6 +22,13 @@ class Database_detailed_charges_model extends CI_Model
 	{
 		if (!($this->db->table_exists(self::DCTableName)))
 		{
+			$fields = array(
+        		'dc_charge_id' => array(
+	                'type' => 'INT',
+	                'auto_increment' => TRUE
+	            )
+       		);
+			$this->dbforge->add_field		($fields);
 			$this->dbforge->add_field		("dc_date date not null");
 			$this->dbforge->add_field		("dc_description varchar(100) DEFAULT ''");
 			$this->dbforge->add_field		("dc_quantity int DEFAULT 0");
@@ -50,7 +57,9 @@ class Database_detailed_charges_model extends CI_Model
 	}
 
 	public function getFieldAssociations() {
-		return $this->database_model->getFieldAssociations(self::DCTableName);
+		$arr = $this->database_model->getFieldAssociations(self::DCTableName);
+		unset($arr['dc_charge_id']);
+		return $arr;
 	}
 
 	public function getFields() {
