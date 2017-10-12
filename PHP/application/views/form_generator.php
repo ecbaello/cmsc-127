@@ -5,14 +5,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $newline		= "\n";
 
 ?><form action=<?php echo '"'.$link.'"' ?> method="post">
-	<?php if ( isset($tablename) ) echo '<input type="hidden" name="table" value='.$tablename.'>'.$newline ?>
-	<?php if ( isset($extrahtml) ) echo $extrahtml.$newline ?>
-	<?php
-		foreach ($fields as $key => $value) {
-			echo '<label for="'.$key .'">'.$value.'</label><input type="text" name="'.$key.'" >'.$newline;
-		}
+	<div class="grid-x grid-padding-x">
+		<?php if ( isset($tablename) ) echo '<input type="hidden" name="table" value='.$tablename.'>'.$newline ?>
+		<?php if ( isset($extrahtml) ) echo $extrahtml.$newline ?>
+		<?php
+			foreach ($fields as $key => $value) {
+				echo '<div class="small-12 medium-6 large-6 cell">'.$newline;
+				echo '<label for="'.$key .'">'.$value.'<input type="text" name="'.$key.'" ></label>'.$newline;
+				echo '</div>'.$newline;
+			}
 
-	?>
-	<input class="button" type="submit" value="Insert">
+		?>
+	</div>
+	<div class="grid-padding-x" style="text-align: center;"><input class="button" style="width: 100%" type="submit" value="Insert"></div>
 </form>
 

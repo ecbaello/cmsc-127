@@ -1,3 +1,17 @@
-body {
+#capsule {
 	padding: 0 5% 5%;
+}
+
+.title-bar {
+	padding: 10px 5%;
+	text-transform: uppercase;
+	text-align: center;
+	background: #4C9B59;
+}
+
+.title-bar h1 {
+	padding-top: 0.3em;
+	font-weight: 400;
+	font-size: 30px;
+	letter-spacing: 10px;
 }

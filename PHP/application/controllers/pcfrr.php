@@ -13,7 +13,15 @@ class Pcfrr extends CI_Controller {
 		$this->load->view('header');
 			
 		$this->loadTable();
-		$this->makeInputHtml();
+
+		$form = $this->makeInputHtml(true);
+
+		$modal = array(
+			'actiontitle' => 'Input a row',
+			'modalid' => 'input-form',
+			'modalcontent' => $form
+		);
+		$this->load->view('popup_generator', $modal);
 
 		$this->load->view('footer');
 	}
@@ -31,7 +39,7 @@ class Pcfrr extends CI_Controller {
 		$this->load->view('table_view', $data);
 	}
 
-	public function makeInputHtml()
+	public function makeInputHtml($isGet = false)
 	{
 		$this->load->helper('url');
 
@@ -42,7 +50,7 @@ class Pcfrr extends CI_Controller {
 			'fields' => $fields,
 			'link' => $link
 		);
-		$this->load->view('form_generator', $data);
+		return $this->load->view('form_generator', $data, $isGet);
 
 	}
 

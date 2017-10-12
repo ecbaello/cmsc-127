@@ -17,21 +17,34 @@ class Pcf extends CI_Controller {
 			echo 'Select table';
 		} else {
 			if ($this->database_pcf_model->checkExists($table)){
-				if ($submit == 'i') {
-					$this->takeInput ($table);
-				} else if ($submit == 'r') {
-					$submit = $this->input->get('id');
-					if ( !empty($submit) ) $this->database_pcf_model->deleteWithPK($submit);
-				}
+				$this->handleRequest($submit, $table);
 
 				$this->loadTable($table);
-				$this->makeInputHtml($table);
+				$form = $this->makeInputHtml($table, true);
+
+				$modal = array(
+					'actiontitle' => 'Input a row',
+					'modalid' => 'input-form',
+					'modalcontent' => $form
+				);
+				$this->load->view('popup_generator', $modal);
+
 			}
 			
 		}
 
 
 		$this->load->view('footer');
+	}
+
+	public function handleRequest($submit, $table)
+	{
+		if ($submit == 'i') {
+			$this->takeInput ($table);
+		} else if ($submit == 'r') {
+			$submit = $this->input->get('id');
+			if ( !empty($submit) ) $this->database_pcf_model->deleteWithPK($submit);
+		}
 	}
 
 	public function loadTable($subtable)
@@ -59,9 +72,10 @@ class Pcf extends CI_Controller {
 		return $this->db_table->generateDBUsingPK($query, $pk, $link, $subtable);
 	}
 
-	public function makeInputHtml($table)
+	public function makeInputHtml($table, $isGet = false)
 	{
 		$this->load->helper('url');
+
 
 		$fields = $this->database_pcf_model->getFieldAssociations();
 		$link = current_url().'?t='.html_escape($table).'&s=i';
@@ -70,7 +84,7 @@ class Pcf extends CI_Controller {
 			'fields' => $fields,
 			'link' => $link
 		);
-		$this->load->view('form_generator', $data);
+		return $this->load->view('form_generator', $data, $isGet);
 
 	}
 
