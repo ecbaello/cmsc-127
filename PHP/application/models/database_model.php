@@ -90,16 +90,59 @@ class Database_model extends CI_Model
 		return $arr;
 	}
 
+	public $template = array(
+        'table_open'            => '<table border="0" cellpadding="4" cellspacing="0">',
+
+        'thead_open'            => '<thead>',
+        'thead_close'           => '</thead>',
+
+        'heading_row_start'     => '<tr>',
+        'heading_row_end'       => '</tr>',
+        'heading_cell_start'    => '<th>',
+        'heading_cell_end'      => '</th>',
+
+        'tbody_open'            => '<tbody>',
+        'tbody_close'           => '</tbody>',
+
+        'row_start'             => '<tr>',
+        'row_end'               => '</tr>',
+        'cell_start'            => '<td>',
+        'cell_end'              => '</td>',
+
+        'row_alt_start'         => '<tr>',
+        'row_alt_end'           => '</tr>',
+        'cell_alt_start'        => '<td>',
+        'cell_alt_end'          => '</td>',
+
+        'table_close'           => '</table>'
+	);
+
 	public function makeTable($query)
 	{
 		$this->load->library('table');
 
+		$this->table->set_template($this->template);
+
 		$fields = $query->list_fields();
-		$headers = $this->database_model->convertFields($fields);
+		$headers = $this->convertFields($fields);
 
 		$this->table->set_heading($headers);
 
 		return $this->table->generate($query);
+	}
+
+	public function makeTableWithDelete($table_name, $pk, $link)
+	{
+		$this->load->library('db_table');
+
+		$query = $this->db->get($table_name);
+
+		$fields = $query->list_fields();
+		$headers = $this->convertFields($fields);
+
+		$this->db_table->set_heading($headers);
+
+		return $this->db_table->generateDBUsingPK($query, $pk, $link, $table_name);
 	}
 
 	public function getData($tableName)

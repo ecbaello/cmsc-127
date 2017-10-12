@@ -11,20 +11,22 @@ class Pcf extends CI_Controller {
 		$this->load->view('header');
 
 		$table = $this->input->get('t');
-		$hasInput = !empty($this->input->get('s'));
+		$submit = $this->input->get('s');
 
 		if ( empty($table) ) {
 			echo 'Select table';
 		} else {
 			if ($this->database_pcf_model->checkExists($table)){
-				if ($hasInput) {
+				if ($submit == 'i') {
 					$this->takeInput ($table);
+				} else if ($submit == 'r') {
+					$submit = $this->input->get('id');
+					if ( !empty($submit) ) $this->database_pcf_model->deleteWithPK($submit);
 				}
 
 				$this->loadTable($table);
 				$this->makeInputHtml($table);
 			}
-
 			
 		}
 
@@ -32,15 +34,33 @@ class Pcf extends CI_Controller {
 		$this->load->view('footer');
 	}
 
-	public function loadTable($table)
+	public function loadTable($subtable)
 	{	
-		$result = $this->database_pcf_model->getTypeTable($table);
+		$result = $this->database_pcf_model->getTypeTable($subtable);
 
 		$data = array(
-			'tablehtml' => $this->database_model->makeTable($result)
+			'tablehtml' => $this->makeTableWithDeleteAndResult($subtable, $result, 'pcf_id', $this->getLink())
 		);
 		$this->load->view('table_view', $data);
 		
+	}
+
+	public function makeTableWithDeleteAndResult($subtable, $table, $pk, $link)
+	{
+		$this->load->library('db_table');
+
+		$query = $table;
+
+		$fields = $query->list_fields();
+		$headers = $this->database_model->convertFields($fields);
+
+		$this->db_table->set_heading($headers);
+
+		return $this->db_table->generateDBUsingPK($query, $pk, $link, $subtable);
+	}
+
+	public function getLink() {
+		return 'http://'.current_url();
 	}
 
 	public function makeInputHtml($table)
@@ -48,7 +68,7 @@ class Pcf extends CI_Controller {
 		$this->load->helper('url');
 
 		$fields = $this->database_pcf_model->getFieldAssociations();
-		$link = 'http://'.current_url().'?t='.html_escape($table).'&s=y';
+		$link = $this->getLink().'?t='.html_escape($table).'&s=i';
 
 		$data = array(
 			'fields' => $fields,

@@ -70,6 +70,10 @@ class Database_pcfrr_model extends CI_Model
 		$this->db->insert(self::PCF_RRTableName, $data);
 	}
 
+	public function getFieldAssociations() {
+		$this->database_model->getFieldAssociations(self::PCF_RRTableName);
+	}
+
 }
 
 ?>

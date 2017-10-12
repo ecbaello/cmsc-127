@@ -141,6 +141,11 @@ class Database_pcf_model extends CI_Model
 	public function getFields() {
 		return $this->database_model->getFields(self::PCFTableName);
 	}
+
+	public function deleteWithPK($id) {
+		$this->db->where('pcf_id', $id);
+	    $this->db->delete(self::PCFTableName); 
+	}
 }
 
 ?>
