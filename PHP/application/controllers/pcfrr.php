@@ -34,7 +34,7 @@ class Pcfrr extends CI_Controller {
 		$link = current_url();
 
 		$data = array(
-			'tablehtml' => $this->database_model->makeTableWithDelete($model::PCF_RRTableName, 'pcf_rr_request_id', $link)
+			'tablehtml' => $this->database_model->makeTableWithDelete($model::TableName, 'pcf_rr_request_id', $link)
 		);
 		$this->load->view('table_view', $data);
 	}

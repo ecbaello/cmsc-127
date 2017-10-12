@@ -34,7 +34,7 @@ class Patientexp extends CI_Controller {
 		$link = current_url();
 
 		$data = array(
-			'tablehtml' => $this->database_model->makeTableWithDelete($model::PETableName, 'pe_transaction_id', $link)
+			'tablehtml' => $this->database_model->makeTableWithDelete($model::TableName, 'pe_transaction_id', $link)
 		);
 		$this->load->view('table_view', $data);
 	}

@@ -2,7 +2,7 @@
 
 class Database_model extends CI_Model
 {
-	const DB_LabelMetaTableName = 'db_meta';
+	const TableName = 'db_meta';
 
 	/**
 	* The constructor method
@@ -17,23 +17,23 @@ class Database_model extends CI_Model
 
 		$this->load->library('db_table');
 
-		$this->makeMeta();
+		$this->createTable();
 	}
 
 	/**
 	* Make PCF table if does not exists
 	*
 	*/
-	public function makeMeta() {
-		if (!($this->db->table_exists(self::DB_LabelMetaTableName)))
+	public function createTable() {
+		if (!($this->db->table_exists(self::TableName)))
 		{
 			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_inputs BOOLEAN NOT NULL DEFAULT TRUE");
-			$this->dbforge->add_field		("table_field_input_type INT NOT NULL DEFAULT TRUE");
+			$this->dbforge->add_field		("table_field_input_type VARCHAR(100) NOT NULL DEFAULT 'text'");
 
-			$this->dbforge->create_table	(self::DB_LabelMetaTableName);
+			$this->dbforge->create_table	(self::TableName);
 		}
 	}
 
@@ -46,13 +46,13 @@ class Database_model extends CI_Model
 		        'table_field_inputs' => $isInput
 		);
 
-		$this->db->insert(self::DB_LabelMetaTableName, $data);
+		$this->db->insert(self::TableName, $data);
 	}
 
 	public function getFields( $table ) {
 		$this->db->select('table_field');
 		$this->db->where('table_name', $table);
-		$query = $this->db->get(self::DB_LabelMetaTableName)->result_array();
+		$query = $this->db->get(self::TableName)->result_array();
 		if ( empty($query) ) return $query;
 
 		$arr = array();
@@ -66,7 +66,7 @@ class Database_model extends CI_Model
 		$this->db->select('table_field, table_field_title');
 		$this->db->where('table_name', $table);
 
-		$inp = $this->db->get(self::DB_LabelMetaTableName)->result_array();
+		$inp = $this->db->get(self::TableName)->result_array();
 		$arr = array();
 		foreach ($inp as $assoc) {
 			$arr[ $assoc['table_field'] ] = $assoc['table_field_title'];
@@ -77,7 +77,7 @@ class Database_model extends CI_Model
 	public function getFieldTitle( $table_field ) {
 		$this->db->select('table_field_title');
 		$this->db->where('table_field', $table_field);
-		$query = $this->db->get(self::DB_LabelMetaTableName)->result_array();
+		$query = $this->db->get(self::TableName)->result_array();
 		if ( empty($query) ) return $query;
 		return $query[0]['table_field_title'];
 	}
