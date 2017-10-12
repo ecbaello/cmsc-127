@@ -39,13 +39,13 @@ class Pcf extends CI_Controller {
 		$result = $this->database_pcf_model->getTypeTable($subtable);
 
 		$data = array(
-			'tablehtml' => $this->makeTableWithDeleteAndResult($subtable, $result, 'pcf_id', $this->getLink())
+			'tablehtml' => $this->makePCFTableWithDelete($subtable, $result, 'pcf_id', current_url())
 		);
 		$this->load->view('table_view', $data);
 		
 	}
 
-	public function makeTableWithDeleteAndResult($subtable, $table, $pk, $link)
+	public function makePCFTableWithDelete($subtable, $table, $pk, $link)
 	{
 		$this->load->library('db_table');
 
@@ -59,16 +59,12 @@ class Pcf extends CI_Controller {
 		return $this->db_table->generateDBUsingPK($query, $pk, $link, $subtable);
 	}
 
-	public function getLink() {
-		return 'http://'.current_url();
-	}
-
 	public function makeInputHtml($table)
 	{
 		$this->load->helper('url');
 
 		$fields = $this->database_pcf_model->getFieldAssociations();
-		$link = $this->getLink().'?t='.html_escape($table).'&s=i';
+		$link = current_url().'?t='.html_escape($table).'&s=i';
 
 		$data = array(
 			'fields' => $fields,

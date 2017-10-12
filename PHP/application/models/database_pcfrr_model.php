@@ -42,11 +42,13 @@ class Database_pcfrr_model extends CI_Model
 			$this->dbforge->add_field		("pcf_rr_medical_supplies FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_rr_other_expenses FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_rr_op_desc VARCHAR(100) DEFAULT ''");
+
+			$this->dbforge->add_key 		('pcf_rr_request_id', TRUE);
 			
 			$this->dbforge->create_table	(self::PCF_RRTableName);
 
 			$this->load->model('database_model');
-
+			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_pcf_type', 'PCF Type');
 			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_request_id', 'Request ID');
 			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_date', 'Request Date');
 			$this->database_model->registerFieldTitle(self::PCF_RRTableName, 'pcf_rr_particulars', 'Particulars');
@@ -73,8 +75,18 @@ class Database_pcfrr_model extends CI_Model
 	}
 
 	public function getFieldAssociations() {
-		$this->database_model->getFieldAssociations(self::PCF_RRTableName);
+		return $this->database_model->getFieldAssociations(self::PCF_RRTableName);
 	}
+
+	public function getFields() {
+		return $this->database_model->getFields(self::PCF_RRTableName);
+	}
+
+	public function deleteWithPK($id) {
+		$this->db->where('pcf_rr_request_id', $id);
+	    $this->db->delete(self::PCF_RRTableName); 
+	}
+
 
 }
 

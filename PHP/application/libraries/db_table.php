@@ -11,7 +11,7 @@ class Db_table extends CI_Table {
 		}
 	}
 
-	public function generateDBUsingPK($table_data, $pk, $link, $table)
+	public function generateDBUsingPK($table_data, $pk, $link, $subtable)
 	{
 		$this->makeHeading($table_data);
 
@@ -32,7 +32,6 @@ class Db_table extends CI_Table {
 			$this->function = NULL;
 		}
 
-		$name = html_escape($table);
 		$script =
 		'
 		<script>
@@ -40,13 +39,12 @@ class Db_table extends CI_Table {
 				$.ajax({
 				  type: "GET",
 				  url: "'.$link.'",
-				  data: {
-				  	"t":"'.$name.'",
+				  data: {'.( empty($subtable) ? '' : (' "t" : "'.html_escape($subtable).'", ' )).'
 				  	"s":"r",
 				  	"id":id
 				  },
 				  success: function(data) {
-				  	window.location = "'.$link.'?t='.$name.'";
+				  	window.location = "'.$link.(empty($subtable)?'':('?t='.html_escape($subtable))).'";
 				  }
 				});
 			}
@@ -125,7 +123,7 @@ class Db_table extends CI_Table {
 				}
 
 				$out .= $this->template['cell_'.$name.'start'];
-				$out .= '<button onclick="remove('.$row[$pk].');">remove</button>';
+				$out .= '<button class="button" onclick="remove('.$row[$pk].');">remove</button>';
 				$out .= $this->template['cell_'.$name.'end'];
 
 
@@ -142,5 +140,7 @@ class Db_table extends CI_Table {
 
 		return $out;
 	}
+
+
 
 }
