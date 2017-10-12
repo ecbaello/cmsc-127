@@ -57,6 +57,20 @@ class Database_patient_expenses_model extends CI_Model
 		$this->db->insert(self::PETableName, $data);
 	}
 
+	public function getFieldAssociations() {
+		return $this->database_model->getFieldAssociations(self::PETableName);
+	}
+
+	public function getFields() {
+		return $this->database_model->getFields(self::PETableName);
+	}
+
+	public function deleteWithPK($id) {
+		$this->db->where('pe_transaction_id', $id);
+	    $this->db->delete(self::PETableName); 
+	}
+
+
 }
 
 ?>

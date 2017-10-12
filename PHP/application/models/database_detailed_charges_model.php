@@ -1,6 +1,6 @@
 <?php
 
-class Database_patient_expenses_model extends CI_Model
+class Database_detailed_charges_model extends CI_Model
 {
 	const DCTableName = 'detailed_charges';
 
@@ -47,6 +47,19 @@ class Database_patient_expenses_model extends CI_Model
 
 	public function insertIntoTable($data) {
 		$this->db->insert(self::DCTableName, $data);
+	}
+
+	public function getFieldAssociations() {
+		return $this->database_model->getFieldAssociations(self::DCTableName);
+	}
+
+	public function getFields() {
+		return $this->database_model->getFields(self::DCTableName);
+	}
+
+	public function deleteWithPK($id) {
+		$this->db->where('dc_charge_id', $id);
+	    $this->db->delete(self::DCTableName); 
 	}
 
 }

@@ -7,6 +7,13 @@ class Search extends CI_Controller {
 	{
 		$this->load->model('database_model');
 
+		$submit = $this->input->get('q');
+		$table = $this->input->get('t');
+		if (!empty ($submit) && !empty ($table)){
+			$queries = explode ( "," , $submit);
+			
+		}
+
 	}
 
 	public function getFields($tableName)
