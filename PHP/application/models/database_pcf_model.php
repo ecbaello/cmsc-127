@@ -118,7 +118,7 @@ class Database_pcf_model extends CI_Model
 	}
 
 	public function insertIntoTypeTable($name, $values) {
-		$values['pcf_type'] = convertNameToType('pcf_type');
+		$values['pcf_type'] = $this->convertNameToType($name);
 		$this->db->insert(self::TableName, $values);
 	}
 

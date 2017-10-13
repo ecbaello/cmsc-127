@@ -33,8 +33,10 @@ class Pcfrr extends CI_Controller {
 		$model = $this->database_pcfrr_model;
 		$link = current_url();
 
+		$postScript = 'window.location = "'.$link.'";';
+
 		$data = array(
-			'tablehtml' => $this->database_model->makeTableWithDelete($model::TableName, 'pcf_rr_request_id', $link)
+			'tablehtml' => $this->database_model->makeTableWithDelete($model::TableName, 'pcf_rr_request_id', $link, $postScript)
 		);
 		$this->load->view('table_view', $data);
 	}
@@ -44,10 +46,11 @@ class Pcfrr extends CI_Controller {
 		$this->load->helper('url');
 
 		$fields = $this->database_pcfrr_model->getFieldAssociations();
-		$link = current_url().'?s=i';
+		$link = current_url();
 
 		$data = array(
 			'fields' => $fields,
+			'constants' => array(DB_REQUEST=>DB_INSERT),
 			'link' => $link
 		);
 		return $this->load->view('form_generator', $data, $isGet);
@@ -55,11 +58,11 @@ class Pcfrr extends CI_Controller {
 	}
 
 	public function handleRequest() {
-		$submit = $this->input->get('s');
-		if ($submit == 'i') {
+		$submit = $this->input->post(DB_REQUEST);
+		if ($submit == DB_INSERT) {
 			$this->takeInput ();
-		} else if ($submit == 'r') {
-			$submit = $this->input->get('id');
+		} else if ($submit == DB_DELETE) {
+			$submit = $this->input->post('id');
 			if ( !empty($submit) ) $this->database_pcfrr_model->deleteWithPK($submit);
 		}
 	}

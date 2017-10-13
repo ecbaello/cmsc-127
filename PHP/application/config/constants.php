@@ -84,7 +84,9 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
+defined('FOUNDATION')          OR define('FOUNDATION', 'https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/'); // foundation constant
 
-
-
-defined('FOUNDATION')        OR define('FOUNDATION', 'https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/'); // foundation constant
+defined('DB_REQUEST')          OR define('DB_REQUEST', 'action');
+defined('DB_INSERT')           OR define('DB_INSERT', 'insert');
+defined('DB_DELETE')           OR define('DB_DELETE', 'remove');
+defined('DB_UPDATE')           OR define('DB_UPDATE', 'update');

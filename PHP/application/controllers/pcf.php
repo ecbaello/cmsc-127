@@ -11,7 +11,7 @@ class Pcf extends CI_Controller {
 		$this->load->view('header');
 
 		$table = $this->input->get('t');
-		$submit = $this->input->get('s');
+		$submit = $this->input->post(DB_REQUEST);
 
 		if ( empty($table) ) {
 			echo 'Select table';
@@ -33,16 +33,15 @@ class Pcf extends CI_Controller {
 			
 		}
 
-
 		$this->load->view('footer');
 	}
 
 	public function handleRequest($submit, $table)
 	{
-		if ($submit == 'i') {
+		if ($submit == DB_INSERT) {
 			$this->takeInput ($table);
-		} else if ($submit == 'r') {
-			$submit = $this->input->get('id');
+		} else if ($submit == DB_DELETE) {
+			$submit = $this->input->post('id');
 			if ( !empty($submit) ) $this->database_pcf_model->deleteWithPK($submit);
 		}
 	}
@@ -52,36 +51,39 @@ class Pcf extends CI_Controller {
 		$result = $this->database_pcf_model->getTypeTable($subtable);
 
 		$data = array(
-			'tablehtml' => $this->makePCFTableWithDelete($subtable, $result, 'pcf_id', current_url())
+			'tablehtml' => $this->makePCFTableWithDelete($subtable, $result)
 		);
 		$this->load->view('table_view', $data);
 		
 	}
 
-	public function makePCFTableWithDelete($subtable, $table, $pk, $link)
+	public function makePCFTableWithDelete($subtable, $table)
 	{
 		$this->load->library('db_table');
 
-		$query = $table;
+		$fields = $table->list_fields();
 
-		$fields = $query->list_fields();
+		// Make headers
 		$headers = $this->database_model->convertFields($fields);
-
 		$this->db_table->set_heading($headers);
 
-		return $this->db_table->generateDBUsingPK($query, $pk, $link, $subtable);
+		$link = current_url().'?t='.html_escape($subtable);
+
+		$postScript = 'window.location = "'.$link.'";';
+
+		return $this->db_table->generateDBUsingPK($table, 'pcf_id', $link, '', $postScript);
 	}
 
 	public function makeInputHtml($table, $isGet = false)
 	{
 		$this->load->helper('url');
 
-
 		$fields = $this->database_pcf_model->getFieldAssociations();
-		$link = current_url().'?t='.html_escape($table).'&s=i';
+		$link = current_url().'?t='.html_escape($table);
 
 		$data = array(
 			'fields' => $fields,
+			'constants' => array(DB_REQUEST=>DB_INSERT),
 			'link' => $link
 		);
 		return $this->load->view('form_generator', $data, $isGet);

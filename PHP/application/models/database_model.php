@@ -75,11 +75,30 @@ class Database_model extends CI_Model
 	}
 
 	public function getFieldTitle( $table_field ) {
+		return $this->getFieldTitleByTable($table_field, NULL);
+	}
+
+	public function getFieldTitleByTable( $table_field, $table ) {
+
 		$this->db->select('table_field_title');
 		$this->db->where('table_field', $table_field);
+		if (!empty($table))
+			$this->db->where('table_name', $table);
 		$query = $this->db->get(self::TableName)->result_array();
 		if ( empty($query) ) return $query;
+		
 		return $query[0]['table_field_title'];
+	}
+
+	public function getField( $table_field_title, $table) {
+		$this->db->select('table_field');
+		$this->db->where('table_field_title', $table_field_title);
+		$this->db->where('table_name', $table);
+		$query = $this->db->get(self::TableName);
+		if ( empty($query) ) return $query;
+		$query = $query->result_array();
+		if ( empty($query) ) return $query;
+		return $query[0]['table_field'];
 	}
 
 
@@ -95,17 +114,15 @@ class Database_model extends CI_Model
 
 	public function makeTable($query)
 	{
-		
-
+		if (empty($query)) return NULL;
 		$fields = $query->list_fields();
 		$headers = $this->convertFields($fields);
 
-		$this->table->set_heading($headers);
-
-		return $this->table->generate($query);
+		$this->db_table->set_heading($headers);
+		return $this->db_table->generate($query);
 	}
 
-	public function makeTableWithDelete($table_name, $pk, $link)
+	public function makeTableWithDelete($table_name, $pk, $link, $script)
 	{
 
 		$query = $this->db->get($table_name);
@@ -115,12 +132,25 @@ class Database_model extends CI_Model
 
 		$this->db_table->set_heading($headers);
 
-		return $this->db_table->generateDBUsingPK($query, $pk, $link, NULL);
+		return $this->db_table->generateDBUsingPK($query, $pk, $link, NULL, $script);
 	}
 
 	public function getData($tableName)
 	{
 		return $this->db->get($tableName)->result_array();
+	}
+
+	public function find ($search, $table_name)
+	{
+		if (!empty($search)){
+			$queries = explode ( "," , $search);
+			foreach ($queries as $search) {
+				$search = explode ( ":" , $search);
+				$field = $this->getField($search[0], $table_name);
+				$this->db->where($search[0], $search[1]);
+			}
+		}
+		return $this->db->get($table_name);
 	}
 }
 

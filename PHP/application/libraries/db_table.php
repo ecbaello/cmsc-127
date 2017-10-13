@@ -5,41 +5,58 @@ require_once('././system/libraries/Table.php');
 class Db_table extends CI_Table {
 
 	protected function makeHeading($object) {
-		if ($this->auto_heading === TRUE && empty($this->heading))
-		{
+		if ($this->auto_heading === TRUE && empty($this->heading)) {
 			$this->heading = $this->_prep_args($object->list_fields());
 		}
 	}
 
-	public function generateDBUsingPK($table_data, $pk, $link, $subtable)
-	{
+	public function generateDBUsingPK($table_data, $pk_name, $link, $request_param, $postScript = '') {
 		$this->makeHeading($table_data);
-
 		$customRows = $table_data->result_array();
 
-		// Is there anything to display? No? Smite them!
-		if (empty($this->heading) && empty($this->rows))
-		{
-			return 'Undefined table data';
-		}
-
-		// Compile and validate the template date
+		if (empty($this->heading) && empty($customRows)) return NULL;
+		
 		$this->_compile_template();
 
+		// Make request parameters
+		$request_str = "{".$this->newline;
+		if (!empty($request_param))
+			foreach ($request_param as $key => $value) {
+				$request_str .= '"'.$key.'":"'.$value.'",'.$this->newline;
+			}
 
+		// Determine request type
+		$request_type = "'POST'";
+
+		// Create the script for ui queries
 		$script =
 		'
 		<script>
 			function remove(id) {
 				$.ajax({
-				  type: "GET",
+				  type: '.$request_type.',
 				  url: "'.$link.'",
-				  data: {'.( empty($subtable) ? '' : (' "t" : "'.html_escape($subtable).'", ' )).'
-				  	"s":"r",
-				  	"id":id
-				  },
+				  data: '
+				  	.$request_str.'
+				  	"id":id,
+				  	"'.DB_REQUEST.'":"'.DB_DELETE.'"
+				  }'.',
 				  success: function(data) {
-				  	window.location = "'.$link.(empty($subtable)?'':('?t='.html_escape($subtable))).'";
+				  	'.$postScript.'
+				  }
+				});
+			}
+			function update(id, value) {
+				$.ajax({
+				  type: '.$request_type.',
+				  url: "'.$link.'",
+				  data: '
+				  	.$request_str.'
+				  	"id":id,
+				  	"'.DB_REQUEST.'":"'.DB_UPDATE.'"
+				  }'.',
+				  success: function(data) {
+				  	'.$postScript.'
 				  }
 				});
 			}
@@ -52,74 +69,57 @@ class Db_table extends CI_Table {
 		$out .= $this->template['table_open'].$this->newline;
 
 		// Add any caption here
-		if ($this->caption)
-		{
+		if ($this->caption) {
 			$out .= '<caption>'.$this->caption.'</caption>'.$this->newline;
 		}
 
 		// Is there a table heading to display?
-		if ( ! empty($this->heading))
-		{
+		if ( ! empty($this->heading)) {
 			$out .= $this->template['thead_open'].$this->newline.$this->template['heading_row_start'].$this->newline;
 
-			foreach ($this->heading as $heading)
-			{
+			foreach ($this->heading as $heading) {
 				$temp = $this->template['heading_cell_start'];
 
-				foreach ($heading as $key => $val)
-				{
-					if ($key !== 'data')
-					{
+				foreach ($heading as $key => $val) {
+					if ($key !== 'data') {
 						$temp = str_replace('<th', '<th '.$key.'="'.$val.'"', $temp);
 					}
 				}
 
 				$out .= $temp.(isset($heading['data']) ? $heading['data'] : '').$this->template['heading_cell_end'];
-
 			}
-			$out .= $this->template['heading_cell_start'].$this->template['heading_cell_end'];
 
+			$out .= $this->template['heading_cell_start'].$this->template['heading_cell_end'];
 			$out .= $this->template['heading_row_end'].$this->newline.$this->template['thead_close'].$this->newline;
 		}
 
 		// Build the table rows
-		if ( ! empty($customRows))
-		{
+		if ( ! empty($customRows)) {
 			$out .= $this->template['tbody_open'].$this->newline;
-
 			$i = 1;
-			foreach ($customRows as $row)
-			{
-
+			foreach ($customRows as $row) {
 				// We use modulus to alternate the row colors
 				$name = fmod($i++, 2) ? '' : 'alt_';
-
 				$out .= $this->template['row_'.$name.'start'].$this->newline;
 
-				foreach ($row as $key => $cell)
-				{
+				foreach ($row as $key => $cell) {
 					$temp = $this->template['cell_'.$name.'start'];
-
+					$temp = str_replace('>', ' data-key = "'.$key.'">', $temp);
 					$cell = isset($cell) ? $cell : '';
 					$out .= $temp;
-
-					if ($cell === '' OR $cell === NULL)
-					{
+					if ($cell === '' OR $cell === NULL) {
 						$out .= $this->empty_cells;
 					}
-					else
-					{
+					else {
 						$out .= $cell;
 					}
-
 					$out .= $this->template['cell_'.$name.'end'];
 				}
 
 				$out .= $this->template['cell_'.$name.'start'];
-				$out .= '<button class="button" onclick="remove('.$row[$pk].');">remove</button>';
+				$out .= '<button class="button" onclick="remove('.$row[$pk_name].');">remove</button>';
+
 				$out .= $this->template['cell_'.$name.'end'];
-
-
 				$out .= $this->template['row_'.$name.'end'].$this->newline;
 			}
 

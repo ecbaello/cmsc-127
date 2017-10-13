@@ -9,6 +9,10 @@ $newline		= "\n";
 		<?php if ( isset($tablename) ) echo '<input type="hidden" name="table" value='.$tablename.'>'.$newline ?>
 		<?php if ( isset($extrahtml) ) echo $extrahtml.$newline ?>
 		<?php
+			if (!empty($constants) && is_array($constants))
+				foreach ($constants as $key => $value) {
+					echo '<input type="hidden" name="'.$key.'" value="'.$value.'">'.$newline;
+				}
 			foreach ($fields as $key => $value) {
 				echo '<div class="small-12 medium-6 large-6 cell">'.$newline;
 				echo '<label for="'.$key .'">'.$value.'<input type="text" name="'.$key.'" ></label>'.$newline;

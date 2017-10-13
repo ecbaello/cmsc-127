@@ -8,8 +8,7 @@ class Database_pcfrr_model extends CI_Model
 	* The constructor method
 	*
 	*/
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct(); // do constructor for parent class
 
 		$this->load->database();
@@ -22,10 +21,8 @@ class Database_pcfrr_model extends CI_Model
 	* Make PCF Replenishment Request table if does not exists
 	*
 	*/
-	public function createTable()
-	{
-		if (!($this->db->table_exists(self::TableName)))
-		{
+	public function createTable() {
+		if (!($this->db->table_exists(self::TableName))) {
 			$this->dbforge->add_field		("pcf_rr_request_id INT NOT NULL");
 			$this->dbforge->add_field		("pcf_rr_date DATE NOT NULL");
 
