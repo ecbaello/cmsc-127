@@ -17,10 +17,8 @@ class Search extends CI_Controller {
 		$this->load->view('search-form');
 
 		if (!empty ($submit) && !empty ($table)){
-			
 
 			$result = $this->database_model->find($submit, $table);
-			// echo 'hello'.implode ( ', ' , $result );
 			$html = $this->database_model->makeTable($result);
 
 			$this->load->view('table_view', array('tablehtml'=>$html));
