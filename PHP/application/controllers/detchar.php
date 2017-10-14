@@ -5,7 +5,6 @@ class Detchar extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->model('database_model');
 		$this->load->model('database_detailed_charges_model');
 		
 		$this->handleRequest();
@@ -35,7 +34,7 @@ class Detchar extends CI_Controller {
 		$postScript = 'window.location = "'.$link.'";';
 
 		$data = array(
-			'tablehtml' => $this->database_model->makeTableWithDelete($model::TableName, 'dc_charge_id', $link, $postScript)
+			'tablehtml' => $model->makeTableWithDelete( $link, $postScript)
 		);
 		$this->load->view('table_view', $data);
 	}

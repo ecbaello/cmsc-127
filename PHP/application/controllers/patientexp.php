@@ -5,7 +5,6 @@ class Patientexp extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->model('database_model');
 		$this->load->model('database_patient_expenses_model');
 		
 		$this->handleRequest();
@@ -36,7 +35,7 @@ class Patientexp extends CI_Controller {
 		$postScript = 'window.location = "'.$link.'";';
 
 		$data = array(
-			'tablehtml' => $this->database_model->makeTableWithDelete($model::TableName, 'pe_transaction_id', $link, $postScript)
+			'tablehtml' => $model->makeTableWithDelete($link, $postScript)
 		);
 		$this->load->view('table_view', $data);
 	}

@@ -36,7 +36,7 @@ class Pcfrr extends CI_Controller {
 		$postScript = 'window.location = "'.$link.'";';
 
 		$data = array(
-			'tablehtml' => $this->database_model->makeTableWithDelete($model::TableName, 'pcf_rr_request_id', $link, $postScript)
+			'tablehtml' => $model->makeTableWithDelete($link, $postScript)
 		);
 		$this->load->view('table_view', $data);
 	}
