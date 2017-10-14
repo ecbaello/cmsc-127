@@ -24,8 +24,9 @@ class Database_patient_expenses_model extends MY_DBmodel
 		if (!($this->db->table_exists($this->TableName)))
 		{
 			$fields = array(
-        		'pe_transaction_id' => array(
+        		$this->TablePrimaryKey => array(
 	                'type' => 'INT',
+	                'constraint' => 9,
 	                'auto_increment' => TRUE
 	            )
        		);
@@ -39,20 +40,18 @@ class Database_patient_expenses_model extends MY_DBmodel
 			$this->dbforge->add_field		("pe_patients_counterpart FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pe_op_desc VARCHAR(100) DEFAULT ''");
 			
-			$this->dbforge->add_key 		('pe_transaction_id', TRUE);
+			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
-			$this->load->model('database_model');
-
-			$this->database_model->registerFieldTitle('pe_transaction_id', 'Transaction ID');
-			$this->database_model->registerFieldTitle('pe_hospital_bill', 'Hospital Bill');
-			$this->database_model->registerFieldTitle('pe_laboratory', 'Laboratory');
-			$this->database_model->registerFieldTitle('pe_medical_supplies', 'Medical Supplies');
-			$this->database_model->registerFieldTitle('pe_travel', 'Travel');
-			$this->database_model->registerFieldTitle('pe_meals', 'Meals');
-			$this->database_model->registerFieldTitle('pe_other_expenses', 'Other Expenses');
-			$this->database_model->registerFieldTitle('pe_patients_counterpart', 'Patient\'s Counterpart');
-			$this->database_model->registerFieldTitle('pe_op_desc', 'Optional Description');
+			$this->registerFieldTitle($this->TablePrimaryKey, 'Transaction ID');
+			$this->registerFieldTitle('pe_hospital_bill', 'Hospital Bill');
+			$this->registerFieldTitle('pe_laboratory', 'Laboratory');
+			$this->registerFieldTitle('pe_medical_supplies', 'Medical Supplies');
+			$this->registerFieldTitle('pe_travel', 'Travel');
+			$this->registerFieldTitle('pe_meals', 'Meals');
+			$this->registerFieldTitle('pe_other_expenses', 'Other Expenses');
+			$this->registerFieldTitle('pe_patients_counterpart', 'Patient\'s Counterpart');
+			$this->registerFieldTitle('pe_op_desc', 'Optional Description');
 		}
 	}
 

@@ -1,8 +1,10 @@
 <?php
 
-class Database_pcf_model extends CI_Model
+class Database_pcf_model extends MY_DBmodel
 {
-	const TableName = 'pcf';
+	protected $TableName = 'pcf';
+	protected $TablePrimaryKey = 'pcf_id';
+
 	const MetaTableName = 'pcf_type_table';
 
 	/**
@@ -13,13 +15,9 @@ class Database_pcf_model extends CI_Model
 	{
 		parent::__construct(); // do constructor for parent class
 
-		$this->load->database();
-		$this->load->dbforge();
-
-		$this->load->model('database_model');
 		
 		$this->createTable();
-		$this->makePCFTypeTable();
+		$this->createTypeTable();
 
 		$this->registerTypeTable('General');
 	}
@@ -28,7 +26,7 @@ class Database_pcf_model extends CI_Model
 	* Make PCF table if does not exists
 	*
 	*/
-	public function makePCFTypeTable() 
+	public function createTypeTable() 
 	{
 		if (!($this->db->table_exists(self::MetaTableName)))
 		{
@@ -51,12 +49,12 @@ class Database_pcf_model extends CI_Model
 	*/
 	public function createTable()
 	{
-		if (!($this->db->table_exists(self::TableName)))
+		if (!($this->db->table_exists($this->TableName)))
 		{
 			$this->dbforge->add_field		("pcf_type INT NOT NULL");
 
 			$fields = array(
-        		'pcf_id' => array(
+        		$this->TablePrimaryKey => array(
 	                'type' => 'INT',
 	                'auto_increment' => TRUE
 	            )
@@ -72,29 +70,27 @@ class Database_pcf_model extends CI_Model
 			$this->dbforge->add_field		("pcf_communications FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_medical_supplies FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_other_expenses FLOAT DEFAULT 0.0");
-			$this->dbforge->add_key 		('pcf_id', TRUE);
-			$this->dbforge->create_table	(self::TableName);
+			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
+			$this->dbforge->create_table	($this->TableName);
 
-			$this->load->model('database_model');
-
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_id', 'ID');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_particulars', 'Particulars');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_supporting_documents', 'Supporting Documents');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_screening_training', 'Screening/Training');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_meals_snacks', 'Meals/Snacks');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_travel', 'Travel');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_office_supplies', 'Office Supplies');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_water', 'Water');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_communications', 'Communications');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_medical_supplies', 'Medical Supplies');
-			$this->database_model->registerFieldTitle(self::TableName, 'pcf_other_expenses', 'Other Expenses');
+			$this->registerFieldTitle(  $this->TablePrimaryKey, 'ID');
+			$this->registerFieldTitle( 'pcf_particulars', 'Particulars');
+			$this->registerFieldTitle( 'pcf_supporting_documents', 'Supporting Documents');
+			$this->registerFieldTitle( 'pcf_screening_training', 'Screening/Training');
+			$this->registerFieldTitle( 'pcf_meals_snacks', 'Meals/Snacks');
+			$this->registerFieldTitle( 'pcf_travel', 'Travel');
+			$this->registerFieldTitle( 'pcf_office_supplies', 'Office Supplies');
+			$this->registerFieldTitle( 'pcf_water', 'Water');
+			$this->registerFieldTitle( 'pcf_communications', 'Communications');
+			$this->registerFieldTitle( 'pcf_medical_supplies', 'Medical Supplies');
+			$this->registerFieldTitle( 'pcf_other_expenses', 'Other Expenses');
 		}
 	}
 
 	public function getTypeTable($query) {
-		$this->db->select($this->database_model->getFields(self::TableName));
-		$this->db->from(self::TableName);
-		$this->db->join(self::MetaTableName, self::TableName.'.pcf_type = '.self::MetaTableName.'.pcf_type');
+		$this->db->select($this->database_model->getFields($this->TableName));
+		$this->db->from($this->TableName);
+		$this->db->join(self::MetaTableName, $this->TableName.'.pcf_type = '.self::MetaTableName.'.pcf_type');
 		$this->db->where('pcf_name', $query);
 		$query = $this->db->get();
 		return $query;
@@ -119,7 +115,7 @@ class Database_pcf_model extends CI_Model
 
 	public function insertIntoTypeTable($name, $values) {
 		$values['pcf_type'] = $this->convertNameToType($name);
-		$this->db->insert(self::TableName, $values);
+		$this->insertIntoTable($values);
 	}
 
 	public function convertNameToType($name) {
@@ -133,25 +129,6 @@ class Database_pcf_model extends CI_Model
 		return $query['pcf_type'];
 	}
 
-	public function getFieldAssociations() {
-		$arr = $this->database_model->getFieldAssociations(self::TableName);
-		unset($arr['pcf_id']);
-		return $arr;
-	}
-
-	public function getFields() {
-		return $this->database_model->getFields(self::TableName);
-	}
-
-	public function deleteWithPK($id) {
-		$this->db->where('pcf_id', $id);
-	    $this->db->delete(self::TableName); 
-	}
-
-	public function updateWithPK($id, $data) {
-		$this->db->where('pcf_id', $id);
-	    $this->db->update(self::TableName, $data); 
-	}
 }
 
 ?>

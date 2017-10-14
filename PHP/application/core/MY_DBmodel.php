@@ -4,7 +4,7 @@ class MY_DBmodel extends CI_Model
 {
 	const metaTableName = 'db_meta';
 	protected $TableName = ''; // Overideable
-	protected $TablePrimaryKey = ''; // Overideable
+	protected $TablePrimaryKey = 'id'; // Overideable
 
 	/**
 	* The constructor method
@@ -28,8 +28,6 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->create_table	(self::metaTableName);
 		}
 
-		
-
 		$this->load->library('db_table');
 	}
 
@@ -40,19 +38,14 @@ class MY_DBmodel extends CI_Model
 	public function registerFieldTitle( $table_field, $field_title, $isInput = true ) {
 
 		$data = array(
-		        'table_name' => self::TableName,
-		        'table_field' => $table_field,
+		        'table_name' => $this->TableName,
+		        'table_field' => $table_field,	
 		        'table_field_title' => $field_title,
 		        'table_field_inputs' => $isInput
 		);
 
 		$this->db->insert(self::metaTableName, $data);
 	}
-
-	
-
-
-
 
 	public function makeTableWithDelete($link, $script)
 	{
@@ -89,6 +82,8 @@ class MY_DBmodel extends CI_Model
 		foreach ($inp as $assoc) {
 			$arr[ $assoc['table_field'] ] = $assoc['table_field_title'];
 		}
+
+		unset($arr[ $this->TablePrimaryKey ]);
 		return $arr;
 	}
 

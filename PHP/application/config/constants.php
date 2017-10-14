@@ -90,3 +90,4 @@ defined('DB_REQUEST')          OR define('DB_REQUEST', 'action');
 defined('DB_INSERT')           OR define('DB_INSERT', 'insert');
 defined('DB_DELETE')           OR define('DB_DELETE', 'remove');
 defined('DB_UPDATE')           OR define('DB_UPDATE', 'update');
+defined('DB_PKWORD')           OR define('DB_PKWORD', 'id');

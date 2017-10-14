@@ -25,8 +25,9 @@ class Database_pcfrr_model extends MY_DBmodel
 	public function createTable() {
 		if (!($this->db->table_exists($this->TableName))) {
 			$fields = array(
-        		'pcf_rr_request_id' => array(
+        		$this->TablePrimaryKey => array(
 	                'type' => 'INT',
+	                'constraint' => 9,
 	                'auto_increment' => TRUE
 	            )
        		);
@@ -47,25 +48,23 @@ class Database_pcfrr_model extends MY_DBmodel
 			$this->dbforge->add_field		("pcf_rr_other_expenses FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_rr_op_desc VARCHAR(100) DEFAULT ''");
 
-			$this->dbforge->add_key 		('pcf_rr_request_id', TRUE);
-			
+			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
-			$this->load->model('database_model');
-			$this->database_model->registerFieldTitle( 'pcf_rr_pcf_type', 'PCF Type');
-			$this->database_model->registerFieldTitle( 'pcf_rr_request_id', 'Request ID');
-			$this->database_model->registerFieldTitle( 'pcf_rr_date', 'Request Date');
-			$this->database_model->registerFieldTitle( 'pcf_rr_particulars', 'Particulars');
-			$this->database_model->registerFieldTitle( 'pcf_rr_supporting_documents', 'Supporting Documents');
-			$this->database_model->registerFieldTitle( 'pcf_rr_screening_training', 'Screening/Training');
-			$this->database_model->registerFieldTitle( 'pcf_rr_meals_snacks', 'Meals/Snacks');
-			$this->database_model->registerFieldTitle( 'pcf_rr_travel', 'Travel');
-			$this->database_model->registerFieldTitle( 'pcf_rr_office_supplies', 'Office Supplies');
-			$this->database_model->registerFieldTitle( 'pcf_rr_water', 'Water');
-			$this->database_model->registerFieldTitle( 'pcf_rr_communications', 'Communications');
-			$this->database_model->registerFieldTitle( 'pcf_rr_medical_supplies', 'Medical Supplies');
-			$this->database_model->registerFieldTitle( 'pcf_rr_other_expenses', 'Other Expenses');
-			$this->database_model->registerFieldTitle( 'pcf_rr_op_desc', 'Other Description');
+			$this->registerFieldTitle(	$this->TablePrimaryKey, 'Request ID');
+			$this->registerFieldTitle( 'pcf_rr_pcf_type', 'PCF Type');
+			$this->registerFieldTitle( 'pcf_rr_date', 'Request Date');
+			$this->registerFieldTitle( 'pcf_rr_particulars', 'Particulars');
+			$this->registerFieldTitle( 'pcf_rr_supporting_documents', 'Supporting Documents');
+			$this->registerFieldTitle( 'pcf_rr_screening_training', 'Screening/Training');
+			$this->registerFieldTitle( 'pcf_rr_meals_snacks', 'Meals/Snacks');
+			$this->registerFieldTitle( 'pcf_rr_travel', 'Travel');
+			$this->registerFieldTitle( 'pcf_rr_office_supplies', 'Office Supplies');
+			$this->registerFieldTitle( 'pcf_rr_water', 'Water');
+			$this->registerFieldTitle( 'pcf_rr_communications', 'Communications');
+			$this->registerFieldTitle( 'pcf_rr_medical_supplies', 'Medical Supplies');
+			$this->registerFieldTitle( 'pcf_rr_other_expenses', 'Other Expenses');
+			$this->registerFieldTitle( 'pcf_rr_op_desc', 'Other Description');
 
 		}
 	}
