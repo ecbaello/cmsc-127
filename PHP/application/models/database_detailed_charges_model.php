@@ -5,17 +5,6 @@ class Database_detailed_charges_model extends MY_DBmodel
 	protected $TableName = 'detailed_charges'; // Overideable
 	protected $TablePrimaryKey = 'dc_charge_id'; // Overideable
 
-	/**
-	* The constructor method
-	*
-	*/
-	public function __construct()
-	{
-		parent::__construct(); // do constructor for parent class
-
-		$this->createTable();
-	}
-
 	public function createTable()
 	{
 		if (!($this->db->table_exists($this->TableName)))

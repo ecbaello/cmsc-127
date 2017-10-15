@@ -5,19 +5,6 @@ class Database_patient_expenses_model extends MY_DBmodel
 	protected $TableName = 'patient_expenses'; // Overideable
 	protected $TablePrimaryKey = 'pe_transaction_id'; // Overideable
 
-	/**
-	* The constructor method
-	*
-	*/
-	public function __construct()
-	{
-		parent::__construct(); // do constructor for parent class
-
-		$this->load->database();
-		$this->load->dbforge();
-
-		$this->createTable();
-	}
 
 	public function createTable()
 	{

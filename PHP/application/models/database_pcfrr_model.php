@@ -6,19 +6,6 @@ class Database_pcfrr_model extends MY_DBmodel
 	protected $TablePrimaryKey = 'pcf_rr_request_id'; // Overideable
 
 	/**
-	* The constructor method
-	*
-	*/
-	public function __construct() {
-		parent::__construct(); // do constructor for parent class
-
-		$this->load->database();
-		$this->load->dbforge();
-
-		$this->createTable();
-	}
-
-	/**
 	* Make PCF Replenishment Request table if does not exists
 	*
 	*/

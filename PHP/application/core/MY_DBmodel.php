@@ -3,6 +3,7 @@
 class MY_DBmodel extends CI_Model
 {
 	const metaTableName = 'db_meta';
+	const inputTypesTableName = 'input_types';
 	protected $TableName = ''; // Overideable
 	protected $TablePrimaryKey = 'id'; // Overideable
 
@@ -17,6 +18,29 @@ class MY_DBmodel extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
+		$this->createInputsTable();
+		$this->createMetaTable();
+
+		$this->createTable();
+
+		
+	}
+
+	public function createInputsTable() {
+		if (!($this->db->table_exists(self::inputTypesTableName)))
+		{
+			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
+			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
+			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
+			$this->dbforge->add_field		("table_field_inputs BOOLEAN NOT NULL DEFAULT TRUE");
+			$this->dbforge->add_field		("table_field_input_type SMALLINT NOT NULL DEFAULT 0");
+
+			$this->dbforge->create_table	(self::inputTypesTableName);
+		}
+	}
+
+
+	private function createMetaTable() {
 		if (!($this->db->table_exists(self::metaTableName)))
 		{
 			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
@@ -36,7 +60,7 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function registerFieldTitle( $table_field, $field_title, $inputType, $isInput = true ) {
-		// Input Types: TEXT, TEXTAREA, CHECKBOX
+		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
 
 		$data = array(
 		        'table_name' => $this->TableName,
