@@ -4,9 +4,10 @@
 	Search
 	Add Fields
 	Hospital Bills Table
+	AJAX for reloading Table
 ## In Progress 		| Assigned
-	Inheritance for database models | Deo
+	
 
 ## Testing 			| Assigned
-
+	Inheritance for database models | Deo
 ## Complete
