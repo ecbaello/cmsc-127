@@ -88,7 +88,7 @@ class Database_pcf_model extends MY_DBmodel
 	}
 
 	public function getTypeTable($query) {
-		$this->db->select($this->database_model->getFields($this->TableName));
+		$this->db->select($this->getFields($this->TableName));
 		$this->db->from($this->TableName);
 		$this->db->join(self::MetaTableName, $this->TableName.'.pcf_type = '.self::MetaTableName.'.pcf_type');
 		$this->db->where('pcf_name', $query);

@@ -27,7 +27,7 @@ class MY_DBcontroller extends CI_Controller
 	{
 
 		$fields = $this->model->getFieldAssociations();
-		$link = current_url();
+		$link = uri_string();
 
 		$data = array(
 			'fields' => $fields,

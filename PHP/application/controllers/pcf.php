@@ -5,7 +5,6 @@ class Pcf extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->model('database_model');
 		$this->load->model('database_pcf_model');
 
 		$this->load->view('header');
@@ -57,29 +56,30 @@ class Pcf extends CI_Controller {
 		
 	}
 
-	public function makePCFTableWithDelete($subtable, $table)
+	public function makePCFTableWithDelete($subtablename, $result_table)
 	{
 		$this->load->library('db_table');
 
-		$fields = $table->list_fields();
+		$fields = $result_table->list_fields();
+		$model = $this->database_pcf_model;
 
 		// Make headers
-		$headers = $this->database_model->convertFields($fields);
+		$headers = $model->convertFields($fields);
 		$this->db_table->set_heading($headers);
 
-		$link = current_url().'?t='.html_escape($subtable);
+		$link = current_url().'?t='.urlencode($subtablename);
 
 		$postScript = 'window.location = "'.$link.'";';
 
-		return $this->db_table->generateDBUsingPK($table, 'pcf_id', $link, '', $postScript);
+		return $this->db_table->generateDBUsingPK($result_table, 'pcf_id', $link, '', $postScript);
 	}
 
-	public function makeInputHtml($table, $isGet = false)
+	public function makeInputHtml($subtablename, $isGet = false)
 	{
 		$this->load->helper('url');
 
 		$fields = $this->database_pcf_model->getFieldAssociations();
-		$link = current_url().'?t='.html_escape($table);
+		$link = current_url().'?t='.urlencode($subtablename);
 
 		$data = array(
 			'fields' => $fields,

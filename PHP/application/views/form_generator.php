@@ -4,7 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $newline		= "\n";
 
-?><form action=<?php echo '"'.$link.'"' ?> method="post">
+$this->load->helper('form');
+?>
+<?php echo form_open($link); ?>
 	<div class="grid-x grid-padding-x">
 		<?php if ( isset($tablename) ) echo '<input type="hidden" name="table" value='.$tablename.'>'.$newline ?>
 		<?php if ( isset($extrahtml) ) echo $extrahtml.$newline ?>
@@ -21,5 +23,5 @@ $newline		= "\n";
 		?>
 	</div>
 	<div class="grid-padding-x" style="text-align: center;"><input class="button" style="width: 100%" type="submit" value="Insert"></div>
-</form>
+<?php echo form_close(); ?>
 

@@ -19,7 +19,7 @@ class Db_table extends CI_Table {
 		$this->_compile_template();
 
 		// Make request parameters
-		$request_str = "{".$this->newline;
+		$request_str = "{";
 		if (!empty($request_param))
 			foreach ($request_param as $key => $value) {
 				$request_str .= '"'.$key.'":"'.$value.'",'.$this->newline;
@@ -32,12 +32,18 @@ class Db_table extends CI_Table {
 		$script =
 		'
 		<script>
+			var csrf_test_name;
+			$(document).ready(function () {
+				csrf_test_name = $("input[name=csrf_test_name]").val()
+			})
 			function remove(id) {
 				$.ajax({
 				  type: '.$request_type.',
 				  url: "'.$link.'",
-				  data: '
+				  data:
+				  	'
 				  	.$request_str.'
+				  	"csrf_test_name": csrf_test_name,
 				  	"id":id,
 				  	"'.DB_REQUEST.'":"'.DB_DELETE.'"
 				  }'.',
@@ -52,6 +58,7 @@ class Db_table extends CI_Table {
 				  url: "'.$link.'",
 				  data: '
 				  	.$request_str.'
+				  	"csrf_test_name": csrf_test_name,
 				  	"id":id,
 				  	"'.DB_REQUEST.'":"'.DB_UPDATE.'"
 				  }'.',
@@ -127,6 +134,7 @@ class Db_table extends CI_Table {
 		}
 
 		$out .= $this->template['table_close'];
+		
 
 		// Clear table class properties before generating the table
 		$this->clear();

@@ -6,7 +6,7 @@ class Search extends CI_Controller {
 	public function index()
 	{
 		$this->load->database();
-		$this->load->model('database_model');
+		$this->load->model('MY_DBmodel');
 		$this->load->library('db_table');
 
 		$this->load->view('header');
@@ -18,8 +18,8 @@ class Search extends CI_Controller {
 
 		if (!empty ($submit) && !empty ($table)){
 
-			$result = $this->database_model->find($submit, $table);
-			$html = $this->database_model->makeTable($result);
+			$result = $this->MY_DBmodel->find($submit, $table);
+			$html = $this->MY_DBmodel->makeTable($result);
 
 			$this->load->view('table_view', array('tablehtml'=>$html));
 		}

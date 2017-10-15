@@ -35,7 +35,8 @@ class MY_DBmodel extends CI_Model
 		
 	}
 
-	public function registerFieldTitle( $table_field, $field_title, $isInput = true ) {
+	public function registerFieldTitle( $table_field, $field_title, $inputType, $isInput = true ) {
+		// Input Types: TEXT, TEXTAREA, CHECKBOX
 
 		$data = array(
 		        'table_name' => $this->TableName,
