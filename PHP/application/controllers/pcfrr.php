@@ -13,12 +13,19 @@ class Pcfrr extends MY_DBcontroller {
 		$link = current_url();
 		
 		$this->handleRequest();
-
+		
 		$this->load->view('header');
 
-		$this->makeTableHTML();
-		$form = $this->makeInputHtml(true);
+		$data = array(
+			'link' => $link,
+			'pcf_names' => $this->model->db->query('select * from pcf_type_table')
+		);
+		$this->load->view('pcf_selector',$data);
 
+		$this->makeTableHTML();
+
+		$form = $this->makeInputHtml(true);
+		
 		$modal = array(
 			'actiontitle' => 'Input a row',
 			'modalid' => 'input-form',
@@ -29,8 +36,15 @@ class Pcfrr extends MY_DBcontroller {
 		$this->load->view('footer');
 	}
 
-
-
-	
-	
+	public function changePCF(){
+		$this->load->library('session');
+		
+		if(!empty($this->input->post('t'))){
+			$_SESSION['pcfname']=$this->input->post('t');
+		}else if(!isset($_SESSION['pcfname'])){
+			$_SESSION['pcfname']='General';
+		}
+		
+		return $_SESSION['pcfname'];
+	}
 }

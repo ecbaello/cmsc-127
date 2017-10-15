@@ -6,12 +6,20 @@ class Pcf extends CI_Controller {
 	public function index()
 	{
 		$this->load->model('database_pcf_model');
+		
 
 		$this->load->view('header');
-
-		$table = $this->input->get('t');
+		
+		$table = $this->changePCF();
 		$submit = $this->input->post(DB_REQUEST);
-
+		$link = current_url();
+		
+		$data = array(
+			'link' => current_url(),
+			'pcf_names' => $this->database_pcf_model->db->query('select * from pcf_type_table')
+		);
+		$this->load->view('pcf_selector',$data);
+		
 		if ( empty($table) ) {
 			echo 'Select table';
 		} else {
@@ -34,7 +42,7 @@ class Pcf extends CI_Controller {
 
 		$this->load->view('footer');
 	}
-
+	
 	public function handleRequest($submit, $table)
 	{
 		if ($submit == DB_INSERT) {
@@ -45,6 +53,16 @@ class Pcf extends CI_Controller {
 		}
 	}
 
+	public function changePCF(){
+		$this->load->library('session');
+		if(!empty($this->input->post('t'))){
+			$_SESSION['pcfname']=$this->input->post('t');
+		}else if(!isset($_SESSION['pcfname'])){
+			$_SESSION['pcfname']='General';
+		}
+		return $_SESSION['pcfname'];
+	}
+	
 	public function loadTable($subtable)
 	{	
 		$result = $this->database_pcf_model->getTypeTable($subtable);
@@ -55,7 +73,7 @@ class Pcf extends CI_Controller {
 		$this->load->view('table_view', $data);
 		
 	}
-
+	
 	public function makePCFTableWithDelete($subtablename, $result_table)
 	{
 		$this->load->library('db_table');
