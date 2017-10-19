@@ -2,9 +2,20 @@ body {
 	background: #eeeeee;
 }
 
+table {
+	max-width: 100%;
+}
+
+#container {
+	overflow: auto;
+	width: 100%;
+}
+
 #capsule {
 	padding: 20px 5%;
 	background: white;
+	width: 100%;
+	overflow: scroll;
 }
 
 .title-bar {

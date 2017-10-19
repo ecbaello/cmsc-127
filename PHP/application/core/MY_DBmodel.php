@@ -29,13 +29,17 @@ class MY_DBmodel extends CI_Model
 	public function createInputsTable() {
 		if (!($this->db->table_exists(self::inputTypesTableName)))
 		{
-			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
-			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
-			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
-			$this->dbforge->add_field		("table_field_inputs BOOLEAN NOT NULL DEFAULT TRUE");
-			$this->dbforge->add_field		("table_field_input_type SMALLINT NOT NULL DEFAULT 0");
+			$this->dbforge->add_field		('id');
+			$this->dbforge->add_field		("input_type");
 
 			$this->dbforge->create_table	(self::inputTypesTableName);
+
+
+			$this->db->insert(self::inputTypesTableName, array('input_type' => 'TEXT'));
+			$this->db->insert(self::inputTypesTableName, array('input_type' => 'DROPDOWN'));
+			$this->db->insert(self::inputTypesTableName, array('input_type' => 'RADIO'));
+			$this->db->insert(self::inputTypesTableName, array('input_type' => 'NUMBER'));
+			$this->db->insert(self::inputTypesTableName, array('input_type' => 'CHECKBOX'));
 		}
 	}
 
@@ -124,10 +128,13 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function getField( $table_field_title ) {
+		
+
 		$this->db->select('table_field');
 		$this->db->where('table_field_title', $table_field_title);
 		$this->db->where('table_name',  $this->TableName);
 		$query = $this->db->get(self::metaTableName);
+
 		if ( empty($query) ) return $query;
 		$query = $query->result_array();
 		if ( empty($query) ) return $query;
@@ -155,15 +162,20 @@ class MY_DBmodel extends CI_Model
 
 	public function find ($search)
 	{
+		$arr = array();
 		if (!empty($search)){
 			$queries = explode ( "," , $search);
 			foreach ($queries as $search) {
 				$search = explode ( ":" , $search);
-				$field = $this->getField($search[0], self::TableName);
-				$this->db->where($search[0], $search[1]);
+				$field = $this->getField($search[0], $this->TableName);
+				$arr[$field] = $search[1];
 			}
 		}
-		return $this->db->get($table_name);
+		$this->db->reset_query();
+		foreach ($arr as $key => $value) {
+			$this->db->or_where($key, $value);
+		}
+		return $this->db->get($this->TableName);
 	}
 
 	public function insertIntoTable($data) {
@@ -187,7 +199,7 @@ class MY_DBmodel extends CI_Model
 	*  ---------------------
 	*/
 
-	public static function getProbableFieldTitle( $table_field ) {
+	public function getProbableFieldTitle( $table_field ) {
 
 		$this->db->select('table_field_title');
 		$this->db->where('table_field', $table_field);
@@ -197,7 +209,7 @@ class MY_DBmodel extends CI_Model
 		return $query[0]['table_field_title'];
 	}
 
-	public static function tryConvertFields( $fields ) {
+	public function tryConvertFields( $fields ) {
 		$arr = array();
 		foreach ($fields as $field) {
 			$item = $this->getProbableFieldTitle($field);
@@ -207,11 +219,11 @@ class MY_DBmodel extends CI_Model
 		return $arr;
 	}
 
-	public static function makeTable($query)
+	public function makeTable($query)
 	{
 		if (empty($query)) return NULL;
 		$fields = $query->list_fields();
-		$headers = $this->convertFields($fields);
+		$headers = $this->tryConvertFields($fields);
 
 		$this->db_table->set_heading($headers);
 		return $this->db_table->generate($query);
