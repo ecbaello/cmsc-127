@@ -2,6 +2,7 @@
 
 class Database_patient_expenses_model extends MY_DBmodel
 {
+	public $ModelTitle = 'Patient Expenses';
 	protected $TableName = 'patient_expenses'; // Overideable
 	protected $TablePrimaryKey = 'pe_transaction_id'; // Overideable
 

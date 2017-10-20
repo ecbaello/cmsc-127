@@ -10,13 +10,14 @@ class Db_table extends CI_Table {
 		}
 	}
 
-	public function generateDBUsingPK($table_data, $pk_name, $link, $request_param, $postScript = '') {
+	public function generateDBUsingPK($table_data, $pk_name, $link, $request_param) {
 		$this->makeHeading($table_data);
 		$customRows = $table_data->result_array();
 
 		if (empty($this->heading) && empty($customRows)) return NULL;
 		
 		$this->_compile_template();
+		$postScript = '$("#db-table").replaceWith(data);';
 
 		// Make request parameters
 		$request_str = "{";
@@ -28,14 +29,18 @@ class Db_table extends CI_Table {
 		// Determine request type
 		$request_type = "'POST'";
 
+		// To get csrf
+		$ci =& get_instance();
+		$token = $ci->security->get_csrf_token_name();
+		$hash = $ci->security->get_csrf_hash();
+
+
+
 		// Create the script for ui queries
 		$script =
 		'
 		<script>
-			var csrf_test_name;
-			$(document).ready(function () {
-				csrf_test_name = $("input[name=csrf_test_name]").val()
-			})
+			
 			function remove(id) {
 				$.ajax({
 				  type: '.$request_type.',
@@ -43,9 +48,10 @@ class Db_table extends CI_Table {
 				  data:
 				  	'
 				  	.$request_str.'
-				  	"csrf_test_name": csrf_test_name,
+				  	"'.$token.'": "'.$hash.'",
 				  	"id":id,
-				  	"'.DB_REQUEST.'":"'.DB_DELETE.'"
+				  	"'.DB_REQUEST.'":"'.DB_DELETE.'",
+				  	"'.DB_GET.'":"'.BOOL_ON.'"
 				  }'.',
 				  success: function(data) {
 				  	'.$postScript.'
@@ -58,9 +64,10 @@ class Db_table extends CI_Table {
 				  url: "'.$link.'",
 				  data: '
 				  	.$request_str.'
-				  	"csrf_test_name": csrf_test_name,
+				  	"'.$token.'": "'.$hash.'",
 				  	"id":id,
-				  	"'.DB_REQUEST.'":"'.DB_UPDATE.'"
+				  	"'.DB_REQUEST.'":"'.DB_UPDATE.'",
+				  	"'.DB_GET.'":"'.BOOL_ON.'"
 				  }'.',
 				  success: function(data) {
 				  	'.$postScript.'
@@ -69,9 +76,9 @@ class Db_table extends CI_Table {
 			}
 		</script>
 		';
-
+		$out = '<div id="db-table">'.$this->newline;
 		// Build the table!
-		$out = $script.$this->newline;
+		$out .= $script.$this->newline;
 
 		$out .= $this->template['table_open'].$this->newline;
 
@@ -134,7 +141,7 @@ class Db_table extends CI_Table {
 		}
 
 		$out .= $this->template['table_close'];
-		
+		$out .= '</div>';
 
 		// Clear table class properties before generating the table
 		$this->clear();

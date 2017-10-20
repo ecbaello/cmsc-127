@@ -2,6 +2,7 @@
 
 class Database_pcf_model extends MY_DBmodel
 {
+	public $ModelTitle = 'Petty Cash Fund';
 	protected $TableName = 'pcf';
 	protected $TablePrimaryKey = 'pcf_id';
 

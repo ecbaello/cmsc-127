@@ -4,6 +4,9 @@ class MY_DBmodel extends CI_Model
 {
 	const metaTableName = 'db_meta';
 	const inputTypesTableName = 'input_types';
+	const modelTableName = 'model_registry';
+
+	public $ModelTitle = '';
 	protected $TableName = ''; // Overideable
 	protected $TablePrimaryKey = 'id'; // Overideable
 
@@ -20,20 +23,53 @@ class MY_DBmodel extends CI_Model
 
 		$this->createInputsTable();
 		$this->createMetaTable();
+		$this->registerModel();
 
 		$this->createTable();
 
 		
 	}
 
+	private function registerModel() {
+		if (!($this->db->table_exists(self::modelTableName))) {
+
+			$fields = array(
+        		MDL_CLASS => array(
+	                'type' => 'VARCHAR',
+	                'constraint' => 100
+	            ),
+	            MDL_NAME => array(
+	                'type' => 'VARCHAR',
+	                'constraint' => 100
+	            )
+       		);
+
+			$this->dbforge->add_field		($fields);
+			$this->dbforge->add_key 		(MDL_CLASS, TRUE);
+			$this->dbforge->create_table	(self::modelTableName);
+		}
+
+		$this->db->insert(self::modelTableName,
+			array(
+				MDL_NAME => $this->ModelTitle,
+				MDL_CLASS => strtolower(get_class($this))
+			)
+		);
+	}
+
 	public function createInputsTable() {
 		if (!($this->db->table_exists(self::inputTypesTableName)))
 		{
 			$this->dbforge->add_field		('id');
-			$this->dbforge->add_field		("input_type");
+			$fields = array(
+        		"input_type" => array(
+	                'type' => 'VARCHAR',
+	                'constraint' => 20
+	            )
+       		);
+			$this->dbforge->add_field		($fields);
 
 			$this->dbforge->create_table	(self::inputTypesTableName);
-
 
 			$this->db->insert(self::inputTypesTableName, array('input_type' => 'TEXT'));
 			$this->db->insert(self::inputTypesTableName, array('input_type' => 'DROPDOWN'));
@@ -63,14 +99,15 @@ class MY_DBmodel extends CI_Model
 		
 	}
 
-	public function registerFieldTitle( $table_field, $field_title, $inputType, $isInput = true ) {
+	public function registerFieldTitle( $table_field, $field_title, $inputType = 'TEXT', $isInput = true ) {
 		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
 
 		$data = array(
 		        'table_name' => $this->TableName,
 		        'table_field' => $table_field,	
 		        'table_field_title' => $field_title,
-		        'table_field_inputs' => $isInput
+		        'table_field_inputs' => $isInput,
+		        'table_field_input_type' => $inputType, 
 		);
 
 		$this->db->insert(self::metaTableName, $data);
@@ -79,19 +116,20 @@ class MY_DBmodel extends CI_Model
 	public function makeTableWithDelete($link, $script)
 	{
 
-		$query = $this->db->get( $this->TableName);
+		$query = $this->get();
 
 		$fields = $query->list_fields();
 		$headers = $this->convertFields($fields);
 
 		$this->db_table->set_heading($headers);
 
-		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $script);
+		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL);
 	}
 
 	public function getFields() {
 		$this->db->select('table_field');
 		$this->db->where('table_name', $this->TableName);
+
 		$query = $this->db->get(self::metaTableName)->result_array();
 		if ( empty($query) ) return $query;
 
@@ -116,40 +154,52 @@ class MY_DBmodel extends CI_Model
 		return $arr;
 	}
 
-	public function getFieldTitle( $table_field ) {
+	public function getFieldTitle( $table_field, $table = NULL ) {
 
 		$this->db->select('table_field_title');
 		$this->db->where('table_field', $table_field);
-		$this->db->where('table_name',  $this->TableName);
+
+		if ( empty($table) )
+			$this->db->where('table_name',  $this->TableName);
+		else 
+			$this->db->where('table_name',  $table);
+
 		$query = $this->db->get(self::metaTableName)->result_array();
 		if ( empty($query) ) return $query;
 		
 		return $query[0]['table_field_title'];
 	}
 
-	public function getField( $table_field_title ) {
+	public function getField( $table_field_title, $table = NULL) {
 		
 
 		$this->db->select('table_field');
+
 		$this->db->where('table_field_title', $table_field_title);
-		$this->db->where('table_name',  $this->TableName);
+
+		if ( empty($table) )
+			$this->db->where('table_name',  $this->TableName);
+		else 
+			$this->db->where('table_name',  $table);
+
 		$query = $this->db->get(self::metaTableName);
 
 		if ( empty($query) ) return $query;
 		$query = $query->result_array();
+
 		if ( empty($query) ) return $query;
 		return $query[0]['table_field'];
 	}
 
-	public function getData()
+	public function get()
 	{
-		return $this->db->get( $this->TableName)->result_array();
+		return $this->db->get( $this->TableName);
 	}
 
-	public function convertFields( $fields ) {
+	public function convertFields( $fields, $table = NULL ) {
 		$arr = array();
 		foreach ($fields as $field) {
-			$item = $this->getFieldTitle($field);
+			$item = $this->getFieldTitle($field, $table);
 			if ( empty($item) )  $item = '';
 			array_push( $arr,  $item);
 		}
@@ -157,25 +207,27 @@ class MY_DBmodel extends CI_Model
 	}
 
 	
-
-	
-
 	public function find ($search)
+	{
+		$this->db->reset_query();
+		doFind($search);
+		return $this->get();
+	}
+
+	public function doFind ($search)
 	{
 		$arr = array();
 		if (!empty($search)){
 			$queries = explode ( "," , $search);
 			foreach ($queries as $search) {
 				$search = explode ( ":" , $search);
-				$field = $this->getField($search[0], $this->TableName);
+				$field = $this->getField($search[0]);
 				$arr[$field] = $search[1];
 			}
 		}
-		$this->db->reset_query();
 		foreach ($arr as $key => $value) {
 			$this->db->or_where($key, $value);
 		}
-		return $this->db->get($this->TableName);
 	}
 
 	public function insertIntoTable($data) {
@@ -199,31 +251,12 @@ class MY_DBmodel extends CI_Model
 	*  ---------------------
 	*/
 
-	public function getProbableFieldTitle( $table_field ) {
-
-		$this->db->select('table_field_title');
-		$this->db->where('table_field', $table_field);
-		$query = $this->db->get(self::metaTableName)->result_array();
-		if ( empty($query) ) return $query;
-		
-		return $query[0]['table_field_title'];
-	}
-
-	public function tryConvertFields( $fields ) {
-		$arr = array();
-		foreach ($fields as $field) {
-			$item = $this->getProbableFieldTitle($field);
-			if ( empty($item) )  $item = '';
-			array_push( $arr,  $item);
-		}
-		return $arr;
-	}
 
 	public function makeTable($query)
 	{
 		if (empty($query)) return NULL;
 		$fields = $query->list_fields();
-		$headers = $this->tryConvertFields($fields);
+		$headers = $this->convertFields($fields);
 
 		$this->db_table->set_heading($headers);
 		return $this->db_table->generate($query);

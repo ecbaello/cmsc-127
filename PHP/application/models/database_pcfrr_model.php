@@ -2,6 +2,7 @@
 
 class Database_pcfrr_model extends MY_DBmodel
 {
+	public $ModelTitle = 'Petty Cash Fund Replenishment';
 	protected $TableName = 'pcf_replenishment_request'; // Overideable
 	protected $TablePrimaryKey = 'pcf_rr_request_id'; // Overideable
 

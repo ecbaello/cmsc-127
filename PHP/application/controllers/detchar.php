@@ -8,25 +8,30 @@ class Detchar extends MY_DBcontroller {
 		$this->load->model('database_detailed_charges_model');
 
 		$this->model = $this->database_detailed_charges_model;
-
-		$input = $this->input;
-		$link = current_url();
 		
 		$this->handleRequest();
 
-		$this->load->view('header');
+		$request = $this->input->post(DB_GET);
+		if ($request == BOOL_ON) {
 
-		$this->makeTableHTML();
-		$form = $this->makeInputHtml(true);
+			$this->makeTableHTML();
+			
+		} else {
 
-		$modal = array(
-			'actiontitle' => 'Input a row',
-			'modalid' => 'input-form',
-			'modalcontent' => $form
-		);
-		$this->load->view('popup_generator', $modal);
+			$this->load->view('header');
 
-		$this->load->view('footer');
+			$this->makeTableHTML();
+			$form = $this->makeInputHtml(true);
+
+			$modal = array(
+				'actiontitle' => 'Input a row',
+				'modalid' => 'input-form',
+				'modalcontent' => $form
+			);
+			$this->load->view('popup_generator', $modal);
+
+			$this->load->view('footer');
+		}
 	}
 	
 	
