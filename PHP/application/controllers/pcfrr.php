@@ -7,33 +7,42 @@ class Pcfrr extends MY_DBcontroller {
 	{
 		$this->load->model('database_pcfrr_model');
 
-		$this->model = $this->database_pcfrr_model;
+		$request = $this->input->post(DB_GET);
+		if ($request == BOOL_ON) {
 
-		$input = $this->input;
-		$link = current_url();
+			$this->makeTableHTML();
+			
+		} else {
+			$this->model = $this->database_pcfrr_model;
+
+			$input = $this->input;
+			$link = current_url();
+			
+			$this->handleRequest();
+			
+			$this->load->view('header');
+
+			$data = array(
+				'link' => $link,
+				'pcf_names' => $this->model->db->query('select * from pcf_type_table')
+			);
+			$this->load->view('pcf_selector',$data);
+
+			$this->makeTableHTML();
+
+			$form = $this->makeInputHtml(true);
+			
+			$modal = array(
+				'actiontitle' => 'Input a row',
+				'modalid' => 'input-form',
+				'modalcontent' => $form
+			);
+			$this->load->view('popup_generator', $modal);
+
+			$this->load->view('footer');
+		}
+
 		
-		$this->handleRequest();
-		
-		$this->load->view('header');
-
-		$data = array(
-			'link' => $link,
-			'pcf_names' => $this->model->db->query('select * from pcf_type_table')
-		);
-		$this->load->view('pcf_selector',$data);
-
-		$this->makeTableHTML();
-
-		$form = $this->makeInputHtml(true);
-		
-		$modal = array(
-			'actiontitle' => 'Input a row',
-			'modalid' => 'input-form',
-			'modalcontent' => $form
-		);
-		$this->load->view('popup_generator', $modal);
-
-		$this->load->view('footer');
 	}
 
 	public function changePCF(){

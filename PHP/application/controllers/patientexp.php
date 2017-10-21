@@ -14,19 +14,26 @@ class Patientexp extends MY_DBcontroller {
 		
 		$this->handleRequest();
 
-		$this->load->view('header');
+		$request = $this->input->post(DB_GET);
+		if ($request == BOOL_ON) {
 
-		$this->makeTableHTML();
-		$form = $this->makeInputHtml(true);
+			$this->makeTableHTML();
+			
+		} else {
+			$this->load->view('header');
 
-		$modal = array(
-			'actiontitle' => 'Input a row',
-			'modalid' => 'input-form',
-			'modalcontent' => $form
-		);
-		$this->load->view('popup_generator', $modal);
+			$this->makeTableHTML();
+			$form = $this->makeInputHtml(true);
 
-		$this->load->view('footer');
+			$modal = array(
+				'actiontitle' => 'Input a row',
+				'modalid' => 'input-form',
+				'modalcontent' => $form
+			);
+			$this->load->view('popup_generator', $modal);
+
+			$this->load->view('footer');
+		}
 	}
 	
 }

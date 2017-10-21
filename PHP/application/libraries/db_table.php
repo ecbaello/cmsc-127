@@ -34,8 +34,6 @@ class Db_table extends CI_Table {
 		$token = $ci->security->get_csrf_token_name();
 		$hash = $ci->security->get_csrf_hash();
 
-
-
 		// Create the script for ui queries
 		$script =
 		'
