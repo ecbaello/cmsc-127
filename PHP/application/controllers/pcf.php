@@ -8,39 +8,49 @@ class Pcf extends CI_Controller {
 		$this->load->model('database_pcf_model');
 		
 
-		$this->load->view('header');
+		
 		
 		$table = $this->changePCF();
 		$submit = $this->input->post(DB_REQUEST);
 		$link = current_url();
 		
-		$data = array(
-			'link' => current_url(),
-			'pcf_names' => $this->database_pcf_model->db->query('select * from pcf_type_table')
-		);
-		$this->load->view('pcf_selector',$data);
-		
 		if ( empty($table) ) {
 			echo 'Select table';
 		} else {
-			if ($this->database_pcf_model->checkExists($table)){
+			if ($this->database_pcf_model->checkCategoryExists($table)){
 				$this->handleRequest($submit, $table);
 
-				$this->loadTable($table);
-				$form = $this->makeInputHtml($table, true);
+				$request = $this->input->post(DB_GET);
+				if ($request == BOOL_ON) {
+					$this->loadTable($table);
+					
+				} else {
+					$this->load->view('header');
 
-				$modal = array(
-					'actiontitle' => 'Input a row',
-					'modalid' => 'input-form',
-					'modalcontent' => $form
-				);
-				$this->load->view('popup_generator', $modal);
+					$data = array(
+						'link' => current_url(),
+						'pcf_names' => $this->database_pcf_model->db->query('select * from pcf_type_table')
+					);
+					$this->load->view('pcf_selector',$data);
+								
+					$this->loadTable($table);
+					$form = $this->makeInputHtml($table, true);
+
+					$modal = array(
+						'actiontitle' => 'Input a row',
+						'modalid' => 'input-form',
+						'modalcontent' => $form
+					);
+					$this->load->view('popup_generator', $modal);
+					$this->load->view('footer');
+				}
+				
 
 			}
 			
 		}
 
-		$this->load->view('footer');
+		
 	}
 	
 	public function handleRequest($submit, $table)
@@ -65,7 +75,7 @@ class Pcf extends CI_Controller {
 	
 	public function loadTable($subtable)
 	{	
-		$result = $this->database_pcf_model->getTypeTable($subtable);
+		$result = $this->database_pcf_model->getCategoryTable($subtable);
 
 		$data = array(
 			'tablehtml' => $this->makePCFTableWithDelete($subtable, $result)
@@ -115,6 +125,6 @@ class Pcf extends CI_Controller {
 			$value = $this->input->post($input);
 			if (! empty($value) ) $arr[$input] = $value; 
 		}
-		$this->database_pcf_model->insertIntoTypeTable($table, $arr);
+		$this->database_pcf_model->insertIntoCategoryTable($table, $arr);
 	}
 }

@@ -9,6 +9,7 @@ class MY_DBmodel extends CI_Model
 	public $ModelTitle = '';
 	protected $TableName = ''; // Overideable
 	protected $TablePrimaryKey = 'id'; // Overideable
+	protected $isArrayModel = FALSE;
 
 	/**
 	* The constructor method
@@ -41,6 +42,10 @@ class MY_DBmodel extends CI_Model
 	            MDL_NAME => array(
 	                'type' => 'VARCHAR',
 	                'constraint' => 100
+	            ),
+	            MDL_ARRAY => array(
+	                'type' => 'TINYINT',
+	                'constraint' => 1
 	            )
        		);
 
@@ -52,7 +57,8 @@ class MY_DBmodel extends CI_Model
 		$this->db->insert(self::modelTableName,
 			array(
 				MDL_NAME => $this->ModelTitle,
-				MDL_CLASS => strtolower(get_class($this))
+				MDL_CLASS => strtolower(get_class($this)),
+				MDL_ARRAY => $this->isArrayModel?1:0
 			)
 		);
 	}

@@ -93,7 +93,8 @@ defined('DB_UPDATE')           OR define('DB_UPDATE', 'update');
 defined('DB_GET')          	   OR define('DB_GET', 'get');
 defined('DB_PKWORD')           OR define('DB_PKWORD', 'id');
 
-defined('BOOL_ON')           OR define('BOOL_ON', '1');
+defined('BOOL_ON')           OR define('BOOL_ON', 1);
 
 defined('MDL_CLASS')           OR define('MDL_CLASS', 'mdl_class');
 defined('MDL_NAME')            OR define('MDL_NAME', 'mdl_name');
+defined('MDL_ARRAY')           OR define('MDL_ARRAY', 'is_array');
