@@ -1,8 +1,9 @@
 # Checklist
 --------------------------
 ## Requested
-	Add Fields
+	Modify Fields
 	Hospital Bills Table
+	JQuery: Scrolling Tables with Arrow Buttons
 ## In Progress 		| Assigned
 	Search			  Deo
 ## Testing 			| Assigned
