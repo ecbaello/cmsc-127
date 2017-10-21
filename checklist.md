@@ -1,13 +1,11 @@
 # Checklist
 --------------------------
 ## Requested
-	Search
 	Add Fields
 	Hospital Bills Table
-	AJAX for reloading Table
 ## In Progress 		| Assigned
-	
-
+	Search			  Deo
 ## Testing 			| Assigned
-	Inheritance for database models | Deo
 ## Complete
+	Inheritance for database models
+	AJAX for reloading Table
