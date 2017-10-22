@@ -49,7 +49,15 @@ class MY_DBarraymodel extends MY_DBmodel
 	}
 
 	public function getCategoryAssociations() {
-		
+		$query = $this->db->get($this->categoryTableName);
+
+		$assocs = array();
+		$arr = $query->result_array();
+		foreach ($arr as $assoc) {
+			$assocs[ $assoc[$this->categoryFieldName] ] = $assoc[$this->arrayFieldName];
+		}
+
+		return $assocs;
 	}
 
 	public function insertIntoCategoryTable($name, $values) {

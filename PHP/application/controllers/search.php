@@ -7,20 +7,57 @@ class Search extends CI_Controller {
 	{
 		$this->load->database();
 		$this->load->library('db_table');
+		$this->load->model('search_model');
 
 		$this->load->view('header');
 
-		$submit = $this->input->get('q');
-		$table = $this->input->get('t');
+		$query = $this->db->get($this->search_model::modelTableName);
+		$results = $query->result_array();
 
-		$this->load->model($table);
+		$arr = array();
+		foreach ($results as $result) {
+			$option = array();
 
-		$this->load->view('search-form');
+			$table_title = $result[MDL_NAME];
+			$is_array = $result[MDL_ARRAY]==1;
+			$model = $result[MDL_CLASS];
 
-		if (!empty ($submit) && !empty ($table)){
+			if ($is_array) {
+				$this->load->model($model);
 
-			$result = $this->$table->find($submit);
-			$html = $this->$table->makeTable($result);
+				$query2 = $this->db->get($this->$model->categoryTableName);
+				$categories = $query2->result_array();
+
+				$name = $this->$model->arrayFieldName;
+				$title = $this->$model->categoryFieldName;
+
+				foreach ($categories as $category) {
+					$item_name = $category[$name];
+					$item_title = $category[$title];
+
+					$arr[$model.':'.$item_name] = $table_title.': '.$item_title;
+				}
+			} else {
+				$arr[$model] = $table_title;
+			}
+		}
+
+		// -- Generate option field for table
+
+		$this->load->view('search-form', array('options' => $arr) );
+
+		$submit = $this->input->get(SRCH_QRY);
+		$model = $this->input->get(SRCH_TABLE);
+
+		// -- Explode $model with ':' to find subtable
+		// -- Check for subtable input
+
+		$this->load->model($model);
+
+		if (!empty ($submit) && !empty ($model)){
+
+			$result = $this->$model->find($submit); // ** Change to two parameter option if has subtable
+			$html = $this->$model->makeTable($result); 
 
 			$this->load->view('table_view', array('tablehtml'=>$html));
 		}

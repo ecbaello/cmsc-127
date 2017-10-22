@@ -6,10 +6,13 @@ class MY_DBmodel extends CI_Model
 	const inputTypesTableName = 'input_types';
 	const modelTableName = 'model_registry';
 
+
+
 	public $ModelTitle = '';
 	protected $TableName = ''; // Overideable
 	protected $TablePrimaryKey = 'id'; // Overideable
 	protected $isArrayModel = FALSE;
+	protected $willRegister = TRUE;
 
 	/**
 	* The constructor method
@@ -24,7 +27,7 @@ class MY_DBmodel extends CI_Model
 
 		$this->createInputsTable();
 		$this->createMetaTable();
-		$this->registerModel();
+		if ($this->willRegister) $this->registerModel();
 
 		$this->createTable();
 
