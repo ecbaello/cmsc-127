@@ -6,14 +6,12 @@
  */
 
 .tknz-wrapper { /* The apparent input */
-     height: 3.5em;
      margin: 1em auto;
      padding: 10px; 
      overflow: auto;
 
-     color: #fefefe;
-     background: #fefefe; 
-     font-family: "Courier", Times, sans-serif;
+     background: #fefefe;
+     color: white;
         
      border: solid 2px #DFDFDF; 
      border-radius:10px; 
@@ -48,33 +46,44 @@
 }
 
 .tknz-token { /* An individual token */
-    background: #5c7db7;
-    padding: 2px 2px 2px 5px; 
-    margin: 2px; 
+    
+    
+    margin: 5px; 
     float: left;
-    border-radius: 2px;
+    border-radius: 5px;
     max-width: 340px;
     cursor: pointer;
+    background: #95E2FE;
 }
 
-.tknz-token-value { /* An individual token */
-    
-}
+
 
 .tknz-token-label { /* Token's label */
+    padding: 2px 5px 2px 5px; 
     word-break: break-word;
+    background: #14A1FF;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    font-weight: bold;
+}
+
+.tknz-token-value .tknz-token-label { /* An individual token */
+    background: none;
+    font-weight: normal;
+    border-radius: 0;
+    color: #222;
 }
 
 .tknz-token-x { /* Delete button for token */
-    color: rgba(255,255,255, 0.5);
-    padding-left: 7px;
+    color: rgba(0,0,0, 0.5);
+    padding: 0 2px;
     position: relative;
     top: 1px;
     float: right;
 }
 .tknz-token-x:hover {
     text-shadow: 0px 0px 3px #eee;
-    color: #fff;
+    color: #000;
 }
 
 .tknz-suggest { /* Autosuggest modal */

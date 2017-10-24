@@ -24,7 +24,7 @@
 			namespace: 'tknz',
 			label: '',
 			placeholder: '',
-			separators: [',', ' ', '.'],
+			separators: [],
 			callback: null,
 			source: null,
 			allowUnknownFieldTags: true,
@@ -161,7 +161,7 @@
 						list.append(token);
 						isInputFieldValue = true;
 	            	} else {
-	            		token = ':<span class="'+pre+'-value" data-token="'+value+'">'+
+	            		token = '<span class="'+pre+'-value" data-token="'+value+'">'+
 						'<span class="'+pre+'-label">'+value.trim()+'</span>'+
 						'</span>';
 						list.append(list.children().last().detach().append(token));

@@ -44,11 +44,11 @@ class Search extends CI_Controller {
 
 		// -- Generate option field for table
 
-		$this->load->view('search-form', array('options' => $arr) );
+		$this->load->view('search-form', array('options' => $arr, 'path' => current_url() ) );
 
-		$submit = $this->input->get(SRCH_QRY);
-		$model = $this->input->get(SRCH_TABLE);
-
+		$submit = $this->input->post(SRCH_QRY);
+		$model = $this->input->post(SRCH_TABLE);
+		
 		// -- Explode $model with ':' to find subtable
 		// -- Check for subtable input
 

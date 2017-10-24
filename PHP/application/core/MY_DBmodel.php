@@ -219,8 +219,7 @@ class MY_DBmodel extends CI_Model
 	public function find ($search)
 	{
 		$this->db->reset_query();
-		doFind($search);
-		return $this->get();
+		return $this->doFind($search) ? $this->get() : NULL;
 	}
 
 	public function doFind ($search)
@@ -231,12 +230,13 @@ class MY_DBmodel extends CI_Model
 			foreach ($queries as $search) {
 				$search = explode ( ":" , $search);
 				$field = $this->getField($search[0]);
-				$arr[$field] = $search[1];
+				if (!empty($field) && !empty($search[1])) $arr[$field] = $search[1];
 			}
 		}
 		foreach ($arr as $key => $value) {
 			$this->db->or_where($key, $value);
 		}
+		return !empty($arr);
 	}
 
 	public function insertIntoTable($data) {
