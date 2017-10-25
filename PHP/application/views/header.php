@@ -11,6 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   
 	<script src="<?= base_url().'js/jquery.js' ?>"></script>
   <script src="<?= base_url().'js/form-validator.js' ?>"></script>
+  <script src="<?= base_url().'js/tabledit.js' ?>"></script>
 </head>
 <body>
 <div class="title-bar">

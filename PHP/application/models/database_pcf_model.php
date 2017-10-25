@@ -3,8 +3,8 @@
 class Database_pcf_model extends MY_DBarraymodel
 {
 	public $ModelTitle = 'Petty Cash Fund';
-	protected $TableName = 'pcf';
-	protected $TablePrimaryKey = 'pcf_id';
+	public $TableName = 'pcf';
+	public $TablePrimaryKey = 'pcf_id';
 
 	public $categoryTableName = 'pcf_type_table';
 	public $arrayFieldName = 'pcf_type';

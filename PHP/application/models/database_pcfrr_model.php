@@ -3,8 +3,8 @@
 class Database_pcfrr_model extends MY_DBmodel
 {
 	public $ModelTitle = 'Petty Cash Fund Replenishment';
-	protected $TableName = 'pcf_replenishment_request'; // Overideable
-	protected $TablePrimaryKey = 'pcf_rr_request_id'; // Overideable
+	public $TableName = 'pcf_replenishment_request'; // Overideable
+	public $TablePrimaryKey = 'pcf_rr_request_id'; // Overideable
 
 	/**
 	* Make PCF Replenishment Request table if does not exists

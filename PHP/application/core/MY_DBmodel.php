@@ -8,8 +8,8 @@ class MY_DBmodel extends CI_Model
 
 
 	public $ModelTitle = '';
-	protected $TableName = ''; // Overideable
-	protected $TablePrimaryKey = 'id'; // Overideable
+	public $TableName = ''; // Overideable
+	public $TablePrimaryKey = 'id'; // Overideable
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
 
@@ -108,7 +108,7 @@ class MY_DBmodel extends CI_Model
 
 		$this->db_table->set_heading($headers);
 
-		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL);
+		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations());
 	}
 
 	public function getFields() {
@@ -225,8 +225,9 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function updateWithPK($id, $data) {
+		$this->db->reset_query();
 		$this->db->where( $this->TablePrimaryKey, $id);
-	    $this->db->update( $this->TableName, $data); 
+	    return $this->db->update( $this->TableName, $data); 
 	}
 
 	public function deleteWithPK($id) {

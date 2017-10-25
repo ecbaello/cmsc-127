@@ -21,14 +21,6 @@ class Detchar extends MY_DBcontroller {
 			$this->load->view('header');
 
 			$this->makeTableHTML();
-			$form = $this->makeInputHtml(true);
-
-			$modal = array(
-				'actiontitle' => 'Input a row',
-				'modalid' => 'input-form',
-				'modalcontent' => $form
-			);
-			$this->load->view('popup_generator', $modal);
 
 			$this->load->view('footer');
 		}

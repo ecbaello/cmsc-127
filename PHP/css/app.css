@@ -34,3 +34,16 @@ table {
 	font-size: 30px;
 	letter-spacing: 10px;
 }
+
+.tabledit-edit-button::before {
+	content: 'Edi'
+}
+
+.tabledit-remove-button::before {
+	content: 'Rem'
+}
+
+.tabledit-edit-button {
+	width: auto;
+
+}

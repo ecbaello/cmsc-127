@@ -16,9 +16,18 @@ class MY_DBcontroller extends CI_Controller
 	{
 		$link = current_url();
 
-		$data = array(
-			'tablehtml' => $this->model->makeTableWithDelete($link)
+		$form = $this->makeInputHtml(true);
+
+		$modal = array(
+			'actiontitle' => 'Input a row',
+			'modalid' => 'input-form',
+			'modalcontent' => $form
 		);
+
+		$data = array(
+			'tablehtml' => $this->model->makeTableWithDelete($link).$this->load->view('popup_generator', $modal, true)
+		);
+
 		$this->load->view('table_view', $data);
 	}
 
@@ -45,8 +54,23 @@ class MY_DBcontroller extends CI_Controller
 
 		} else if ($submit == DB_DELETE) {
 			$submit = $this->input->post(DB_PKWORD);
-			if ( !empty($submit) ) $this->model->deleteWithPK($submit);
+			$this->model->deleteWithPK($submit);
+		} else if ($submit == DB_UPDATE) {
+			echo $submit;
+			$submit = $this->input->post(DB_PKWORD);
+			echo $submit;
+			$model = $this->model;
+			$fields = $model->getFields();
+			unset($fields[$model->TablePrimaryKey]);
+
+			$arr = array();
+			foreach ($fields as $field) {
+				$arr[$field] = $this->input->post($field);
+			}
+
+			$this->model->updateWithPK($submit, $arr);
 		}
+
 	}
 
 	public function takeInput () {

@@ -21,7 +21,7 @@ $this->load->helper('form');
 				echo '<label for="'.$key .'">'.$value[TBL_TITLE];
 				switch ($value[TBL_INPUT]) {
 					case 'PASSWORD':
-						echo '<input type="password" data-validation="length alphanumeric strength" data-validation-length="min20" data-validation-allowing="-_" data-validation-strength="2" name="'.$key.'" >';
+						echo '<input type="password" data-validation="length alphanumeric strength" data-validation-length="min8" data-validation-allowing="-_" data-validation-strength="2" name="'.$key.'" >';
 						break;
 
 					case 'URL':

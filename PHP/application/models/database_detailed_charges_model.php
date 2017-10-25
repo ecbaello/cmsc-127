@@ -3,8 +3,8 @@
 class Database_detailed_charges_model extends MY_DBmodel
 {
 	public $ModelTitle = 'Detailed Charges';
-	protected $TableName = 'detailed_charges'; // Overideable
-	protected $TablePrimaryKey = 'dc_charge_id'; // Overideable
+	public $TableName = 'detailed_charges'; // Overideable
+	public $TablePrimaryKey = 'dc_charge_id'; // Overideable
 
 	public function createTable()
 	{
