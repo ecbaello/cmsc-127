@@ -2,7 +2,7 @@
 
 class Database_pcf_field_association_model extends MY_DBmodel
 {
-	protected $TableName = 'pcf_field_association';
+	public $TableName = 'pcf_field_association';
 
 	/**
 	* The constructor method

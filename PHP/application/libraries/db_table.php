@@ -12,10 +12,12 @@ class Db_table extends CI_Table {
 
 	public function generateDBUsingPK($table_data, $pk_name, $link, $request_param, $associations = array()) {
 
+		if (empty($table_data)) return;
+
 		$it_key = 'key';
 		$header = array();
-
 		$fields = $table_data->list_fields();
+
 
 		foreach ($fields as $field) {
 			$item = array();

@@ -257,8 +257,10 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function updateWithPK($id, $data) {
+		$mdata = $data;
+		unset($mdata[$this->TablePrimaryKey]);
 		$this->db->where( $this->TablePrimaryKey, $id);
-	    $this->db->update( $this->TableName, $data); 
+	    $this->db->update( $this->TableName, $mdata); 
 	}
 
 	public function deleteWithPK($id) {

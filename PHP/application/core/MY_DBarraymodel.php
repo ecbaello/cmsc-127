@@ -31,15 +31,6 @@ class MY_DBarraymodel extends MY_DBmodel
 		$query = $this->db->get();
 		return $query;
 	}
-	
-	public function getPCFCategoryTable($query) {
-		$this->db->select($this->getPCFFields($query));
-		$this->db->from($this->TableName);
-		$this->db->join($this->categoryTableName, $this->TableName.'.'.$this->arrayFieldName.' = '.$this->categoryTableName.'.'.$this->arrayFieldName);
-		$this->db->where($this->categoryFieldName, $query);
-		$query = $this->db->get();
-		return $query;
-	}
 
 	public function makeTableWithDelete($subtable, $link)
 	{	
@@ -87,13 +78,13 @@ class MY_DBarraymodel extends MY_DBmodel
 	}
 
 	public function updateOnCategoryTable($name, $pk, $values) {
-		unset($values[$this->arrayFieldName]);
-		unset($values[$this->categoryFieldName]);
-		$table = $this->convertNameToCategory($name);
+		$mvalues = $values;
+		unset($mvalues[$this->TablePrimaryKey]);
+		$mvalues[$this->arrayFieldName] = $this-> convertNameToCategory($name);
 
 		$this->db->where( $this->TablePrimaryKey, $pk);
-		$this->db->where( $this->arrayFieldName, $table);
-	    return $this->db->update( $this->TableName, $values); 
+
+	    return $this->db->update( $this->TableName, $mvalues); 
 	}
 
 	public function deleteFromCategoryTable($name, $pk) {

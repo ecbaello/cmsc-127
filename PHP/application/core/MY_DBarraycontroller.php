@@ -25,10 +25,6 @@ class MY_DBarraycontroller extends CI_Controller {
 			$model = $this->model;
 			$fields = $model->getFields();
 
-			unset($fields[$model->TablePrimaryKey]);
-			unset($fields[$model->arrayFieldName]);
-
-
 			$arr = array();
 			foreach ($fields as $field) {
 				$arr[$field] = $this->input->post($field);
