@@ -52,7 +52,11 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_key 		(MDL_CLASS, TRUE);
 			$this->dbforge->create_table	(self::modelTableName);
 		}
-
+		
+		$this->db->from(self::modelTableName);
+		$this->db->where(MDL_CLASS, strtolower(get_class($this)));
+		if($this->db->get()->num_rows() != 0) return;
+		
 		$this->db->insert(self::modelTableName,
 			array(
 				MDL_NAME => $this->ModelTitle,
@@ -125,13 +129,37 @@ class MY_DBmodel extends CI_Model
 		return $arr;
 	}
 
-	
+	public function getPCFFields($pcfname) {
+		$query = $this->db->query('select table_field from '.self::metaTableName.' where table_name = "'.$this->TableName.'" and table_field in (select field from pcf_field_association where pcf_name = "'.$pcfname.'")')->result_array();
+		if ( empty($query) ) return $query;
+
+		$arr = array();
+		foreach ($query as $field) {
+			array_push( $arr,  $field['table_field']);
+		}
+		return $arr;
+	}
 
 	public function getFieldAssociations() {
 		$this->db->select('table_field, table_field_title, '. self::fieldInputTypeField);
 		$this->db->where('table_name', $this->TableName);
 
 		$inp = $this->db->get(self::metaTableName)->result_array();
+		$arr = array();
+		foreach ($inp as $assoc) {
+			$arr[ $assoc['table_field'] ] = array(
+				TBL_TITLE => $assoc['table_field_title'],
+				TBL_INPUT => $assoc[self::fieldInputTypeField]
+			);
+		}
+
+		unset($arr[ $this->TablePrimaryKey ]);
+		return $arr;
+	}
+	
+	public function getPCFFieldAssociations($pcfname) {
+		$inp = $this->db->query('select table_field, table_field_title, '.self::fieldInputTypeField.' from '.self::metaTableName.' where table_name = "'.$this->TableName.'" and table_field in (select field from pcf_field_association where pcf_name = "'.$pcfname.'")')->result_array();
+
 		$arr = array();
 		foreach ($inp as $assoc) {
 			$arr[ $assoc['table_field'] ] = array(
@@ -225,9 +253,8 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function updateWithPK($id, $data) {
-		$this->db->reset_query();
 		$this->db->where( $this->TablePrimaryKey, $id);
-	    return $this->db->update( $this->TableName, $data); 
+	    $this->db->update( $this->TableName, $data); 
 	}
 
 	public function deleteWithPK($id) {

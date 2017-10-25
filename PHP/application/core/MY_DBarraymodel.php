@@ -31,6 +31,15 @@ class MY_DBarraymodel extends MY_DBmodel
 		$query = $this->db->get();
 		return $query;
 	}
+	
+	public function getPCFCategoryTable($query) {
+		$this->db->select($this->getPCFFields($query));
+		$this->db->from($this->TableName);
+		$this->db->join($this->categoryTableName, $this->TableName.'.'.$this->arrayFieldName.' = '.$this->categoryTableName.'.'.$this->arrayFieldName);
+		$this->db->where($this->categoryFieldName, $query);
+		$query = $this->db->get();
+		return $query;
+	}
 
 	public function registerCategoryTable($name) {
 		if ( !$this->checkCategoryExists($name) ) {

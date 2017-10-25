@@ -6,6 +6,7 @@ class Pcf extends CI_Controller {
 	public function index()
 	{
 		$this->load->model('database_pcf_model');
+		$this->load->model('database_pcf_field_association_model');
 		
 		$table = $this->changePCF();
 		$submit = $this->input->get(DB_REQUEST);
@@ -15,11 +16,11 @@ class Pcf extends CI_Controller {
 			echo 'Select table';
 		} else {
 			if ($this->database_pcf_model->checkCategoryExists($table)){
-				$this->handleRequest($submit, $table);
+				$this->handlePCFRequest($submit, $table);
 
 				$request = $this->input->post(DB_GET);
 				if ($request == BOOL_ON) {
-					$this->loadTable($table);
+					$this->loadPCFTable($table);
 					
 				} else {
 					$this->load->view('header');
@@ -30,8 +31,8 @@ class Pcf extends CI_Controller {
 					);
 					$this->load->view('pcf_selector',$data);
 								
-					$this->loadTable($table);
-					$form = $this->makeInputHtml($table, true);
+					$this->loadPCFTable($table);
+					$form = $this->makePCFInputHtml($table, true);
 
 					$modal = array(
 						'actiontitle' => 'Input a row',
@@ -59,6 +60,16 @@ class Pcf extends CI_Controller {
 			if ( !empty($submit) ) $this->database_pcf_model->deleteWithPK($submit);
 		}
 	}
+	
+	public function handlePCFRequest($submit, $table)
+	{
+		if ($submit == DB_INSERT) {
+			$this->takePCFInput ($table);
+		} else if ($submit == DB_DELETE) {
+			$submit = $this->input->post('id');
+			if ( !empty($submit) ) $this->database_pcf_model->deleteWithPK($submit);
+		}
+	}
 
 	public function changePCF(){
 		$this->load->library('session');
@@ -73,6 +84,17 @@ class Pcf extends CI_Controller {
 	public function loadTable($subtable)
 	{	
 		$result = $this->database_pcf_model->getCategoryTable($subtable);
+
+		$data = array(
+			'tablehtml' => $this->makePCFTableWithDelete($subtable, $result)
+		);
+		$this->load->view('table_view', $data);
+		
+	}
+	
+	public function loadPCFTable($subtable)
+	{	
+		$result = $this->database_pcf_model->getPCFCategoryTable($subtable);
 
 		$data = array(
 			'tablehtml' => $this->makePCFTableWithDelete($subtable, $result)
@@ -114,9 +136,35 @@ class Pcf extends CI_Controller {
 		return $this->load->view('form_generator', $data, $isGet);
 
 	}
+	
+	public function makePCFInputHtml($subtablename, $isGet = false)
+	{
+		$this->load->helper('url');
+
+		$fields = $this->database_pcf_model->getPCFFieldAssociations($subtablename);
+		$link = current_url().'?t='.urlencode($subtablename);
+
+		$data = array(
+			'fields' => $fields,
+			'constants' => array(DB_REQUEST=>DB_INSERT),
+			'link' => $link
+		);
+		return $this->load->view('form_generator', $data, $isGet);
+
+	}
 
 	public function takeInput ($table) {
 		$inputs = $this->database_pcf_model->getFields();
+		$arr = array();
+		foreach ($inputs as $input) {
+			$value = $this->input->post($input);
+			if (! empty($value) ) $arr[$input] = $value; 
+		}
+		$this->database_pcf_model->insertIntoCategoryTable($table, $arr);
+	}
+	
+	public function takePCFInput ($table) {
+		$inputs = $this->database_pcf_model->getPCFFields($table);
 		$arr = array();
 		foreach ($inputs as $input) {
 			$value = $this->input->post($input);

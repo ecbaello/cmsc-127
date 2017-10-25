@@ -20,6 +20,7 @@ $(document).ready(function(){
 		 //'<?= $this->security->get_csrf_hash(); ?>'},
 		'csrf_test_name':csrf_test_name},
 		 success: function(msg){
+			 window.location = '<?=$link?>';
 		 }
 		});
 	});

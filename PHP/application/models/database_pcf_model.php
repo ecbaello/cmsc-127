@@ -19,6 +19,8 @@ class Database_pcf_model extends MY_DBarraymodel
 		parent::__construct(); // do constructor for parent class
 
 		$this->registerCategoryTable('General');
+		$this->registerCategoryTable('Smile Train');
+		$this->registerCategoryTable('Cataract');
 	}
 
 	/**
