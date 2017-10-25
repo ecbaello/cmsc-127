@@ -1,80 +1,76 @@
 <?php
 
-class Database_pcf_field_association_model extends CI_Model
+class Database_pcf_field_association_model extends MY_DBmodel
 {
-	const PCFFATableName = 'pcf_field_association';
+	protected $TableName = 'pcf_field_association';
 
 	/**
 	* The constructor method
 	*
 	*/
-	public function __construct()
+
+	public function createTable()
 	{
-		parent::__construct(); // do constructor for parent class
-
-		$this->load->database();
-		$this->load->dbforge();
-		$this->load->model('database_pcf_model');
-
-		$this->makePCFFATable();
-		$this->resetDefaultAssociations();
-	}
-
-	public function makePCFFATable()
-	{
-		if (!($this->db->table_exists(self::PCFFATableName)))
+		if (!($this->db->table_exists($this->TableName)))
 		{
-			$this->dbforge->add_field		("pcf_id int not null");
+			$this->dbforge->add_field		("pcf_name varchar(30) not null default 'General'");
 			$this->dbforge->add_field		("field varchar(100) not null default ''");
-			$this->dbforge->create_table	(self::PCFFATableName);
-
+			$this->dbforge->create_table	($this->TableName);
+			$this->resetDefaultAssociations();
 		}
+	}
+	
+	public function insertAssociation($pcfName,$fieldName){
+		
+		$this->db->from($this->TableName);
+		$this->db->where('pcf_name',$pcfName);
+		$this->db->where('field',$fieldName);
+		
+		if($this->db->get()->num_rows() == 0){
+			$data = array(
+				'field'=>$fieldName,
+				'pcf_name'=>$pcfName
+			);
+			$this->db->insert($this->TableName,$data);
+		}
+		
 	}
 	
 	public function resetDefaultAssociations(){
 		
-		$query = "truncate ".self::PCFFATableName;
+		$query = "truncate ".$this->TableName;
 		$this->db->query($query);
 		
-		$query = "insert into ".self::PCFFATableName." values
-			('1','pcf_particulars'),
-			('1','pcf_supporting_documents'),
-			('1','pcf_screening_training'),
-			('1','pcf_meals_snacks'),
-			('1','pcf_travel'),
-			('1','pcf_office_supplies'),
-			('1','pcf_water'),
-			('1','pcf_communications'),
-			('1','pcf_others'),
+		$query = "insert into ".$this->TableName." values
+			('General','pcf_particulars'),
+			('General','pcf_supporting_documents'),
+			('General','pcf_screening_training'),
+			('General','pcf_meals_snacks'),
+			('General','pcf_travel'),
+			('General','pcf_office_supplies'),
+			('General','pcf_water'),
+			('General','pcf_communications'),
+			('General','pcf_other_expenses'),
 			
-			('2','pcf_particulars'),
-			('2','pcf_supporting_documents'),
-			('2','pcf_meals_snacks'),
-			('2','pcf_travel'),
-			('2','pcf_medical_supplies'),
-			('2','pcf_other_expenses'),
+			('Smile Train','pcf_particulars'),
+			('Smile Train','pcf_supporting_documents'),
+			('Smile Train','pcf_meals_snacks'),
+			('Smile Train','pcf_travel'),
+			('Smile Train','pcf_medical_supplies'),
+			('Smile Train','pcf_other_expenses'),
 			
-			('3','pcf_particulars'),
-			('3','pcf_supporting_documents'),
-			('3','pcf_meals_snacks'),
-			('3','pcf_travel'),
-			('3','pcf_medical_supplies'),
-			('3','pcf_other_expenses')
+			('Cataract','pcf_particulars'),
+			('Cataract','pcf_supporting_documents'),
+			('Cataract','pcf_meals_snacks'),
+			('Cataract','pcf_travel'),
+			('Cataract','pcf_medical_supplies'),
+			('Cataract','pcf_other_expenses')
 		";
 		
 		
 		$this->db->query($query);
 
 	}
-
-	public function getTable() {
-		return $this->db->get(self::PCFFATableName);
-	}
-
-	public function insertIntoTable($data) {
-		$this->db->insert(self::PCFFATableName, $data);
-	}
-
 }
 
 ?>

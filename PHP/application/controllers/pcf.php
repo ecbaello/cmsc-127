@@ -7,6 +7,7 @@ class Pcf extends MY_DBarraycontroller {
 	{
 		$this->load->model('database_pcf_model');
 		$this->model = $this->database_pcf_model;
+		$this->load->model('database_pcf_field_association_model');
 		
 		$table = $this->loadSession();
 		
@@ -30,9 +31,7 @@ class Pcf extends MY_DBarraycontroller {
 						'pcf_names' => $this->model->db->query('select * from pcf_type_table')
 					);
 					$this->load->view('pcf_selector',$data);
-								
 					$this->makeTableHTML($table);
-					
 					$this->load->view('footer');
 				}
 				
@@ -43,4 +42,5 @@ class Pcf extends MY_DBarraycontroller {
 
 	}
 	
+
 }
