@@ -73,16 +73,16 @@ class Database_pcf_model extends MY_DBarraymodel
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle(  $this->TablePrimaryKey, 'ID');
-			$this->registerFieldTitle( 'pcf_particulars', 'Particulars');
-			$this->registerFieldTitle( 'pcf_supporting_documents', 'Supporting Documents');
-			$this->registerFieldTitle( 'pcf_screening_training', 'Screening/Training');
-			$this->registerFieldTitle( 'pcf_meals_snacks', 'Meals/Snacks');
-			$this->registerFieldTitle( 'pcf_travel', 'Travel');
-			$this->registerFieldTitle( 'pcf_office_supplies', 'Office Supplies');
-			$this->registerFieldTitle( 'pcf_water', 'Water');
-			$this->registerFieldTitle( 'pcf_communications', 'Communications');
-			$this->registerFieldTitle( 'pcf_medical_supplies', 'Medical Supplies');
-			$this->registerFieldTitle( 'pcf_other_expenses', 'Other Expenses');
+			$this->registerFieldTitle( 'pcf_particulars', 'Particulars', 'TEXTAREA');
+			$this->registerFieldTitle( 'pcf_supporting_documents', 'Supporting Documents', 'URL');
+			$this->registerFieldTitle( 'pcf_screening_training', 'Screening/Training', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_meals_snacks', 'Meals/Snacks', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_travel', 'Travel', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_office_supplies', 'Office Supplies', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_water', 'Water', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_communications', 'Communications', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_medical_supplies', 'Medical Supplies', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_other_expenses', 'Other Expenses', 'FLOAT');
 		}
 	}
 

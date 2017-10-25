@@ -15,10 +15,9 @@ class MY_DBcontroller extends CI_Controller
 	public function makeTableHTML()
 	{
 		$link = current_url();
-		$postScript = 'window.location = "'.$link.'";';
 
 		$data = array(
-			'tablehtml' => $this->model->makeTableWithDelete($link, $postScript)
+			'tablehtml' => $this->model->makeTableWithDelete($link)
 		);
 		$this->load->view('table_view', $data);
 	}
@@ -27,11 +26,11 @@ class MY_DBcontroller extends CI_Controller
 	{
 
 		$fields = $this->model->getFieldAssociations();
-		$link = uri_string();
+		$link = uri_string().'?'.DB_REQUEST.'='.DB_INSERT;
 
 		$data = array(
 			'fields' => $fields,
-			'constants' => array(DB_REQUEST=>DB_INSERT),
+			'constants' => array(),
 			'link' => $link
 		);
 		return $this->load->view('form_generator', $data, $getHTML);
@@ -39,7 +38,7 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function handleRequest() {
-		$submit = $this->input->post(DB_REQUEST);
+		$submit = $this->input->get(DB_REQUEST);
 
 		if ($submit == DB_INSERT) {
 			$this->takeInput();

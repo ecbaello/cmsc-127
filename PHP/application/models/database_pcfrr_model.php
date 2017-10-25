@@ -41,18 +41,18 @@ class Database_pcfrr_model extends MY_DBmodel
 
 			$this->registerFieldTitle(	$this->TablePrimaryKey, 'Request ID');
 			$this->registerFieldTitle( 'pcf_rr_pcf_type', 'PCF Type');
-			$this->registerFieldTitle( 'pcf_rr_date', 'Request Date');
-			$this->registerFieldTitle( 'pcf_rr_particulars', 'Particulars');
-			$this->registerFieldTitle( 'pcf_rr_supporting_documents', 'Supporting Documents');
-			$this->registerFieldTitle( 'pcf_rr_screening_training', 'Screening/Training');
-			$this->registerFieldTitle( 'pcf_rr_meals_snacks', 'Meals/Snacks');
-			$this->registerFieldTitle( 'pcf_rr_travel', 'Travel');
-			$this->registerFieldTitle( 'pcf_rr_office_supplies', 'Office Supplies');
-			$this->registerFieldTitle( 'pcf_rr_water', 'Water');
-			$this->registerFieldTitle( 'pcf_rr_communications', 'Communications');
-			$this->registerFieldTitle( 'pcf_rr_medical_supplies', 'Medical Supplies');
-			$this->registerFieldTitle( 'pcf_rr_other_expenses', 'Other Expenses');
-			$this->registerFieldTitle( 'pcf_rr_op_desc', 'Other Description');
+			$this->registerFieldTitle( 'pcf_rr_date', 'Request Date', 'DATE');
+			$this->registerFieldTitle( 'pcf_rr_particulars', 'Particulars', 'TEXTAREA');
+			$this->registerFieldTitle( 'pcf_rr_supporting_documents', 'Supporting Documents', 'URL');
+			$this->registerFieldTitle( 'pcf_rr_screening_training', 'Screening/Training', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_meals_snacks', 'Meals/Snacks', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_travel', 'Travel', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_office_supplies', 'Office Supplies', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_water', 'Water', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_communications', 'Communications', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_medical_supplies', 'Medical Supplies', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_other_expenses', 'Other Expenses', 'FLOAT');
+			$this->registerFieldTitle( 'pcf_rr_op_desc', 'Other Description', 'TEXTAREA');
 
 		}
 	}

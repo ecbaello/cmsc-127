@@ -7,11 +7,8 @@ class Pcf extends CI_Controller {
 	{
 		$this->load->model('database_pcf_model');
 		
-
-		
-		
 		$table = $this->changePCF();
-		$submit = $this->input->post(DB_REQUEST);
+		$submit = $this->input->get(DB_REQUEST);
 		$link = current_url();
 		
 		if ( empty($table) ) {

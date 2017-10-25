@@ -8,7 +8,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<link rel="stylesheet" href="<?= base_url().'css/app.css' ?>">
 	<link rel="stylesheet" type="text/css" href="<?= base_url().'css/motion-ui.css' ?>">
 	<link rel="stylesheet" type="text/css" href="<?= base_url().'css/font-awesome.css' ?>">
+  
 	<script src="<?= base_url().'js/jquery.js' ?>"></script>
+  <script src="<?= base_url().'js/form-validator.js' ?>"></script>
 </head>
 <body>
 <div class="title-bar">

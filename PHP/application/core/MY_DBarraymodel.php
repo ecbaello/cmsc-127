@@ -56,7 +56,6 @@ class MY_DBarraymodel extends MY_DBmodel
 		foreach ($arr as $assoc) {
 			$assocs[ $assoc[$this->categoryFieldName] ] = $assoc[$this->arrayFieldName];
 		}
-
 		return $assocs;
 	}
 

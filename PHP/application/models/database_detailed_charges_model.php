@@ -21,16 +21,16 @@ class Database_detailed_charges_model extends MY_DBmodel
 			$this->dbforge->add_field		("dc_date date not null");
 			$this->dbforge->add_field		("dc_description varchar(100) DEFAULT ''");
 			$this->dbforge->add_field		("dc_quantity int DEFAULT 0");
-			$this->dbforge->add_field		("dc_amount numeric(12,3) DEFAULT 0.0");
+			$this->dbforge->add_field		("dc_amount numeric(12,2) DEFAULT 0.0");
 			
 			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle( $this->TablePrimaryKey, 'Charge ID');
-			$this->registerFieldTitle('dc_date', 'Date');
-			$this->registerFieldTitle('dc_description', 'Description');
-			$this->registerFieldTitle('dc_quantity', 'Quantity');
-			$this->registerFieldTitle('dc_amount', 'Amount');
+			$this->registerFieldTitle('dc_date', 'Date', 'DATE');
+			$this->registerFieldTitle('dc_description', 'Description', 'TEXTAREA');
+			$this->registerFieldTitle('dc_quantity', 'Quantity', 'NUMBER');
+			$this->registerFieldTitle('dc_amount', 'Amount', 'FLOAT');
 
 		}
 	}

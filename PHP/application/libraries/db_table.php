@@ -34,6 +34,8 @@ class Db_table extends CI_Table {
 		$token = $ci->security->get_csrf_token_name();
 		$hash = $ci->security->get_csrf_hash();
 
+		$linkHasParam = strpos($link, '?') !== false;
+
 		// Create the script for ui queries
 		$script =
 		'
@@ -42,13 +44,12 @@ class Db_table extends CI_Table {
 			function remove(id) {
 				$.ajax({
 				  type: '.$request_type.',
-				  url: "'.$link.'",
+				  url: "'.$link.($linkHasParam?'&':'?').DB_REQUEST.'='.DB_DELETE.'",
 				  data:
 				  	'
 				  	.$request_str.'
 				  	"'.$token.'": "'.$hash.'",
 				  	"id":id,
-				  	"'.DB_REQUEST.'":"'.DB_DELETE.'",
 				  	"'.DB_GET.'":"'.BOOL_ON.'"
 				  }'.',
 				  success: function(data) {
@@ -59,12 +60,11 @@ class Db_table extends CI_Table {
 			function update(id, value) {
 				$.ajax({
 				  type: '.$request_type.',
-				  url: "'.$link.'",
+				  url: "'.$link.($linkHasParam?'&':'?').DB_REQUEST.'='.DB_UPDATE.'",
 				  data: '
 				  	.$request_str.'
 				  	"'.$token.'": "'.$hash.'",
 				  	"id":id,
-				  	"'.DB_REQUEST.'":"'.DB_UPDATE.'",
 				  	"'.DB_GET.'":"'.BOOL_ON.'"
 				  }'.',
 				  success: function(data) {

@@ -3,9 +3,8 @@
 class MY_DBmodel extends CI_Model
 {
 	const metaTableName = 'db_meta';
-	const inputTypesTableName = 'input_types';
 	const modelTableName = 'model_registry';
-
+	const fieldInputTypeField = 'table_field_input_type';
 
 
 	public $ModelTitle = '';
@@ -25,13 +24,10 @@ class MY_DBmodel extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
-		$this->createInputsTable();
 		$this->createMetaTable();
 		if ($this->willRegister) $this->registerModel();
 
 		$this->createTable();
-
-		
 	}
 
 	private function registerModel() {
@@ -66,28 +62,6 @@ class MY_DBmodel extends CI_Model
 		);
 	}
 
-	public function createInputsTable() {
-		if (!($this->db->table_exists(self::inputTypesTableName)))
-		{
-			$this->dbforge->add_field		('id');
-			$fields = array(
-        		"input_type" => array(
-	                'type' => 'VARCHAR',
-	                'constraint' => 20
-	            )
-       		);
-			$this->dbforge->add_field		($fields);
-
-			$this->dbforge->create_table	(self::inputTypesTableName);
-
-			$this->db->insert(self::inputTypesTableName, array('input_type' => 'TEXT'));
-			$this->db->insert(self::inputTypesTableName, array('input_type' => 'DROPDOWN'));
-			$this->db->insert(self::inputTypesTableName, array('input_type' => 'RADIO'));
-			$this->db->insert(self::inputTypesTableName, array('input_type' => 'NUMBER'));
-			$this->db->insert(self::inputTypesTableName, array('input_type' => 'CHECKBOX'));
-		}
-	}
-
 
 	private function createMetaTable() {
 		if (!($this->db->table_exists(self::metaTableName)))
@@ -96,7 +70,7 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_inputs BOOLEAN NOT NULL DEFAULT TRUE");
-			$this->dbforge->add_field		("table_field_input_type VARCHAR(100) NOT NULL DEFAULT 'text'");
+			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
 
 			$this->dbforge->create_table	(self::metaTableName);
 		}
@@ -118,11 +92,13 @@ class MY_DBmodel extends CI_Model
 		        'table_field_inputs' => $isInput,
 		        'table_field_input_type' => $inputType, 
 		);
-
 		$this->db->insert(self::metaTableName, $data);
+
+
+
 	}
 
-	public function makeTableWithDelete($link, $script)
+	public function makeTableWithDelete($link)
 	{
 
 		$query = $this->get();
@@ -149,14 +125,19 @@ class MY_DBmodel extends CI_Model
 		return $arr;
 	}
 
+	
+
 	public function getFieldAssociations() {
-		$this->db->select('table_field, table_field_title');
+		$this->db->select('table_field, table_field_title, '. self::fieldInputTypeField);
 		$this->db->where('table_name', $this->TableName);
 
 		$inp = $this->db->get(self::metaTableName)->result_array();
 		$arr = array();
 		foreach ($inp as $assoc) {
-			$arr[ $assoc['table_field'] ] = $assoc['table_field_title'];
+			$arr[ $assoc['table_field'] ] = array(
+				TBL_TITLE => $assoc['table_field_title'],
+				TBL_INPUT => $assoc[self::fieldInputTypeField]
+			);
 		}
 
 		unset($arr[ $this->TablePrimaryKey ]);
@@ -234,7 +215,7 @@ class MY_DBmodel extends CI_Model
 			}
 		}
 		foreach ($arr as $key => $value) {
-			$this->db->or_where($key, $value);
+			$this->db->or_like($key, $value);
 		}
 		return !empty($arr);
 	}

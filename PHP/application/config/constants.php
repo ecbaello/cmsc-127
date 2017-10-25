@@ -102,5 +102,8 @@ defined('MDL_ARRAY')           OR define('MDL_ARRAY', 'is_array');
 defined('SRCH_TABLE')           OR define('SRCH_TABLE', 'table');
 defined('SRCH_QRY')           OR define('SRCH_QRY', 'query');
 
+defined('TBL_TITLE')           OR define('TBL_TITLE', 'title');
+defined('TBL_INPUT')           OR define('TBL_INPUT', 'type');
+
 defined('OPT_TABLE_FIELD')           OR define('OPT_TABLE_FIELD', 'opt_field');
 defined('OPT_SUBTABLE_FIELD')           OR define('OPT_SUBTABLE_FIELD', 'opt_sub_field');
