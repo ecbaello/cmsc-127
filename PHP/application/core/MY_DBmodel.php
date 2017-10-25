@@ -12,6 +12,7 @@ class MY_DBmodel extends CI_Model
 	public $TablePrimaryKey = 'id'; // Overideable
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
+	protected $fieldsToHide = array (); // not yet
 
 	/**
 	* The constructor method
@@ -103,15 +104,10 @@ class MY_DBmodel extends CI_Model
 
 		$query = $this->get();
 
-		$fields = $query->list_fields();
-		$headers = $this->convertFields($fields);
-
-		$this->db_table->set_heading($headers);
-
-		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations());
+		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations(false));
 	}
 
-	public function getFields() {
+	public function getFields($hide_items = false) {
 		$this->db->select('table_field');
 		$this->db->where('table_name', $this->TableName);
 
@@ -120,14 +116,17 @@ class MY_DBmodel extends CI_Model
 
 		$arr = array();
 		foreach ($query as $field) {
-			array_push( $arr,  $field['table_field']);
+			$item = $field['table_field'];
+			array_push( $arr,  $item);
 		}
+
+		if ($hide_items) $arr = array_diff($arr, $this->fieldsToHide, array($this->TablePrimaryKey));
 		return $arr;
 	}
 
 	
 
-	public function getFieldAssociations() {
+	public function getFieldAssociations($hide_items = true) {
 		$this->db->select('table_field, table_field_title, '. self::fieldInputTypeField);
 		$this->db->where('table_name', $this->TableName);
 
@@ -140,7 +139,12 @@ class MY_DBmodel extends CI_Model
 			);
 		}
 
-		unset($arr[ $this->TablePrimaryKey ]);
+		if ($hide_items) {
+			foreach ($this->fieldsToHide as $field) {
+				unset($arr[$field]);
+			}
+			unset($arr[$this->TablePrimaryKey]);
+		}
 		return $arr;
 	}
 
@@ -221,7 +225,7 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function insertIntoTable($data) {
-		$this->db->insert( $this->TableName, $data);
+		return $this->db->insert( $this->TableName, $data);
 	}
 
 	public function updateWithPK($id, $data) {
@@ -232,7 +236,7 @@ class MY_DBmodel extends CI_Model
 
 	public function deleteWithPK($id) {
 		$this->db->where( $this->TablePrimaryKey, $id);
-	    $this->db->delete( $this->TableName); 
+	    return $this->db->delete( $this->TableName); 
 	}
 
 	

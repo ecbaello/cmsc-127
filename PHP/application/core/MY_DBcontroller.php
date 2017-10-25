@@ -8,7 +8,8 @@ class MY_DBcontroller extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
-
+		
+		$this->load->library('session');
 		$this->load->helper('url');
 	}
 
@@ -53,12 +54,10 @@ class MY_DBcontroller extends CI_Controller
 			$this->takeInput();
 
 		} else if ($submit == DB_DELETE) {
-			$submit = $this->input->post(DB_PKWORD);
-			$this->model->deleteWithPK($submit);
+			$id = $this->input->post(DB_PKWORD);
+			$this->model->deleteWithPK($id);
 		} else if ($submit == DB_UPDATE) {
-			echo $submit;
-			$submit = $this->input->post(DB_PKWORD);
-			echo $submit;
+			$id = $this->input->post(DB_PKWORD);
 			$model = $this->model;
 			$fields = $model->getFields();
 			unset($fields[$model->TablePrimaryKey]);
@@ -68,7 +67,7 @@ class MY_DBcontroller extends CI_Controller
 				$arr[$field] = $this->input->post($field);
 			}
 
-			$this->model->updateWithPK($submit, $arr);
+			$this->model->updateWithPK($id, $arr);
 		}
 
 	}

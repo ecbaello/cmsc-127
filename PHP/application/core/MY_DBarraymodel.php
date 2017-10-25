@@ -2,9 +2,9 @@
 
 class MY_DBarraymodel extends MY_DBmodel
 {
-	public $categoryTableName = 'pcf_type_table';
-	public $arrayFieldName = 'pcf_type';
-	public $categoryFieldName = 'pcf_name';
+	public $categoryTableName = '';
+	public $arrayFieldName = '';
+	public $categoryFieldName = '';
 
 	protected $isArrayModel = TRUE;
 
@@ -24,12 +24,20 @@ class MY_DBarraymodel extends MY_DBmodel
 	}
 
 	public function getCategoryTable($query) {
-		$this->db->select($this->getFields($this->TableName));
+		$this->db->select(implode(',',$this->getFields()));
 		$this->db->from($this->TableName);
 		$this->db->join($this->categoryTableName, $this->TableName.'.'.$this->arrayFieldName.' = '.$this->categoryTableName.'.'.$this->arrayFieldName);
 		$this->db->where($this->categoryFieldName, $query);
 		$query = $this->db->get();
 		return $query;
+	}
+
+	public function makeTableWithDelete($subtable, $link)
+	{	
+		$this->db->reset_query();
+		$query = $this->getCategoryTable($subtable);
+
+		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations(false));
 	}
 
 	public function registerCategoryTable($name) {
@@ -39,6 +47,11 @@ class MY_DBarraymodel extends MY_DBmodel
 			);
 			$this->db->insert($this->categoryTableName, $data);
 		}
+	}
+
+	public function getFields($hide_items = false) {
+		$fields = parent::getFields($hide_items);
+		return $hide_items ? array_diff($fields, array($this->arrayFieldName)) : $fields;
 	}
 
 	public function checkCategoryExists($name) {
@@ -61,7 +74,25 @@ class MY_DBarraymodel extends MY_DBmodel
 
 	public function insertIntoCategoryTable($name, $values) {
 		$values[$this->arrayFieldName] = $this->convertNameToCategory($name);
-		$this->insertIntoTable($values);
+		return $this->insertIntoTable($values);
+	}
+
+	public function updateOnCategoryTable($name, $pk, $values) {
+		unset($values[$this->arrayFieldName]);
+		unset($values[$this->categoryFieldName]);
+		$table = $this->convertNameToCategory($name);
+
+		$this->db->where( $this->TablePrimaryKey, $pk);
+		$this->db->where( $this->arrayFieldName, $table);
+	    return $this->db->update( $this->TableName, $values); 
+	}
+
+	public function deleteFromCategoryTable($name, $pk) {
+		$table = $this->convertNameToCategory($name);
+
+		$this->db->where( $this->TablePrimaryKey, $pk);
+		$this->db->where( $this->arrayFieldName, $table);
+	    return $this->db->delete( $this->TableName ); 
 	}
 
 	public function convertNameToCategory($name) {
