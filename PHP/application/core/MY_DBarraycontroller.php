@@ -65,6 +65,9 @@ class MY_DBarraycontroller extends CI_Controller {
 		if (isset($_SESSION[get_class($this).':table'])) {
 			$link = uri_string().'?'.QRY_SUBTABLE.'='.$_SESSION[get_class($this).':table'];
 			redirect($link, 'location');
+		}else{
+			$link = uri_string().'?'.QRY_SBUTABLE.'='.QRY_DEFAULT;
+			redirect($link, 'location');
 		}
 
 		return NULL;
