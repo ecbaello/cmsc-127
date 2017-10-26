@@ -17,6 +17,15 @@ class Pcf extends MY_DBarraycontroller {
 			echo 'Select table';
 		} else {
 			if ($this->model->checkCategoryExists($table)){
+				
+				//@DEO
+				/*$fields = array();
+				$query = $this->db->query('select field from pcf_field_association where pcf_name !="'.$table.'" and field not in (select field from pcf_field_association where pcf_name = "'.$table.'")')->result();
+				foreach ($query as $field) {
+					array_push($fields, $field->field);
+				}
+				$this->fieldsToHide = $fields;*/
+				
 				$this->handleRequest($table);
 
 				$request = $this->input->post(DB_GET);
