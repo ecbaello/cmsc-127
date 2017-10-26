@@ -2691,11 +2691,17 @@ select {
       background-color: #cc8b00;
       color: #0a0a0a; }
   .button.alert {
-    background-color: #a9a9a9;
+    background-color: #cc4b37;
     color: #fefefe; }
     .button.alert:hover, .button.alert:focus {
-      background-color: #808080;
+      background-color: #a53b2a;
       color: #fefefe; }
+  .button.tosearch {
+	background-color: #a9a9a9;
+	color: #fefefe; }
+	.button.tosearch:hover, .button.tosearch:focus{
+	  background-color: #808080;
+	  color: #fefefe; }
   .button.disabled, .button[disabled] {
     opacity: 0.25;
     cursor: not-allowed; }
