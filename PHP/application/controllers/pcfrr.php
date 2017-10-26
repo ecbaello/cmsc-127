@@ -24,12 +24,10 @@ class Pcfrr extends MY_DBarraycontroller {
 					
 				} else {
 					$this->load->view('header');
-					$this->load->view('html', array('html'=>'<h2 class="view-title">'.$this->model->ModelTitle.'</h2>'));
-					$data = array(
-						'link' => current_url(),
-						'pcf_names' => $this->model->db->query('select * from pcf_type_table')
-					);
-					$this->load->view('pcf_selector',$data);
+					
+					$this->load->view('html', array('html'=>
+						'<h2 class="view-title">'.$this->model->ModelTitle.'</h2>'.$this->makeSelectorHTML($table)
+					));
 								
 					$this->makeTableHTML($table);
 					

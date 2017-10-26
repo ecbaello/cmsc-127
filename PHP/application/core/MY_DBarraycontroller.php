@@ -12,6 +12,26 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->helper('url');
 	}
 
+	public function makeSelectorHTML ($table) {
+		$link = current_url();
+
+		$categs = $this->model->getCategories();
+		$build = '<select id="sub-selector" name="subtable-select">';
+		foreach ($categs as $categ) {
+			$build.= '<option value="'.current_url().'?'.QRY_SUBTABLE.'='.urlencode($categ).'" '.($table==$categ?'selected':'').'>'.$categ.'</option>';
+		}
+		$build.= '</select>';
+
+		$build.= '
+		<script>
+			$("#sub-selector").change(function () {
+				window.location.href = $(this).val();
+			});
+		</script>
+		';
+		return $build;
+	}
+
 	public function handleRequest($table)
 	{
 		$submit = $this->input->get(DB_REQUEST);
@@ -32,7 +52,7 @@ class MY_DBarraycontroller extends CI_Controller {
 
 			$this->model->updateOnCategoryTable($table, $id, $arr);
 		}
-		$_SESSION[get_class($this).':table'] = $table;
+		$_SESSION[get_class($this).':table'] = urlencode($table);
 	}
 
 	public function loadSession(){

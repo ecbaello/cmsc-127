@@ -8,7 +8,6 @@ $hash = $ci->security->get_csrf_hash();
 
 ?>
 <link rel="stylesheet" type="text/css" href="<?= base_url().'css/input_style.css' ?>">
-<h3>Search</h3>
 <select id="model-selector">
 	<?php 
 	$first = TRUE;

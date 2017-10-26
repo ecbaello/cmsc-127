@@ -67,6 +67,17 @@ class MY_DBarraymodel extends MY_DBmodel
 		
 	}
 
+	public function getCategories() {
+		$query = $this->db->get($this->categoryTableName);
+
+		$assocs = array();
+		$arr = $query->result_array();
+		foreach ($arr as $assoc) {
+			array_push($assocs, $assoc[$this->categoryFieldName]);
+		}
+		return $assocs;
+	}
+
 	public function getCategoryAssociations() {
 		$query = $this->db->get($this->categoryTableName);
 
