@@ -54,6 +54,12 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $hide_items ? array_diff($fields, array($this->arrayFieldName)) : $fields;
 	}
 
+	public function find ($search, $subtable)
+	{
+		$this->db->reset_query();
+		return $this->doFind($search) ? $this->getCategoryTable($subtable) : NULL;
+	}
+
 	public function checkCategoryExists($name) {
 		$this->db->where($this->categoryFieldName, $name);
 		$query = $this->db->get($this->categoryTableName);

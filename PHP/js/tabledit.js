@@ -41,20 +41,20 @@ if (typeof jQuery === 'undefined') {
             action: 'action',
             buttons: {
                 edit: {
-                    class: 'btn btn-sm btn-warning',
-                    html: '<span class="glyphicon glyphicon-pencil"></span>'
+                    class: 'button',
+                    html: '<span class="fa fa-pencil"></span>'
                 },
                 remove: {
-                    class: 'btn btn-sm btn-danger',
-                    html: '<span class="glyphicon glyphicon-trash"></span>'
+                    class: 'button alert',
+                    html: '<span class="fa fa-trash"></span>'
                 },
                 save: {
-                    class: 'btn btn-sm btn-success',
-                    html: '<span class="glyphicon glyphicon-ok"></span> &nbsp; Save'
+                    class: 'button success',
+                    html: '<span class="fa fa-save"></span> &nbsp; Save'
                 },
                 cancel: {
-                    class: 'btn btn-sm btn-warning',
-                    html: '<span class="glyphicon glyphicon-pencil"></span>'
+                    class: 'button alert',
+                    html: '<span class="fa fa-close"></span>'
                 }
             },
             onDraw: function() { return; },

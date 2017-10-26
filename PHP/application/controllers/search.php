@@ -52,12 +52,24 @@ class Search extends CI_Controller {
 		// -- Explode $model with ':' to find subtable
 		// -- Check for subtable input
 
-		$this->load->model($model);
+		$model = explode(':', $model);
+		$main = $model[0];
 
-		if (!empty ($submit) && !empty ($model)){
 
-			$result = $this->$model->find($submit); // ** Change to two parameter option if has subtable
-			$html = $this->$model->makeTable($result); 
+		$this->load->model($main);
+
+		if (!empty ($submit) && !empty ($main)){
+
+			$result = '';
+
+			if (count($model) < 2) $result = $this->$main->find($submit);
+			else $result = $this->$main->find($submit, $model[1]);
+
+			$html = $this->$main->makeTable($result); 
+
+			$count = $result->num_rows();
+
+			$this->load->view('html', array('html'=>'<div class="result-count">Displaying '.$count.' result'.($count>1?'s':'').'.</div>'));
 
 			$this->load->view('table_view', array('tablehtml'=>$html));
 		}

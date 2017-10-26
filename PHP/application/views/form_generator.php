@@ -6,8 +6,15 @@ $newline		= "\n";
 
 $this->load->helper('form');
 ?>
-
-<?php echo form_open($link); ?>
+<div style="float: right; position: relative;">
+	<button class="button fa fa-plus round-top-right" onclick="$('#container .input-form').fadeToggle(100);"></button>
+</div>
+<div class="input-form" style="display: none">
+	
+<?php echo form_open($link, array ('class'=>'button-wrapper')); ?>
+<button class="button form-close alert fa fa-close round-top-right" onclick="$('#container .input-form').fadeToggle(100);"></button>
+<div class="form-wrapper">
+	<h3 class="form-title">Insert Data</h3>
 	<div class="grid-x grid-padding-x">
 		<?php if ( isset($tablename) ) echo '<input type="hidden" name="table" value='.$tablename.'>'.$newline ?>
 		<?php if ( isset($extrahtml) ) echo $extrahtml.$newline ?>
@@ -63,10 +70,14 @@ $this->load->helper('form');
 		?>
 	</div>
 	<div class="grid-padding-x" style="text-align: center;"><input class="button" style="width: 100%" type="submit" value="Insert"></div>
+	</div>
 <?php echo form_close(); ?>
 <script type="text/javascript">
 	 $.validate({
 	    modules : 'html5, date, security'
 	 });
 </script>
+
+
+</div>
 

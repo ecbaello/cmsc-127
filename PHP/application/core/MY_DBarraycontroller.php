@@ -64,7 +64,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		
 
 		$data = array(
-			'tablehtml' => $this->model->makeTableWithDelete($subtable, $link).$this->load->view('popup_generator', $modal, true)
+			'tablehtml' => $form.$this->model->makeTableWithDelete($subtable, $link)
 		);
 
 

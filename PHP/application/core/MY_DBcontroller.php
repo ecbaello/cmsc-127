@@ -8,7 +8,7 @@ class MY_DBcontroller extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
-		
+
 		$this->load->library('session');
 		$this->load->helper('url');
 	}
@@ -19,14 +19,8 @@ class MY_DBcontroller extends CI_Controller
 
 		$form = $this->makeInputHtml(true);
 
-		$modal = array(
-			'actiontitle' => 'Input a row',
-			'modalid' => 'input-form',
-			'modalcontent' => $form
-		);
-
 		$data = array(
-			'tablehtml' => $this->model->makeTableWithDelete($link).$this->load->view('popup_generator', $modal, true)
+			'tablehtml' => $form.$this->model->makeTableWithDelete($link)
 		);
 
 		$this->load->view('table_view', $data);

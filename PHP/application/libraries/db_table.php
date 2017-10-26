@@ -27,11 +27,8 @@ class Db_table extends CI_Table {
 				foreach ($associations[$field] as $skey => $value) {
 					$item[$skey] = $value;
 				}
-			else {
-				$item[TBL_TITLE] = '';
-				$item[TBL_INPUT] = 'TEXT';
-			}
-			array_push($header, $item);
+				array_push($header, $item);
+			
 		}
 
 		$heading = array();
@@ -81,7 +78,7 @@ class Db_table extends CI_Table {
 						break;
 
 					case 'DATE':
-						$editable .= '"type":"text", "data-validation":"date"';
+						$editable .= '"type":"date", "data-validation":"date"';
 						break;
 
 					case 'NUMBER':
@@ -132,43 +129,7 @@ class Db_table extends CI_Table {
 
 		$linkHasParam = strpos($link, '?') !== false;
 
-		// Create the script for ui queries
-		// $script =
-		// '
-		// <script>
-		// 	function remove(id) {
-		// 		$.ajax({
-		// 		  type: '.$request_type.',
-		// 		  url: "'.$link.($linkHasParam?'&':'?').DB_REQUEST.'='.DB_DELETE.'",
-		// 		  data:
-		// 		  	'
-		// 		  	.$request_str.'
-		// 		  	"'.$token.'": "'.$hash.'",
-		// 		  	"id":id,
-		// 		  	"'.DB_GET.'":"'.BOOL_ON.'"
-		// 		  }'.',
-		// 		  success: function(data) {
-		// 		  	'.$postScript.'
-		// 		  }
-		// 		});
-		// 	}
-		// 	function update(id, value) {
-		// 		$.ajax({
-		// 		  type: '.$request_type.',
-		// 		  url: "'.$link.($linkHasParam?'&':'?').DB_REQUEST.'='.DB_UPDATE.'",
-		// 		  data: '
-		// 		  	.$request_str.'
-		// 		  	"'.$token.'": "'.$hash.'",
-		// 		  	"id":id,
-		// 		  	"'.DB_GET.'":"'.BOOL_ON.'"
-		// 		  }'.',
-		// 		  success: function(data) {
-		// 		  	'.$postScript.'
-		// 		  }
-		// 		});
-		// 	}
-		// </script>
-		// ';
+		
 		$out = '<div id="db-table">'.$this->newline;
 		// Build the table!
 		//$out .= $script.$this->newline;
@@ -198,7 +159,6 @@ class Db_table extends CI_Table {
 				$out .= $temp.(isset($heading['data']) ? $heading['data'] : '').$this->template['heading_cell_end'];
 			}
 
-			$out .= $this->template['heading_cell_start'].$this->template['heading_cell_end'];
 			$out .= $this->template['heading_row_end'].$this->newline.$this->template['thead_close'].$this->newline;
 		}
 
@@ -213,7 +173,6 @@ class Db_table extends CI_Table {
 
 				foreach ($row as $key => $cell) {
 					$temp = $this->template['cell_'.$name.'start'];
-					$temp = str_replace('>', ' data-key = "'.$key.'">', $temp);
 					$cell = isset($cell) ? $cell : '';
 					$out .= $temp;
 					if ($cell === '' OR $cell === NULL) {
