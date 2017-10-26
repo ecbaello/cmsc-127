@@ -1,9 +1,15 @@
 body {
 	background: #eeeeee;
+	height: 100%;
 }
 
 table {
 	max-width: 100%;
+}
+
+#db-table table tbody {
+	overflow: scroll;
+	max-height: 100%;
 }
 
 .form-title {

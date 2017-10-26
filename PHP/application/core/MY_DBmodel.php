@@ -246,9 +246,14 @@ class MY_DBmodel extends CI_Model
 				if (!empty($field) && !empty($search[1])) $arr[$field] = $search[1];
 			}
 		}
+		$first = TRUE;
+		$this->db->group_start();
 		foreach ($arr as $key => $value) {
-			$this->db->or_like($key, $value);
+			if ($first) $this->db->like($key, $value);
+			else $this->db->or_like($key, $value);
+			$first = FALSE;
 		}
+		$this->db->group_end();
 		return !empty($arr);
 	}
 

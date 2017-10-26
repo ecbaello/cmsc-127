@@ -14,9 +14,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<script src="<?= base_url().'js/jquery.js' ?>"></script>
   <script src="<?= base_url().'js/form-validator.js' ?>"></script>
   <script src="<?= base_url().'js/tabledit.js' ?>"></script>
+  <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
 </head>
 <body>
-<div class="off-canvas-wrapper">
+<div class="off-canvas-wrapper" style="position: static;">
     <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
       <div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas>
         <ul class="navigation">

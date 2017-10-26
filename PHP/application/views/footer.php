@@ -12,6 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  <script src="<?= base_url().'js/foundation.js' ?>"></script>
 <script>
   $(document).foundation();
+  $('#db-table table').stickyTableHeaders();
 </script>
 
 </body>

@@ -55,9 +55,10 @@ class MY_DBarraymodel extends MY_DBmodel
 	}
 
 	public function find ($search, $subtable)
-	{
-		$this->db->reset_query();
-		return $this->doFind($search) ? $this->getCategoryTable($subtable) : NULL;
+	{	
+		$this->doFind($search);
+		$this->db->where($this->arrayFieldName, $subtable);
+		return $this->db->get($this->TableName);
 	}
 
 	public function checkCategoryExists($name) {
