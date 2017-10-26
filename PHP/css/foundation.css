@@ -2691,10 +2691,10 @@ select {
       background-color: #cc8b00;
       color: #0a0a0a; }
   .button.alert {
-    background-color: #cc4b37;
+    background-color: #a9a9a9;
     color: #fefefe; }
     .button.alert:hover, .button.alert:focus {
-      background-color: #a53b2a;
+      background-color: #808080;
       color: #fefefe; }
   .button.disabled, .button[disabled] {
     opacity: 0.25;
