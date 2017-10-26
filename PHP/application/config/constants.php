@@ -106,4 +106,5 @@ defined('TBL_TITLE')           OR define('TBL_TITLE', 'title');
 defined('TBL_INPUT')           OR define('TBL_INPUT', 'type');
 
 defined('QRY_SUBTABLE')           OR define('QRY_SUBTABLE', 'subtable');
+defined('QRY_DEFAULT')			OR define('QRY_DEFAULT','General');
 
