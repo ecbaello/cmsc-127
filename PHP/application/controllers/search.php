@@ -11,6 +11,8 @@ class Search extends CI_Controller {
 
 		$this->load->view('header');
 
+		$this->load->view('html', array('html'=>'<h2 class="view-title">Search</h2>'));
+
 		$query = $this->db->get($this->search_model::modelTableName);
 		$results = $query->result_array();
 
@@ -67,9 +69,10 @@ class Search extends CI_Controller {
 
 			$html = $this->$main->makeTable($result); 
 
-			$count = $result->num_rows();
-
-			$this->load->view('html', array('html'=>'<div class="result-count">Displaying '.$count.' result'.($count>1?'s':'').'.</div>'));
+			if (!empty($result)) {
+				$count = $result->num_rows();
+				$this->load->view('html', array('html'=>'<div class="result-count">Displaying '.$count.' result'.($count>1?'s':'').'.</div>'));
+			}
 
 			$this->load->view('table_view', array('tablehtml'=>$html));
 		}

@@ -2,7 +2,7 @@
 
 class Database_pcfrr_model extends MY_DBarraymodel
 {
-	public $ModelTitle = 'Petty Cash Fund';
+	public $ModelTitle = 'Petty Cash Fund Replenishment';
 	public $TableName = 'pcf_rr';
 	public $TablePrimaryKey = 'pcf_rr_request_id';
 

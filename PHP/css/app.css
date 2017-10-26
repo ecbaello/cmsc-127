@@ -18,6 +18,26 @@ table {
 	overflow: auto;
 }
 
+.navigation {
+	list-style: none;
+	margin-left: 0;
+}
+
+.off-canvas {
+	background: #296636;
+}
+
+.navigation .button {
+	width: 100%;
+	margin: 0;
+	text-align: left;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	font-size: 1rem;
+	line-height: 1.2;
+	font-weight: bold;
+}
+
 .button.round-top-right {
 	width: 50px;
 	height: 50px;

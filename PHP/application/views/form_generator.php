@@ -23,50 +23,58 @@ $this->load->helper('form');
 				foreach ($constants as $key => $value) {
 					echo '<input type="hidden" name="'.$key.'" value="'.$value.'">'.$newline;
 				}
+				$post = '';
 			foreach ($fields as $key => $value) {
-				echo '<div class="small-12 medium-6 large-6 cell">'.$newline;
-				echo '<label for="'.$key .'">'.$value[TBL_TITLE];
+				$echonow = TRUE;
+				$sb = '';
+				$sb.= '<div class="small-12 medium-6 large-6 cell">'.$newline;
+				$sb.= '<label for="'.$key .'">'.$value[TBL_TITLE];
 				switch ($value[TBL_INPUT]) {
 					case 'PASSWORD':
-						echo '<input type="password" data-validation="length alphanumeric strength" data-validation-length="min8" data-validation-allowing="-_" data-validation-strength="2" name="'.$key.'" >';
+						$sb.= '<input type="password" data-validation="length alphanumeric strength" data-validation-length="min8" data-validation-allowing="-_" data-validation-strength="2" name="'.$key.'" >';
 						break;
 
 					case 'URL':
-						echo '<input type="url" data-validation="url" name="'.$key.'" >';
+						$sb.= '<input type="url" data-validation="url" name="'.$key.'" >';
 						break;
 
 					case 'EMAIL':
-						echo '<input type="email" data-validation="email" name="'.$key.'" >';
+						$sb.= '<input type="email" data-validation="email" name="'.$key.'" >';
 						break;
 
 					case 'CHECKBOX':
-						echo '<input type="checkbox" name="'.$key.'" >';
+						$sb.= '<input type="checkbox" name="'.$key.'" >';
 						break;
 
 					case 'TEXTAREA':
-						echo '<textarea name="'.$key.'" ></textarea>';
+						$sb.= '<textarea name="'.$key.'" ></textarea>';
+						$echonow = FALSE;
 						break;
 
 					case 'DATE':
-						echo '<input type="date" data-validation="date" name="'.$key.'" >';
+						$sb.= '<input type="date" data-validation="date" name="'.$key.'" >';
 						break;
 
 					case 'NUMBER':
-						echo '<input type="number" data-validation="number" name="'.$key.'" >';
+						$sb.= '<input type="number" data-validation="number" name="'.$key.'" >';
 						break;
 
 					case 'FLOAT':
-						echo '<input type="number" step="0.01" data-validation="number" data-validation-allowing="float" name="'.$key.'" >';
+						$sb.= '<input type="number" step="0.01" data-validation="number" data-validation-allowing="float" name="'.$key.'" >';
 						break;
 					
 					default:
-						echo '<input type="text" name="'.$key.'" >';
+						$sb.= '<input type="text" name="'.$key.'" >';
 						break;
 				}
 				
-				echo '</label>'.$newline;
-				echo '</div>'.$newline;
+				$sb.= '</label>'.$newline;
+				$sb.= '</div>'.$newline;
+
+				if ($echonow) echo $sb;
+				else $post.=$sb;
 			}
+			echo $post;
 		?>
 	</div>
 	<div class="grid-padding-x" style="text-align: center;"><input class="button" style="width: 100%" type="submit" value="Insert"></div>
