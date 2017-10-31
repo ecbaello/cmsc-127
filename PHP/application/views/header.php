@@ -44,7 +44,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </nav>
 <ul class="navigation">
           <li>
-            <a class="button" href="<?= base_url()?>search"><i class="fa fa-search"></i> Search</a>
+            <a class="button tosearch" href="<?= base_url()?>search"><i class="fa fa-search"></i> Search</a>
           </li>
           <li>
             <a class="button" href="<?=base_url().'detchar' ?>">Patient Charges Detail</a>
