@@ -7,12 +7,12 @@ $newline		= "\n";
 $this->load->helper('form');
 ?>
 <div style="float: right; position: relative;">
-	<button class="button fa fa-plus round-top-right" onclick="$('#container .input-form').fadeToggle(100);"></button>
+	<button class="btn fa fa-plus round-top-right" onclick="$('#container .input-form').fadeToggle(100);"></button>
 </div>
 <div class="input-form" style="display: none">
 	
 <?php echo form_open($link, array ('class'=>'button-wrapper')); ?>
-<button class="button form-close alert fa fa-close round-top-right" onclick="$('#container .input-form').fadeToggle(100);"></button>
+<button class="btn form-close alert fa fa-close round-top-right" onclick="$('#container .input-form').fadeToggle(100);"></button>
 <div class="form-wrapper">
 	<h3 class="form-title">Insert Data</h3>
 	<div class="grid-x grid-padding-x">

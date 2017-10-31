@@ -6,6 +6,10 @@ class MY_DBmodel extends CI_Model
 	const modelTableName = 'model_registry';
 	const fieldInputTypeField = 'table_field_input_type';
 
+	protected $tabletemplate = array(
+        'table_open'  => '<table class="table table-striped table-hover">'
+	);
+
 
 	public $ModelTitle = '';
 	public $TableName = ''; // Overideable
@@ -105,9 +109,8 @@ class MY_DBmodel extends CI_Model
 
 	public function makeTableWithDelete($link)
 	{
-
 		$query = $this->get();
-
+		$this->db_table->set_template($this->tabletemplate);
 		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations(false));
 	}
 
@@ -125,17 +128,6 @@ class MY_DBmodel extends CI_Model
 		}
 
 		if ($hide_items) $arr = array_diff($arr, $this->fieldsToHide, array($this->TablePrimaryKey));
-		return $arr;
-	}
-
-	public function getPCFFields($pcfname) {
-		$query = $this->db->query('select table_field from '.self::metaTableName.' where table_name = "'.$this->TableName.'" and table_field in (select field from pcf_field_association where pcf_name = "'.$pcfname.'")')->result_array();
-		if ( empty($query) ) return $query;
-
-		$arr = array();
-		foreach ($query as $field) {
-			array_push( $arr,  $field['table_field']);
-		}
 		return $arr;
 	}
 
@@ -158,21 +150,6 @@ class MY_DBmodel extends CI_Model
 			}
 			unset($arr[$this->TablePrimaryKey]);
 		}
-		return $arr;
-	}
-	
-	public function getPCFFieldAssociations($pcfname) {
-		$inp = $this->db->query('select table_field, table_field_title, '.self::fieldInputTypeField.' from '.self::metaTableName.' where table_name = "'.$this->TableName.'" and table_field in (select field from pcf_field_association where pcf_name = "'.$pcfname.'")')->result_array();
-
-		$arr = array();
-		foreach ($inp as $assoc) {
-			$arr[ $assoc['table_field'] ] = array(
-				TBL_TITLE => $assoc['table_field_title'],
-				TBL_INPUT => $assoc[self::fieldInputTypeField]
-			);
-		}
-
-		unset($arr[ $this->TablePrimaryKey ]);
 		return $arr;
 	}
 

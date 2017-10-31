@@ -7,13 +7,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
     </div>
   </div>
- <script src="<?= base_url().'js/what-input.js' ?>"></script>
- <script type="text/javascript" src="<?= base_url().'js/motion-ui.js' ?>"></script>
- <script src="<?= base_url().'js/foundation.js' ?>"></script>
-<script>
-  $(document).foundation();
-  $('#db-table table').stickyTableHeaders();
-</script>
-
+ <script src="<?= base_url().'js/bootstrap.js' ?>"></script>
 </body>
 </html>

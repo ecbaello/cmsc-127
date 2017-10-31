@@ -4,9 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="<?= base_url().'css/foundation.css' ?>">
+	<link rel="stylesheet" href="<?= base_url().'css/bootstrap.css' ?>">
 	<link rel="stylesheet" href="<?= base_url().'css/app.css' ?>">
-	<link rel="stylesheet" type="text/css" href="<?= base_url().'css/motion-ui.css' ?>">
 	<link rel="stylesheet" type="text/css" href="<?= base_url().'css/font-awesome.css' ?>">
 
   <title>Luke Foundation<?php isset($title)?' &gt; '.$title:'' ?></title>
@@ -17,12 +16,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
 </head>
 <body>
-<div class="off-canvas-wrapper" style="position: static;">
-    <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
-      <div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas>
-        <ul class="navigation">
+<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+        <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="fa fa-navicon fa-2x"></span>
+        </a>
+        <a class="navbar-brand" href="#"><img align = "left" class="img-responsive img-centered img-xs" style = "width:23px;" src="lukelogo.png"> Luke Foundation, Inc. Database</a>
+    </div>
+    <ul class="nav navbar-top-links navbar-right">
+        <li>
+          <a href="#">
+              <span class="fa fa-home fa-fw fa-2x"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+              <span class="fa fa-user-md fa-fw fa-2x"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+              <span class="fa fa-user fa-fw fa-2x"></span>
+          </a>
+        </li>
+    </ul>
+</nav>
+<ul class="navigation">
           <li>
-            <a class="button alert" href="<?= base_url()?>search"><i class="fa fa-search"></i> Search</a>
+            <a class="button" href="<?= base_url()?>search"><i class="fa fa-search"></i> Search</a>
           </li>
           <li>
             <a class="button" href="<?=base_url().'detchar' ?>">Patient Charges Detail</a>
@@ -37,15 +59,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <a class="button" href="<?=base_url().'patientexp'?>">Patient Expenses</a>
           </li>
         </ul>
-      </div>
-      <div class="off-canvas-content" data-off-canvas-content>
-<div class="title-bar">
-  <div class="title-bar-left">
-    
-    <button class="fa fa-bars" data-toggle="offCanvasLeft" style="font-size: 1rem; color: white; margin-right: 20px;"></button>
-  	<a href="<?= base_url()?>">
-    <h1 class="title-bar-title">Luke Foundation</h1>
-    </a>
-  </div>
-</div>
 <div id="capsule">

@@ -26,7 +26,7 @@ class Database_detailed_charges_model extends MY_DBmodel
 			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
-			$this->registerFieldTitle( $this->TablePrimaryKey, 'Charge ID');
+			$this->registerFieldTitle( $this->TablePrimaryKey, '#');
 			$this->registerFieldTitle('dc_date', 'Date', 'DATE');
 			$this->registerFieldTitle('dc_description', 'Description', 'TEXTAREA');
 			$this->registerFieldTitle('dc_quantity', 'Quantity', 'NUMBER');

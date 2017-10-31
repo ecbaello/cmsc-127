@@ -111,7 +111,6 @@ class Db_table extends CI_Table {
 		
 		$this->_compile_template();
 		
-
 		// Make request parameters
 		$request_str = "{";
 		if (!empty($request_param))
@@ -156,7 +155,9 @@ class Db_table extends CI_Table {
 					}
 				}
 
-				$out .= $temp.(isset($heading['data']) ? $heading['data'] : '').$this->template['heading_cell_end'];
+				$out .= $temp.(isset($heading['data']) ? $heading['data'] : '');
+				
+				$out .= $this->template['heading_cell_end'];
 			}
 
 			$out .= $this->template['heading_row_end'].$this->newline.$this->template['thead_close'].$this->newline;
@@ -172,7 +173,7 @@ class Db_table extends CI_Table {
 				$out .= $this->template['row_'.$name.'start'].$this->newline;
 
 				foreach ($row as $key => $cell) {
-					$temp = $this->template['cell_'.$name.'start'];
+					$temp = ($key == $pk_name) ? $this->template['heading_cell_start'] : $this->template['cell_'.$name.'start'];
 					$cell = isset($cell) ? $cell : '';
 					$out .= $temp;
 					if ($cell === '' OR $cell === NULL) {
@@ -181,7 +182,7 @@ class Db_table extends CI_Table {
 					else {
 						$out .= $cell;
 					}
-					$out .= $this->template['cell_'.$name.'end'];
+					$out .= ($key == $pk_name) ? $this->template['heading_cell_end'] : $this->template['cell_'.$name.'end'];
 				}
 
 				// $out .= $this->template['cell_'.$name.'start'];
@@ -198,7 +199,9 @@ class Db_table extends CI_Table {
 		$out .= '</form>';
 		$out .= '</div>';
 
-		$out .= '<script>$("#db-table table").Tabledit({'.$tabledit.'});</script>';
+		$out .= '<script>
+					$("#db-table table").Tabledit({'.$tabledit.'}).stickyTableHeaders();
+				</script>';
 
 		// Clear table class properties before generating the table
 		$this->clear();

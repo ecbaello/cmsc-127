@@ -36,7 +36,7 @@ class MY_DBarraymodel extends MY_DBmodel
 	{	
 		$this->db->reset_query();
 		$query = $this->getCategoryTable($subtable);
-
+		$this->db_table->set_template($this->tabletemplate);
 		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations(false));
 	}
 

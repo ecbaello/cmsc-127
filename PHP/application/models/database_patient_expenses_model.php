@@ -31,7 +31,7 @@ class Database_patient_expenses_model extends MY_DBmodel
 			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
-			$this->registerFieldTitle($this->TablePrimaryKey, 'Transaction ID');
+			$this->registerFieldTitle($this->TablePrimaryKey, '#');
 			$this->registerFieldTitle('pe_hospital_bill', 'Hospital Bill', 'FLOAT');
 			$this->registerFieldTitle('pe_laboratory', 'Laboratory', 'FLOAT');
 			$this->registerFieldTitle('pe_medical_supplies', 'Medical Supplies', 'FLOAT');

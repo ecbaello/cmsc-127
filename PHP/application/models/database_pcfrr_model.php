@@ -75,7 +75,7 @@ class Database_pcfrr_model extends MY_DBarraymodel
 			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
-			$this->registerFieldTitle(  $this->TablePrimaryKey, 'ID');
+			$this->registerFieldTitle(  $this->TablePrimaryKey, '#');
 			$this->registerFieldTitle( 'pcf_rr_particulars', 'Particulars', 'TEXTAREA');
 			$this->registerFieldTitle( 'pcf_rr_supporting_documents', 'Supporting Documents', 'URL');
 			$this->registerFieldTitle( 'pcf_rr_screening_training', 'Screening/Training', 'FLOAT');

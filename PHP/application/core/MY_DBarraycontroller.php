@@ -66,7 +66,8 @@ class MY_DBarraycontroller extends CI_Controller {
 			$link = uri_string().'?'.QRY_SUBTABLE.'='.$_SESSION[get_class($this).':table'];
 			redirect($link, 'location');
 		}else{
-			$link = uri_string().'?'.QRY_SBUTABLE.'='.QRY_DEFAULT;
+			$categs = $this->model->getCategories();
+			$link = uri_string().'?'.QRY_SUBTABLE.'='.urlencode($categs[0]);
 			redirect($link, 'location');
 		}
 

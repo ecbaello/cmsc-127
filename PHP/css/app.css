@@ -7,6 +7,11 @@ table {
 	max-width: 100%;
 }
 
+.tableFloatingHeaderOriginal {
+	background: white;
+
+}
+
 #db-table table tbody {
 	overflow: scroll;
 	max-height: 100%;

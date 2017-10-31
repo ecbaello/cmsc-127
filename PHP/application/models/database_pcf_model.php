@@ -74,9 +74,9 @@ class Database_pcf_model extends MY_DBarraymodel
 			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
-			$this->registerFieldTitle(  $this->TablePrimaryKey, 'ID');
+			$this->registerFieldTitle(  $this->TablePrimaryKey, '#');
 			$this->registerFieldTitle( 'pcf_particulars', 'Particulars', 'TEXTAREA');
-			$this->registerFieldTitle( 'pcf_supporting_documents', 'Supporting Documents', 'URL');
+			$this->registerFieldTitle( 'pcf_supporting_documents', 'Documents', 'URL');
 			$this->registerFieldTitle( 'pcf_screening_training', 'Screening/Training', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_meals_snacks', 'Meals/Snacks', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_travel', 'Travel', 'FLOAT');

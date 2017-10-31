@@ -41,19 +41,19 @@ if (typeof jQuery === 'undefined') {
             action: 'action',
             buttons: {
                 edit: {
-                    class: 'button',
+                    class: 'btn',
                     html: '<span class="fa fa-pencil"></span>'
                 },
                 remove: {
-                    class: 'button alert',
+                    class: 'btn',
                     html: '<span class="fa fa-trash"></span>'
                 },
                 save: {
-                    class: 'button success',
+                    class: 'btn',
                     html: '<span class="fa fa-save"></span> &nbsp; Save'
                 },
                 cancel: {
-                    class: 'button alert',
+                    class: 'btn',
                     html: '<span class="fa fa-close"></span>'
                 }
             },
@@ -104,8 +104,6 @@ if (typeof jQuery === 'undefined') {
                 editable: function() {
                     for (var i = 0; i < settings.columns.editable.length; i++) {
                         var $td = $table.find('td:nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
-
-                        console.log('hello');
                         
                         $td.each(function() {
                             // Add pointer as cursor.
