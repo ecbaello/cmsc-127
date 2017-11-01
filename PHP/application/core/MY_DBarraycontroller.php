@@ -1,4 +1,4 @@
-<?php
+	<?php
 
 class MY_DBarraycontroller extends CI_Controller {
 
@@ -10,6 +10,17 @@ class MY_DBarraycontroller extends CI_Controller {
 		
 		$this->load->library('session');
 		$this->load->helper('url');
+	}
+
+	public function index($subtable = NULL, $action = NULL, $id = NULL) {
+		if ($subtable != null) {
+
+		}
+	}
+
+	protected function makeHTML($subtable)
+	{
+
 	}
 
 	public function makeSelectorHTML ($table) {

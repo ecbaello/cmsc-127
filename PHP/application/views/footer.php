@@ -7,6 +7,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
     </div>
   </div>
+ 
  <script src="<?= base_url().'js/bootstrap.js' ?>"></script>
+ <script src="<?= base_url().'js/app.js' ?>"></script>
 </body>
 </html>

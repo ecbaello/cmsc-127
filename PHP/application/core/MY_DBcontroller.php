@@ -13,67 +13,73 @@ class MY_DBcontroller extends CI_Controller
 		$this->load->helper('url');
 	}
 
+	public function index() {
+		$this->makeHTML();
+	}
+
+	protected function makeHTML() {
+
+	}
+
 	public function makeTableHTML()
 	{
-		$link = current_url();
-
-		$form = $this->makeInputHtml(true);
-
-		$data = array(
-			'tablehtml' => $form.$this->model->makeTableWithDelete($link)
-		);
-
-		$this->load->view('table_view', $data);
+		$this->load->view('table_view');
 	}
 
-	public function makeInputHtml($getHTML = false)
-	{
 
-		$fields = $this->model->getFieldAssociations();
-		$link = uri_string().'?'.DB_REQUEST.'='.DB_INSERT;
-
-		$data = array(
-			'fields' => $fields,
-			'constants' => array(),
-			'link' => $link
-		);
-		return $this->load->view('form_generator', $data, $getHTML);
-
+	public function get ($id) {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+    	echo json_encode( ['data'=>$this->model->getByPK($id),'csrf' => $token,
+				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
 	}
 
-	public function handleRequest() {
-		$submit = $this->input->get(DB_REQUEST);
+	public function update ($id) {
+		
 
-		if ($submit == DB_INSERT) {
-			$this->takeInput();
+    	$insert = $this->input->post('data');
 
-		} else if ($submit == DB_DELETE) {
-			$id = $this->input->post(DB_PKWORD);
-			$this->model->deleteWithPK($id);
-		} else if ($submit == DB_UPDATE) {
-			$id = $this->input->post(DB_PKWORD);
-			$model = $this->model;
-			$fields = $model->getFields();
-			unset($fields[$model->TablePrimaryKey]);
+    	$this->model->updateWithPK($id, $insert);
 
-			$arr = array();
-			foreach ($fields as $field) {
-				$arr[$field] = $this->input->post($field);
-			}
-
-			$this->model->updateWithPK($id, $arr);
-		}
-
+    	$this->get($id);
 	}
 
-	public function takeInput () {
+	public function remove ($id) {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$this->model->deleteWithPK($id);
+
+		echo json_encode(['success'=>true,'csrf' => $token,
+				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+	}
+
+	public function add () {
+		$insert = $this->input->post('data');
+
 		$inputs = $this->model->getFields();
 		$arr = array();
 		foreach ($inputs as $input) {
-			$value = $this->input->post($input);
-			if (! empty($value) ) $arr[$input] = $value; 
+			if (isset($insert[$input])) {
+				$arr[$input] = $insert[$input]; 
+			}
 		}
-		$this->model->insertIntoTable($arr);
+		if (!$this->model->insertIntoTable($arr)){
+			show_error('Data Insertion Failed', 400);
+		}
+	}
+
+	public function data () {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+		echo json_encode( 
+			array(
+				'id'=>$this->model->TablePrimaryKey,
+				'headers'=>$this->model->getFieldAssociations(),
+				'data'=>$this->model->get()->result(),
+				'csrf' => $token,
+				'csrf_hash' => $hash)
+		, JSON_NUMERIC_CHECK);
 	}
 }
 

@@ -7,6 +7,20 @@ table {
 	max-width: 100%;
 }
 
+table input, table textarea, table .row-update .cell-value, table .row-edit .btn-edit,  table .row-edit .btn-delete, table .btn-confirm {
+	display: none !important;
+}
+
+table .row-update input, table .row-update textarea, table .row-edit .btn-confirm {
+	display: inline !important;
+}
+
+table .toolbox {
+	white-space: nowrap;
+	text-align: right;
+}
+
+
 .tableFloatingHeaderOriginal {
 	background: white;
 

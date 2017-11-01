@@ -99,12 +99,14 @@ defined('MDL_CLASS')           OR define('MDL_CLASS', 'mdl_class');
 defined('MDL_NAME')            OR define('MDL_NAME', 'mdl_name');
 defined('MDL_ARRAY')           OR define('MDL_ARRAY', 'is_array');
 
-defined('SRCH_TABLE')           OR define('SRCH_TABLE', 'table');
-defined('SRCH_QRY')           OR define('SRCH_QRY', 'query');
+defined('SRCH_TABLE')          OR define('SRCH_TABLE', 'table');
+defined('SRCH_QRY')            OR define('SRCH_QRY', 'query');
 
 defined('TBL_TITLE')           OR define('TBL_TITLE', 'title');
 defined('TBL_INPUT')           OR define('TBL_INPUT', 'type');
 
-defined('QRY_SUBTABLE')           OR define('QRY_SUBTABLE', 'subtable');
-defined('QRY_DEFAULT')			OR define('QRY_DEFAULT','General');
+defined('QRY_SUBTABLE')        OR define('QRY_SUBTABLE', 'subtable');
+defined('QRY_DEFAULT')		   OR define('QRY_DEFAULT','General');
+
+defined('RD_ONLY')		   OR define('RD_ONLY','read_only');
 

@@ -1,12 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="<?= base_url().'css/bootstrap.css' ?>">
+	<link rel="stylesheet" href="<?= base_url().'css/bootstrap.min.css' ?>">
 	<link rel="stylesheet" href="<?= base_url().'css/app.css' ?>">
-	<link rel="stylesheet" type="text/css" href="<?= base_url().'css/font-awesome.css' ?>">
+	<link rel="stylesheet" href="<?= base_url().'css/font-awesome.css' ?>">
 
   <title>Luke Foundation<?php isset($title)?' &gt; '.$title:'' ?></title>
   
@@ -14,6 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <script src="<?= base_url().'js/form-validator.js' ?>"></script>
   <script src="<?= base_url().'js/tabledit.js' ?>"></script>
   <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
+  <script src="<?= base_url().'js/angular.js' ?>"></script>
 </head>
 <body>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
