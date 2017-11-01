@@ -32,6 +32,14 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $query;
 	}
 
+	public function getIndividual($id) {
+		$this->db->where($this->TablePrimaryKey, $id);
+		$query = $this->db->get($this->TableName)->row();
+		$field = $this->arrayFieldName;
+		unset($query->$field);
+		return $query;
+	}
+
 	public function makeTableWithDelete($subtable, $link)
 	{	
 		$this->db->reset_query();

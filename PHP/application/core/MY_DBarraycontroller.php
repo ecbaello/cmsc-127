@@ -8,13 +8,36 @@ class MY_DBarraycontroller extends CI_Controller {
 	{
 		parent::__construct(); // do constructor for parent class
 		
-		$this->load->library('session');
 		$this->load->helper('url');
 	}
 
-	public function index($subtable = NULL, $action = NULL, $id = NULL) {
-		if ($subtable != null) {
-
+	public function index($subtable = null, $action = null, $id = null) {
+		
+		if ($subtable !== null) {
+			$subtable = urldecode($subtable);
+			if ($action === null) $this->makeHTML($subtable);
+			else {
+				switch ($action) {
+					case 'add':
+						$this->add($subtable);
+						break;
+					case 'get':
+						if ($id !== null) $this->get($subtable, $id);
+						break;
+					case 'update':
+						if ($id !== null) $this->update($subtable, $id);
+						break;
+					case 'remove':
+						if ($id !== null) $this->remove($subtable, $id);
+						break;
+					
+					default:
+						$this->data($subtable);
+						break;
+				}
+			}
+		} else {
+			
 		}
 	}
 
@@ -23,7 +46,60 @@ class MY_DBarraycontroller extends CI_Controller {
 
 	}
 
-	public function makeSelectorHTML ($table) {
+	protected function data($table) {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+		echo json_encode( 
+			array(
+				'id'=>$this->model->TablePrimaryKey,
+				'headers'=>$this->model->getFieldAssociations(),
+				'data'=>$this->model->getCategoryTable($table)->result(),
+				'csrf' => $token,
+				'csrf_hash' => $hash)
+		, JSON_NUMERIC_CHECK);
+	}
+
+	protected function add($subtable) {
+		$insert = $this->input->post('data');
+
+		$inputs = $this->model->getFields();
+		$arr = array();
+		foreach ($inputs as $input) {
+			if (isset($insert[$input])) {
+				$arr[$input] = $insert[$input]; 
+			}
+		}
+		if (!$this->model->insertIntoCategoryTable($subtable, $arr)){
+			show_error('Data Insertion Failed', 400);
+		}
+	}
+
+	protected function get($subtable, $id) {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+    	echo json_encode( ['data'=>$this->model->getIndividual($id),'csrf' => $token,
+				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+	}
+
+	protected function remove($subtable, $id) {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$this->model->deleteFromCategoryTable($subtable, $id);
+
+		echo json_encode(['success'=>true,'csrf' => $token,
+				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+	}
+
+	protected function update($subtable, $id) {
+		$insert = $this->input->post('data');
+
+    	$this->model->updateOnCategoryTable($subtable, $id, $insert);
+
+    	$this->get($subtable, $id);
+	}
+
+	protected function makeSelectorHTML ($table) {
 		$link = current_url();
 
 		$categs = $this->model->getCategories();
@@ -83,53 +159,5 @@ class MY_DBarraycontroller extends CI_Controller {
 		}
 
 		return NULL;
-	}
-	
-	public function makeTableHTML($subtable)
-	{	
-		$link = current_url().'?'.QRY_SUBTABLE.'='.$subtable;
-
-		$form = $this->makeInputHtml($subtable, true);
-
-		$modal = array(
-			'actiontitle' => 'Input a row',
-			'modalid' => 'input-form',
-			'modalcontent' => $form
-		);
-		
-
-		$data = array(
-			'tablehtml' => $form.$this->model->makeTableWithDelete($subtable, $link)
-		);
-
-
-		$this->load->view('table_view', $data);
-		
-	}
-
-	public function makeInputHtml($subtablename, $isGet = false)
-	{
-		$this->load->helper('url');
-
-		$fields = $this->model->getFieldAssociations();
-		$link = uri_string().'?'.QRY_SUBTABLE.'='.urlencode($subtablename).'&'.DB_REQUEST.'='.DB_INSERT;
-
-		$data = array(
-			'fields' => $fields,
-			'constants' => array(DB_REQUEST=>DB_INSERT),
-			'link' => $link
-		);
-		return $this->load->view('form_generator', $data, $isGet);
-
-	}
-
-	public function takeInput ($table) {
-		$inputs = $this->model->getFields();
-		$arr = array();
-		foreach ($inputs as $input) {
-			$value = $this->input->post($input);
-			if (! empty($value) ) $arr[$input] = $value; 
-		}
-		$this->model->insertIntoCategoryTable($table, $arr);
 	}
 }

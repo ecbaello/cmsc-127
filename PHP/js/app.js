@@ -123,6 +123,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 				$scope.headers = data['headers'];
 				$scope.csrf = data['csrf'];
 				$scope.csrfHash = data['csrf_hash'];
+				console.log(data);
 	    	});
 		
 	};
