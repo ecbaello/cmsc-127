@@ -11,7 +11,11 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->helper('url');
 	}
 
-	public function index($subtable = null, $action = null, $id = null) {
+	public function index() {
+		
+	}
+
+	public function table($subtable = null, $action = null, $id = null) {
 		
 		if ($subtable !== null) {
 			$subtable = urldecode($subtable);
@@ -23,21 +27,30 @@ class MY_DBarraycontroller extends CI_Controller {
 						break;
 					case 'get':
 						if ($id !== null) $this->get($subtable, $id);
+						else show_404();
 						break;
 					case 'update':
 						if ($id !== null) $this->update($subtable, $id);
+						else show_404();
 						break;
 					case 'remove':
 						if ($id !== null) $this->remove($subtable, $id);
+						else show_404();
+						break;
+					case 'data':
+						$this->data($subtable);
 						break;
 					
 					default:
-						$this->data($subtable);
+						show_404();
 						break;
 				}
+
+
 			}
 		} else {
-			
+
+
 		}
 	}
 
@@ -62,15 +75,19 @@ class MY_DBarraycontroller extends CI_Controller {
 	protected function add($subtable) {
 		$insert = $this->input->post('data');
 
-		$inputs = $this->model->getFields();
-		$arr = array();
-		foreach ($inputs as $input) {
-			if (isset($insert[$input])) {
-				$arr[$input] = $insert[$input]; 
+		if (!empty($insert)) {
+			$inputs = $this->model->getFields();
+			$arr = array();
+			foreach ($inputs as $input) {
+				if (isset($insert[$input])) {
+					$arr[$input] = $insert[$input]; 
+				}
 			}
-		}
-		if (!$this->model->insertIntoCategoryTable($subtable, $arr)){
-			show_error('Data Insertion Failed', 400);
+			if (!$this->model->insertIntoCategoryTable($subtable, $arr)){
+				show_error('The database doesn\'t accept the input. Check the format of your input.', 400);
+			}
+		} else {
+			show_error('The insertion request is empty.', 406);
 		}
 	}
 
