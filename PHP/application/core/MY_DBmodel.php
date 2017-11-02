@@ -19,7 +19,6 @@ class MY_DBmodel extends CI_Model
 
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
-	protected $fieldsToHide = array (); // not yet
 
 	/**
 	* The constructor method

@@ -57,7 +57,7 @@ class MY_DBarraymodel extends MY_DBmodel
 		}
 	}
 
-	public function getFields($hide_items = false) {
+	public function getFields($hide_items = true) {
 		$fields = parent::getFields($hide_items);
 		return $hide_items ? array_diff($fields, array($this->arrayFieldName)) : $fields;
 	}

@@ -52,6 +52,15 @@ class Database_pcf_field_association_model extends MY_DBmodel
 			('General','pcf_water'),
 			('General','pcf_communications'),
 			('General','pcf_other_expenses'),
+			('General','pcf_rr_particulars'),
+			('General','pcf_rr_supporting_documents'),
+			('General','pcf_rr_screening_training'),
+			('General','pcf_rr_meals_snacks'),
+			('General','pcf_rr_travel'),
+			('General','pcf_rr_office_supplies'),
+			('General','pcf_rr_water'),
+			('General','pcf_rr_communications'),
+			('General','pcf_rr_other_expenses'),
 			
 			('Smile Train','pcf_particulars'),
 			('Smile Train','pcf_supporting_documents'),
@@ -59,13 +68,25 @@ class Database_pcf_field_association_model extends MY_DBmodel
 			('Smile Train','pcf_travel'),
 			('Smile Train','pcf_medical_supplies'),
 			('Smile Train','pcf_other_expenses'),
+			('Smile Train','pcf_rr_particulars'),
+			('Smile Train','pcf_rr_supporting_documents'),
+			('Smile Train','pcf_rr_meals_snacks'),
+			('Smile Train','pcf_rr_travel'),
+			('Smile Train','pcf_rr_medical_supplies'),
+			('Smile Train','pcf_rr_other_expenses'),
 			
 			('Cataract','pcf_particulars'),
 			('Cataract','pcf_supporting_documents'),
 			('Cataract','pcf_meals_snacks'),
 			('Cataract','pcf_travel'),
 			('Cataract','pcf_medical_supplies'),
-			('Cataract','pcf_other_expenses')
+			('Cataract','pcf_other_expenses'),
+			('Cataract','pcf_rr_particulars'),
+			('Cataract','pcf_rr_supporting_documents'),
+			('Cataract','pcf_rr_meals_snacks'),
+			('Cataract','pcf_rr_travel'),
+			('Cataract','pcf_rr_medical_supplies'),
+			('Cataract','pcf_rr_other_expenses')
 		";
 		
 		
