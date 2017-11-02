@@ -14,9 +14,9 @@ class MY_DBmodel extends CI_Model
 	public $ModelTitle = '';
 	public $TableName = ''; // Overideable
 	public $TablePrimaryKey = 'id'; // Overideable
+	public $fieldsToHide = array ();
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
-	protected $fieldsToHide = array (); // not yet
 
 	/**
 	* The constructor method

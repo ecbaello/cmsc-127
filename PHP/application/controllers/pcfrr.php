@@ -7,6 +7,7 @@ class Pcfrr extends MY_DBarraycontroller {
 	{
 		$this->load->model('database_pcfrr_model');
 		$this->model = $this->database_pcfrr_model;
+		$this->load->model('database_pcf_field_association_model');
 		
 		$table = $this->loadSession();
 		
@@ -16,6 +17,14 @@ class Pcfrr extends MY_DBarraycontroller {
 			echo 'Select table';
 		} else {
 			if ($this->model->checkCategoryExists($table)){
+				
+				$fields = array();
+				$query = $this->db->query('select field from pcf_field_association where pcf_name !="'.$table.'" and field not in (select field from pcf_field_association where pcf_name = "'.$table.'")')->result();
+				foreach ($query as $field) {
+					array_push($fields, $field->field);
+				}
+				$this->model->fieldsToHide = $fields;
+				
 				$this->handleRequest($table);
 
 				$request = $this->input->post(DB_GET);
