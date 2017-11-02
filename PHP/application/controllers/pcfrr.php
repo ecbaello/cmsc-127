@@ -13,13 +13,19 @@ class Pcfrr extends MY_DBarraycontroller {
 
 	protected function makeHTML($subtable)
 	{
+
+
 		$this->load->view('header');
 
 		$this->load->view('html', array('html'=>
 			'<h2 class="view-title">'.$this->model->ModelTitle.'</h2>'
 		));
 		
-		$this->load->view('table_view');
+		$this->makeSelector($subtable, site_url($this->uri->segment(1)));
+		
+		$this->load->view('table_view', ['url'=>current_url()]);
+
+
 		$this->load->view('footer');
 	}
 }

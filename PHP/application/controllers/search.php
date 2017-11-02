@@ -6,7 +6,6 @@ class Search extends CI_Controller {
 	public function index()
 	{
 		$this->load->database();
-		$this->load->library('db_table');
 		$this->load->model('search_model');
 
 		$this->load->view('header');

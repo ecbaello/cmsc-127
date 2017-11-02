@@ -40,14 +40,6 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $query;
 	}
 
-	public function makeTableWithDelete($subtable, $link)
-	{	
-		$this->db->reset_query();
-		$query = $this->getCategoryTable($subtable);
-		$this->db_table->set_template($this->tabletemplate);
-		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations(false));
-	}
-
 	public function registerCategoryTable($name) {
 		if ( !$this->checkCategoryExists($name) ) {
 			$data = array(

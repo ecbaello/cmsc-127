@@ -84,8 +84,6 @@ class MY_DBmodel extends CI_Model
 
 			$this->dbforge->create_table	(self::metaTableName);
 		}
-
-		$this->load->library('db_table');
 	}
 
 	public function createTable() {
@@ -103,15 +101,6 @@ class MY_DBmodel extends CI_Model
 		);
 		$this->db->insert(self::metaTableName, $data);
 
-
-
-	}
-
-	public function makeTableWithDelete($link)
-	{
-		$query = $this->get();
-		$this->db_table->set_template($this->tabletemplate);
-		return $this->db_table->generateDBUsingPK($query, $this->TablePrimaryKey, $link, NULL, $this->getFieldAssociations(false));
 	}
 
 	public function getFields($hide_items = false) {

@@ -8,7 +8,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	{
 		parent::__construct(); // do constructor for parent class
 		
-		$this->load->helper('url');
+		
 	}
 
 	public function index() {

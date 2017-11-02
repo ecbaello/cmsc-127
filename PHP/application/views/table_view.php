@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<div ng-controller="database" ng-init="url = '<?= isset($url)?$url:current_url() ?>'">
+<div ng-controller="database" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
 	<div id="container">
 		<table class="table" id="db-table">
 			<thead>

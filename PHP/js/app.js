@@ -41,6 +41,12 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 	$scope.editIndex = null;
 	$scope.isEdit = true;
 
+	$scope.setURL = function(url) {
+		$scope.url = url;
+		rebuild();
+	};
+
+
 	$scope.edit = function (id) {
 		$scope.rowClone = $.extend({}, $scope.data[id]);
 		$scope.isEdit = true;
@@ -64,7 +70,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 					function(response) {
 						$scope.csrf = response.data.csrf;
 						$scope.csrfHash = response.data.csrf_hash;
-						console.log(response);
+						//console.log(response);
 
 						var dataObj = {};
 						dataObj.headers = $scope.headers;
@@ -82,7 +88,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 					function(response) {
 						$scope.csrf = response.data.csrf;
 						$scope.csrfHash = response.data.csrf_hash;
-		        		console.log(response);
+		        		//console.log(response);
 
 		        		delete $scope.data[id];
 		    		}, function(error){
@@ -123,7 +129,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 				$scope.headers = data['headers'];
 				$scope.csrf = data['csrf'];
 				$scope.csrfHash = data['csrf_hash'];
-				console.log(data);
+				//console.log(data);
 	    	});
 		
 	};
@@ -134,24 +140,33 @@ app.controller('tables', ['$scope', '$http', function($scope, $http){
 
 	$scope.options = {};
 
+	$scope.current = null;
+
 	$scope.redirect = function() {
-		window.location.href = $scope.url +'/table/'+ $scope.select.link;
+		window.location.href = $scope.selectorUrl +'/table/'+ $scope.select.link;
 	};
 
 	$scope.setURL = function(url) {
-		$scope.url = url;
+		$scope.selectorUrl = url;
 		loadOptions();
+		
+	};
+
+	$scope.setSelected = function(select) {
+		//console.log(select);
+		$scope.select = $scope.options[select];
+		$scope.current = select;
 	};
 
 	loadOptions();
 	function loadOptions() {
 		$.ajax({
 			method: "GET",
-			url: $scope.url+'/table',
+			url: $scope.selectorUrl+'/table',
 			dataType: "json",
 			success: function (data) {
 				$scope.options = data.data;
-				console.log($scope.options);
+				$scope.setSelected($scope.current);
 				$scope.$apply();
 			}
 		});
