@@ -127,7 +127,7 @@ class MY_DBmodel extends CI_Model
 			array_push( $arr,  $item);
 		}
 
-		if ($hide_items) $arr = array_diff($arr, $this->fieldsToHide, array($this->TablePrimaryKey));
+		//if ($hide_items) $arr = array_diff($arr, $this->fieldsToHide, array($this->TablePrimaryKey));
 		return $arr;
 	}
 
