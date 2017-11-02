@@ -14,7 +14,9 @@ class MY_DBmodel extends CI_Model
 	public $ModelTitle = '';
 	public $TableName = ''; // Overideable
 	public $TablePrimaryKey = 'id'; // Overideable
-	public $fieldsToHide = array ();
+
+	public $ReadOnlyFields = array();
+
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
 
@@ -78,7 +80,6 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
-			$this->dbforge->add_field		("table_field_inputs BOOLEAN NOT NULL DEFAULT TRUE");
 			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
 
 			$this->dbforge->create_table	(self::metaTableName);
@@ -91,14 +92,13 @@ class MY_DBmodel extends CI_Model
 		
 	}
 
-	public function registerFieldTitle( $table_field, $field_title, $inputType = 'TEXT', $isInput = true ) {
+	public function registerFieldTitle( $table_field, $field_title, $inputType = 'TEXT' ) {
 		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
 
 		$data = array(
 		        'table_name' => $this->TableName,
 		        'table_field' => $table_field,	
 		        'table_field_title' => $field_title,
-		        'table_field_inputs' => $isInput,
 		        'table_field_input_type' => $inputType, 
 		);
 		$this->db->insert(self::metaTableName, $data);
@@ -140,15 +140,9 @@ class MY_DBmodel extends CI_Model
 		foreach ($inp as $assoc) {
 			$arr[ $assoc['table_field'] ] = array(
 				TBL_TITLE => $assoc['table_field_title'],
-				TBL_INPUT => $assoc[self::fieldInputTypeField]
+				TBL_INPUT => $assoc[self::fieldInputTypeField],
+				RD_ONLY	  => ($this->TablePrimaryKey == $assoc['table_field'])||(isset($this->ReadOnlyFields['table_field']) ? $this->ReadOnlyFields['table_field']: FALSE)
 			);
-		}
-
-		if ($hide_items) {
-			foreach ($this->fieldsToHide as $field) {
-				unset($arr[$field]);
-			}
-			unset($arr[$this->TablePrimaryKey]);
 		}
 		return $arr;
 	}
@@ -248,6 +242,11 @@ class MY_DBmodel extends CI_Model
 	public function deleteWithPK($id) {
 		$this->db->where( $this->TablePrimaryKey, $id);
 	    return $this->db->delete( $this->TableName); 
+	}
+
+	public function getByPK($id) {
+		$this->db->where( $this->TablePrimaryKey, $id);
+	    return $this->db->get( $this->TableName)->row(); 
 	}
 
 	

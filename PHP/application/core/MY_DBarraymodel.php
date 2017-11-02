@@ -32,6 +32,14 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $query;
 	}
 
+	public function getIndividual($id) {
+		$this->db->where($this->TablePrimaryKey, $id);
+		$query = $this->db->get($this->TableName)->row();
+		$field = $this->arrayFieldName;
+		unset($query->$field);
+		return $query;
+	}
+
 	public function makeTableWithDelete($subtable, $link)
 	{	
 		$this->db->reset_query();
@@ -74,7 +82,7 @@ class MY_DBarraymodel extends MY_DBmodel
 		$assocs = array();
 		$arr = $query->result_array();
 		foreach ($arr as $assoc) {
-			array_push($assocs, $assoc[$this->categoryFieldName]);
+			$assocs[ $assoc[$this->arrayFieldName] ] = $assoc[$this->categoryFieldName];
 		}
 		return $assocs;
 	}

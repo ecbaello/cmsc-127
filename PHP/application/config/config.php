@@ -522,6 +522,8 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+$_POST = json_decode(file_get_contents('php://input'), true);
+
 function __autoload($class)
 {
     if(strpos($class, 'CI_') !== 0)
