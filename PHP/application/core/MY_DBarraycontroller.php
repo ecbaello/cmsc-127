@@ -34,7 +34,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->view('model_selector', $settings);
 	}
 
-	public function table($subtable = null, $action = null, $id = null) {
+	public function table($subtable = null, $action = null, $id = null, $other = null) {
 		
 		if ($subtable !== null) {
 			$subtable = urldecode($subtable);

@@ -4,16 +4,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en" ng-app="app">
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="<?= base_url().'css/bootstrap.min.css' ?>">
-	<link rel="stylesheet" href="<?= base_url().'css/app.css' ?>">
-	<link rel="stylesheet" href="<?= base_url().'css/font-awesome.css' ?>">
-
   <title>Luke Foundation<?php isset($title)?' &gt; '.$title:'' ?></title>
   
 	<script src="<?= base_url().'js/jquery.js' ?>"></script>
+
+  <script src="<?= base_url().'js/popper.js' ?>"></script>
+  <script src="<?= base_url().'js/bootstrap.js' ?>"></script>
+
   <script src="<?= base_url().'js/form-validator.js' ?>"></script>
   <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
+
   <script src="<?= base_url().'js/angular.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-animate.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-messages.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-aria.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-material.js' ?>"></script>
+
+  <style type="text/css">
+    input, textarea {
+    border: none;
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+  </style>
+
+  <link rel="stylesheet" href="<?= base_url().'css/bootstrap.min.css' ?>">
+  <link rel="stylesheet" href="<?= base_url().'css/angular-material.css' ?>">
+
+  <link rel="stylesheet" href="<?= base_url().'css/font-awesome.css' ?>">
+  <link rel="stylesheet" href="<?= base_url().'css/app.css' ?>">
 </head>
 <body>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">

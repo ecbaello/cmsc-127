@@ -1,4 +1,4 @@
-var app = angular.module('app', []);
+var app = angular.module('app', ['ngMaterial', 'ngMessages']);
 
 function convertData(input) {
 	var data = input;
@@ -28,7 +28,7 @@ function alignTypes(input) {
 }
 
 
-app.controller('database', ['$scope', '$http',  function($scope, $http){
+app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $http, $mdDialog){
 	$scope.data = [];
 	$scope.rowClone = [];
 
@@ -41,9 +41,26 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 	$scope.editIndex = null;
 	$scope.isEdit = true;
 
+	$scope.serverRequesting = false;
+
 	$scope.setURL = function(url) {
+		$scope.serverRequesting = true;
 		$scope.url = url;
 		rebuild();
+	};
+
+	$scope.showAddDialog = function(ev) {
+		$mdDialog.show({
+			contentElement: '#addDialog',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose: true,
+			fullscreen: true
+		});
+	};
+
+	$scope.closeDialog = function() {
+		$mdDialog.cancel();
 	};
 
 
@@ -61,6 +78,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 	$scope.send = function () {
 		var id = $scope.editIndex;
 		var data = {};
+		$scope.serverRequesting = true;
 		if ($scope.isEdit) {
 			data.data = $scope.data[id];
 			data[$scope.csrf] = $scope.csrfHash; 
@@ -78,6 +96,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 						dataObj.data[0] = response.data.data;
 
 						$scope.data[id]= alignTypes(dataObj).data[0];
+						$scope.serverRequesting = false;
 		    		}, function(error){
 						rebuild();
 				    }
@@ -89,7 +108,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 						$scope.csrf = response.data.csrf;
 						$scope.csrfHash = response.data.csrf_hash;
 		        		//console.log(response);
-
+		        		$scope.serverRequesting = false;
 		        		delete $scope.data[id];
 		    		}, function(error){
 						rebuild();
@@ -105,6 +124,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 	};
 
 	$scope.add = function () {
+		$scope.serverRequesting = true;
 		var data = {};
 		data.data = $scope.newItem;
 		data[$scope.csrf] = $scope.csrfHash; 
@@ -116,9 +136,9 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 						rebuild();
 				    }
 		    	);
+		$mdDialog.hide();
 	};
 
-	rebuild();
 	function rebuild() {
 
 		$http.get($scope.url+'/data')
@@ -130,6 +150,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 				$scope.csrf = data['csrf'];
 				$scope.csrfHash = data['csrf_hash'];
 				//console.log(data);
+				$scope.serverRequesting = false;
 	    	});
 		
 	};
@@ -158,7 +179,6 @@ app.controller('tables', ['$scope', '$http', function($scope, $http){
 		$scope.current = select;
 	};
 
-	loadOptions();
 	function loadOptions() {
 		$.ajax({
 			method: "GET",
