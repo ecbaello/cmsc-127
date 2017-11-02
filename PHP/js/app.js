@@ -115,7 +115,7 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 	rebuild();
 	function rebuild() {
 
-		$http.get(window.location.href+'/data')
+		$http.get($scope.url+'/data')
 			.then(function(response) {
 	        	var data = convertData(response.data);
 				$scope.data = data['data'];
@@ -128,4 +128,33 @@ app.controller('database', ['$scope', '$http',  function($scope, $http){
 		
 	};
 
+}]);
+
+app.controller('tables', ['$scope', '$http', function($scope, $http){
+
+	$scope.options = {};
+
+	$scope.redirect = function() {
+		window.location.href = $scope.url +'/table/'+ $scope.select.link;
+	};
+
+	$scope.setURL = function(url) {
+		$scope.url = url;
+		loadOptions();
+	};
+
+	loadOptions();
+	function loadOptions() {
+		$.ajax({
+			method: "GET",
+			url: $scope.url+'/table',
+			dataType: "json",
+			success: function (data) {
+				$scope.options = data.data;
+				console.log($scope.options);
+				$scope.$apply();
+			}
+		});
+		
+	}
 }]);

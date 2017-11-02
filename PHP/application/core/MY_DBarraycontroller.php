@@ -12,7 +12,26 @@ class MY_DBarraycontroller extends CI_Controller {
 	}
 
 	public function index() {
+		$this->load->view('header');
+
+		$this->load->view('html', array('html'=>
+			'<h2 class="view-title">'.$this->model->ModelTitle.'</h2>'
+		));
+		$this->makeSelector();
 		
+		$this->load->view('footer');
+	}
+
+	protected function makeSelector($table = null, $replacelink = null) {
+		$settings = array();
+
+		if (!empty($table))
+			$settings['current_tbl'] = $this->model->convertNameToCategory($table);
+
+		if (!empty($replacelink)) 
+			$settings['url'] = $replacelink;
+		
+		$this->load->view('model_selector', $settings);
 	}
 
 	public function table($subtable = null, $action = null, $id = null) {
@@ -49,8 +68,14 @@ class MY_DBarraycontroller extends CI_Controller {
 
 			}
 		} else {
-
-
+			$array = array();
+			foreach ($this->model->getCategories() as $key => $value) {
+				$arr = array();
+				$arr['title'] = $value;
+				$arr['link'] = urlencode($value);
+				$array[$key] = $arr;
+			}
+			echo json_encode(['data'=>$array]);
 		}
 	}
 

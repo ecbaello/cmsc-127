@@ -82,7 +82,7 @@ class MY_DBarraymodel extends MY_DBmodel
 		$assocs = array();
 		$arr = $query->result_array();
 		foreach ($arr as $assoc) {
-			array_push($assocs, $assoc[$this->categoryFieldName]);
+			$assocs[ $assoc[$this->arrayFieldName] ] = $assoc[$this->categoryFieldName];
 		}
 		return $assocs;
 	}
