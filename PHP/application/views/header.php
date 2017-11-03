@@ -44,28 +44,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body ng-controller="navi" layout="column">
   <div layout="row" flex="">
     <md-sidenav class="md-sidenav-left main-sidenav" md-whiteframe="4" md-component-id="navigation" md-is-locked-open="$mdMedia('gt-md')">
-      <md-toolbar class="navbar">
-        <h2 class="md-toolbar-tools">Tables</h2>
-      </md-toolbar>
-      <md-content>
-        <md-list flex>
-          <md-list-item href="<?= base_url()?>search">
-            Search
-          </md-list-item>
-          <md-list-item href="<?=base_url().'detchar' ?>">
-            Patient Charges Detail
-          </md-list-item>
-          <md-list-item href="<?=base_url().'pcf'?>">
-            Petty Cash Fund
-          </md-list-item>
-          <md-list-item href="<?=base_url().'pcf'?>">
-            Petty Cash Fund Replenishment Requests
-          </md-list-item>
-          <md-list-item href="<?=base_url().'pcf'?>">
-            Patient Expenses
-          </md-list-item>
-        </md-list>
-      </md-content>
+      <div class="h-100" layout="column" md-theme="altTheme">
+        <md-toolbar class="navbar">
+          <h2 class="md-toolbar-tools">Menu</h2>
+        </md-toolbar>
+        <md-content flex>
+          <md-list flex>
+            <md-list-item href="<?= base_url()?>search">
+              Search
+            </md-list-item>
+            <md-list-item href="<?=base_url().'detchar' ?>">
+              Patient Charges Detail
+            </md-list-item>
+            <md-list-item href="<?=base_url().'pcf'?>">
+              Petty Cash Fund
+            </md-list-item>
+            <md-list-item href="<?=base_url().'pcf'?>">
+              Petty Cash Fund Replenishment Requests
+            </md-list-item>
+            <md-list-item href="<?=base_url().'pcf'?>">
+              Patient Expenses
+            </md-list-item>
+          </md-list>
+        </md-content>
+      </div>
     </md-sidenav>
     <md-content flex="">
       <md-toolbar>
