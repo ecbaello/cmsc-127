@@ -1,6 +1,6 @@
 body {
 	background: #eeeeee;
-	height: 100%;
+	min-height: 100%;
 }
 
 table {
@@ -47,18 +47,35 @@ button.md-square {
 	min-width: 36px;
 }
 
-
-
 @media (min-width: 960px) {
 	#addDialog md-dialog {
 		min-width: 90%;
 	}
 }
 
+.main-sidenav.md-locked-open {
+	min-width: 268px;
+}
 
+.navbar a:hover {
+	color: white
+}
 
+.navbar .brand {
+	color: white
+}
 
+md-dialog md-dialog-actions {
+	z-index: 1;
+}
 
+md-dialog md-input-container {
+	margin: 0;
+}
+
+md-dialog md-dialog-content {
+	padding-top: 20px;
+}
 
 
 
@@ -71,115 +88,14 @@ button.md-square {
 
 }
 
-#db-table table tbody {
-	overflow: scroll;
-	max-height: 100%;
-}
-
-.form-title {
-	color: #444;
-	font-weight: bold;
-	font-size: 2rem;
-	text-align: center;
-	margin-bottom: 1.5rem;
-}
-
-#db-table {
-	overflow: auto;
-}
-
-.navigation {
-	list-style: none;
-	margin-left: 0;
-}
-
-.off-canvas {
-	background: #296636;
-}
-
-.navigation .button {
+#capsule {
+	padding: 50px 5%;
+	background: white;
 	width: 100%;
-	margin: 0;
-	text-align: left;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-	font-size: 1rem;
-	line-height: 1.2;
-	font-weight: bold;
-}
-
-.button.round-top-right {
-	width: 50px;
-	height: 50px;
-	position: absolute;
-	z-index: 100;
-	right: -25px;
-	top: -25px;
-	border-radius: 25px;
-	font-size: 1rem;
-	box-shadow: 0px 0px 1rem rgba(0,0,0,0.4);
 }
 
 #container {
 	width: 100%;
 	overflow: auto;
-}
-
-#container .input-form {
-	position: absolute;
-	z-index: 9999;
-
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-
-	background: rgba(0,0,0,0.4);
-	padding: 4rem 30px 0;
-
-	max-height: 100%;
-}
-
-#container .form-wrapper {
-	position: relative;
-	overflow: scroll;
-	padding: 2rem;
-	height: 100%;
-	width: 100%;
-	background: #efefef;
-	
-}
-
-#container .input-form form {
-	position: relative;
-	height: 100%;
-}
-
-#capsule {
-	padding: 50px 5%;
-	background: white;
-	width: 100%;
-	overflow: scroll;
-}
-
-.title-bar {
-	padding: 10px 5%;
-	text-transform: uppercase;
-	background: #4C9B59;
-}
-
-.title-bar a {
-	color: white;
-}
-
-.title-bar h1 {
-	padding-top: 0.3em;
-	font-weight: 400;
-	font-size: 30px;
-	letter-spacing: 10px;
-}
-
-.tabledit-edit-button {
-	width: auto;
-
+	min-height: 360px;
 }

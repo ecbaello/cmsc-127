@@ -38,7 +38,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 
 	$scope.headers = [];
 
-	$scope.editIndex = null;
+	$scope.editIndex = -1;
 	$scope.isEdit = true;
 
 	$scope.serverRequesting = false;
@@ -65,6 +65,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 
 
 	$scope.edit = function (id) {
+		$scope.cancel();
 		$scope.rowClone = $.extend({}, $scope.data[id]);
 		$scope.isEdit = true;
 		$scope.editIndex = id;
@@ -115,12 +116,15 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 				    }
 		    	);
 		}
-		$scope.editIndex = null;
+		$scope.editIndex = -1;
 	};
 
 	$scope.cancel = function () {
-		if ($scope.isEdit) $scope.data[$scope.editIndex] = $scope.rowClone;
-		$scope.editIndex = null;
+		if ($scope.editIndex != -1){
+			if ($scope.isEdit) $scope.data[$scope.editIndex] = $scope.rowClone;
+			$scope.editIndex = -1;
+		}
+		
 	};
 
 	$scope.add = function () {
@@ -192,4 +196,13 @@ app.controller('tables', ['$scope', '$http', function($scope, $http){
 		});
 		
 	}
+}]);
+
+app.controller('navi', ['$scope', '$mdSidenav', function($scope,  $mdSidenav){
+
+	$scope.toggleNavi = function() {
+		$mdSidenav('navigation')
+	      .toggle();
+	};
+
 }]);

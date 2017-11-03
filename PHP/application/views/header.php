@@ -4,6 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en" ng-app="app">
 <head>
 	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Luke Foundation<?php isset($title)?' &gt; '.$title:'' ?></title>
   
 	<script src="<?= base_url().'js/jquery.js' ?>"></script>
@@ -32,54 +34,53 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 }
   </style>
 
+
   <link rel="stylesheet" href="<?= base_url().'css/bootstrap.min.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/angular-material.css' ?>">
 
   <link rel="stylesheet" href="<?= base_url().'css/font-awesome.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/app.css' ?>">
 </head>
-<body>
-<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-    <div class="navbar-header">
-        <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="fa fa-navicon fa-2x"></span>
-        </a>
-        <a class="navbar-brand" href="#"><img align = "left" class="img-responsive img-centered img-xs" style = "width:23px;" src="lukelogo.png"> Luke Foundation, Inc. Database</a>
-    </div>
-    <ul class="nav navbar-top-links navbar-right">
-        <li>
-          <a href="#">
-              <span class="fa fa-home fa-fw fa-2x"></span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-              <span class="fa fa-user-md fa-fw fa-2x"></span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-              <span class="fa fa-user fa-fw fa-2x"></span>
-          </a>
-        </li>
-    </ul>
-</nav>
-<ul class="navigation">
-          <li>
-            <a class="button tosearch" href="<?= base_url()?>search"><i class="fa fa-search"></i> Search</a>
-          </li>
-          <li>
-            <a class="button" href="<?=base_url().'detchar' ?>">Patient Charges Detail</a>
-          </li>
-          <li>
-            <a class="button" href="<?=base_url().'pcf'?>">Petty Cash Fund</a>
-          </li>
-          <li>
-            <a class="button" href="<?=base_url().'pcfrr'?>">Petty Cash Fund Replenishment Requests</a>
-          </li>
-          <li>
-            <a class="button" href="<?=base_url().'patientexp'?>">Patient Expenses</a>
-          </li>
-        </ul>
-<div id="capsule">
+<body ng-controller="navi" layout="column">
+  <div layout="row" flex="">
+    <md-sidenav class="md-sidenav-left main-sidenav" md-whiteframe="4" md-component-id="navigation" md-is-locked-open="$mdMedia('gt-md')">
+      <md-toolbar class="navbar">
+        <h2 class="md-toolbar-tools">Tables</h2>
+      </md-toolbar>
+      <md-content>
+        <md-list flex>
+          <md-list-item href="<?= base_url()?>search">
+            Search
+          </md-list-item>
+          <md-list-item href="<?=base_url().'detchar' ?>">
+            Patient Charges Detail
+          </md-list-item>
+          <md-list-item href="<?=base_url().'pcf'?>">
+            Petty Cash Fund
+          </md-list-item>
+          <md-list-item href="<?=base_url().'pcf'?>">
+            Petty Cash Fund Replenishment Requests
+          </md-list-item>
+          <md-list-item href="<?=base_url().'pcf'?>">
+            Patient Expenses
+          </md-list-item>
+        </md-list>
+      </md-content>
+    </md-sidenav>
+    <md-content flex="">
+      <md-toolbar>
+        <header>
+          <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" class="navbar-toggle" ng-click="toggleNavi()">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="fa fa-navicon fa-lg"></span>
+                </md-button>
+                <h1 class="d-inline">
+                  <a href="<?=base_url()?>">Luke Foundation, Inc. Database</a>
+                </h1>
+            </div>
+          </nav>
+        </header>
+      </md-toolbar>
+      <div id="capsule">

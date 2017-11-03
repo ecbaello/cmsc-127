@@ -46,17 +46,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div style="visibility: hidden">
 		<div class="md-dialog-container" id="addDialog">
 			<md-dialog>
-				<md-content>
+				<md-toolbar>
+					<div class="md-toolbar-tools">
+						<h2>Create Item</h2>
+						<span flex></span>
+						<md-button class="md-icon-button" ng-click="closeDialog()">
+							<i class="fa fa-times fa-lg"></i>
+						</md-button>
+					</div>
+				</md-toolbar>
+				<md-dialog-content>
 					<form ng-cloak>
-						<md-toolbar>
-							<div class="md-toolbar-tools">
-								<h2>Create Item</h2>
-								<span flex></span>
-								<md-button class="md-icon-button" ng-click="closeDialog()">
-									<i class="fa fa-times"></i>
-								</md-button>
-							</div>
-						</md-toolbar>
 						<div layout-padding>
 							<div ng-repeat="(key, item) in headers" ng-if="!item.read_only" class="md-block">
 								<md-input-container>
@@ -72,12 +72,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									</span>
 								</md-input-container>
 							</div>
-							<div class="form-group text-right">
-								<md-button class="btn-confirm md-raised md-primary" ng-click="add()"><i class="fa fa-save"></i> Save</md-button>
-							</div>
 						</div>
 					</form>
-				</md-content>
+				</md-dialog-content>
+				<md-dialog-actions layout="row">
+					<md-button class="btn-confirm md-raised md-primary" ng-click="add()"><i class="fa fa-save"></i> Save</md-button>
+				</md-dialog-actions>
 			</md-dialog>
 		</div>
 	</div>

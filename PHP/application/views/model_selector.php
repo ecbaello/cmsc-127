@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
 <div ng-controller="tables" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
-	<md-select ng-model="select"
+	<md-select placeholder="Select table" ng-model="select"
 			ng-change="redirect()" 
 			<?= isset($current_tbl) ? 'ng-init="setSelected(\''.$current_tbl.'\')"':'' ?>
 			>
