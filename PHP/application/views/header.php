@@ -57,7 +57,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <md-list-item href="<?=base_url().'pcf'?>">
               Petty Cash Fund
             </md-list-item>
-            <md-list-item href="<?=base_url().'pcf'?>">
+            <md-list-item href="<?=base_url().'pcfrr'?>">
               Petty Cash Fund Replenishment Requests
             </md-list-item>
             <md-list-item href="<?=base_url().'patientexp'?>">
