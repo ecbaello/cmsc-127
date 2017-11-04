@@ -30,11 +30,11 @@ table md-input-container {
 	width: 100%;
 }
 
-table .md-input {
-	float: none;
+.md-input {
+	float: none !important;
 }
 
-.md-block md-input-container {
+.md-block md-input-container, .search-form md-input-container {
 	width: 100%;
 }
 
@@ -46,6 +46,7 @@ table .md-errors-spacer {
 button.md-square {
 	min-width: 36px;
 }
+
 
 @media (min-width: 960px) {
 	#addDialog md-dialog {
@@ -77,9 +78,31 @@ md-dialog md-dialog-content {
 	padding-top: 20px;
 }
 
+body.ng-cloak {
+	visibility: visible;
+}
 
+.cloak-loader-wrapper {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
 
+.cloak-loader {
+	display: block;
+	background: #ccc;
+	position: absolute;
+	top: 0;
+	z-index: 100;
+	height: 100%;
+	left: 0;
+	width: 100%;
+}
 
+.cloak-loader.hide {
+	display: none;
+}
 
 
 

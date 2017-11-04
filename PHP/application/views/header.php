@@ -8,19 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
   <title>Luke Foundation<?php isset($title)?' &gt; '.$title:'' ?></title>
   
-	<script src="<?= base_url().'js/jquery.js' ?>"></script>
-
-  <script src="<?= base_url().'js/popper.js' ?>"></script>
-  <script src="<?= base_url().'js/bootstrap.js' ?>"></script>
-
-  <script src="<?= base_url().'js/form-validator.js' ?>"></script>
-  <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
-
-  <script src="<?= base_url().'js/angular.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-animate.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-messages.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-aria.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-material.js' ?>"></script>
+	
 
   <style type="text/css">
     input, textarea {
@@ -39,10 +27,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <link rel="stylesheet" href="<?= base_url().'css/angular-material.css' ?>">
 
   <link rel="stylesheet" href="<?= base_url().'css/font-awesome.css' ?>">
+  <link rel="stylesheet" href="<?= base_url().'css/loader.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/app.css' ?>">
+
 </head>
-<body ng-controller="navi" layout="column">
-  <div layout="row" flex="">
+<body ng-controller="navi" layout="column" class="">
+  <div class="cloak-loader" ng-class="true?'hide':''">
+    <div class="cloak-loader-wrapper" style="font-size: 1em">
+      <div class="alt-loader-wrapper">
+        <div class="alt-loader"></div>
+      </div>
+      Loading
+    </div>
+  </div>
+  <div layout="row" flex="" ng-cloak>
     <md-sidenav class="md-sidenav-left main-sidenav" md-whiteframe="4" md-component-id="navigation" md-is-locked-open="$mdMedia('gt-md')">
       <div class="h-100" layout="column" md-theme="altTheme">
         <md-toolbar class="navbar">
@@ -62,7 +60,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <md-list-item href="<?=base_url().'pcf'?>">
               Petty Cash Fund Replenishment Requests
             </md-list-item>
-            <md-list-item href="<?=base_url().'pcf'?>">
+            <md-list-item href="<?=base_url().'patientexp'?>">
               Patient Expenses
             </md-list-item>
           </md-list>

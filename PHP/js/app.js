@@ -35,24 +35,172 @@ function alignTypes(input) {
 
 
 app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $http, $mdDialog){
+	// Table Information
 	$scope.data = [];
-	$scope.rowClone = [];
-
 	$scope.idName = '';
-
-	$scope.newItem = {};
-
 	$scope.headers = [];
 
-	$scope.editIndex = -1;
-	$scope.isEdit = true;
+	$scope.searchOperations = {
+		range: '->',
+		greater: '>=',
+		equals: '==',
+		lesser: '<=',
+		like: '~',
+		not_like: '!~',
+		not: '!=',
+	};
 
+	// Table State
 	$scope.serverRequesting = false;
 
+	// Loading tables
 	$scope.setURL = function(url) {
 		$scope.serverRequesting = true;
 		$scope.url = url;
 		rebuild();
+	};
+	function rebuild() {
+		$http.get($scope.url+'/data')
+			.then(function(response) {
+	        	var data = convertData(response.data);
+				$scope.data = data.data;
+				$scope.idName = data.id;
+				$scope.headers = data.headers;
+				$scope.csrf = data.csrf;
+				$scope.csrfHash = data.csrf_hash;
+				//console.log(data);
+				$scope.serverRequesting = false;
+	    	});
+	}
+
+	// Searching Tables
+	$scope.search = [];
+	$scope.newSearch = ['',[]];
+	$scope.addSearch = function(is_and) {
+		var search = $scope.newSearch;
+		if (is_and) {
+			if ($scope.search.length > 0) {
+				$scope.search[$scope.search.length-1].push(search);
+			}
+		} else {
+			var arr = [];
+			arr.push(search);
+			$scope.search.push(arr);
+		}
+		$scope.newSearch = ['',[]];
+	};
+	$scope.goSearch = function () {
+		var searchQry = JSON.stringify($scope.search);
+
+		var $form = $("<form>", {action: $scope.url+"/search", method: "POST"});
+		var $input = $("<input>", {name: "data", value: searchQry});
+		var $input2 = $("<input>", {name: $scope.csrf, value: $scope.csrfHash});
+		$form.append($input).append($input2).appendTo('body').submit();
+	};
+
+
+	// Editing Tables
+	$scope.editIndex = -1;
+	$scope.isEdit = true;
+	$scope.rowClone = [];
+
+	$scope.edit = function (index) {
+		$scope.cancel();
+		$scope.rowClone = $.extend({}, $scope.data[index]);
+		$scope.isEdit = true;
+		$scope.editIndex = index;
+	};
+
+	$scope.delete = function (index) {
+		$scope.isEdit = false;
+		$scope.editIndex = index;
+	};
+
+	$scope.send = function () {
+		var index = $scope.editIndex;
+		var id = $scope.data[index][$scope.idName];
+		var data = {};
+		$scope.serverRequesting = true;
+		if ($scope.isEdit) {
+			data.data = JSON.stringify($scope.data[index]);
+			data[$scope.csrf] = $scope.csrfHash;
+
+			console.log($scope.data[index]);
+			console.log("id is "+id);
+
+			$.ajax({
+				type: 'POST',
+				url: $scope.url+'/update/'+id,
+				data: data,
+				success: function(resultData) {
+					var response = JSON.parse(resultData);
+					$scope.csrf = response.csrf;
+					$scope.csrfHash = response.csrf_hash;
+
+					var dataObj = {};
+					dataObj.headers = $scope.headers;
+					dataObj.data = {};
+					dataObj.data[0] = response.data;
+
+					$scope.data[id]= alignTypes(dataObj).data[0];
+					$scope.serverRequesting = false;
+					$scope.$apply();
+				},
+				error: function() {
+					rebuild();
+				}
+			});
+		} else {
+
+			$.ajax({
+				type: 'POST',
+				url: $scope.url+'/remove/'+id,
+				data: data,
+				success: function(resultData) {
+					var response = JSON.parse(resultData);
+					$scope.csrf = response.csrf;
+					$scope.csrfHash = response.csrf_hash;
+	        		//console.log(response);
+	        		$scope.serverRequesting = false;
+	        		delete $scope.data[id];
+	        		$scope.$apply();
+				},
+				error: function() {
+					rebuild();
+				}
+			});
+
+		}
+		$scope.editIndex = -1;
+	};
+
+	$scope.cancel = function () {
+		if ($scope.editIndex != -1){
+			if ($scope.isEdit) $scope.data[$scope.editIndex] = $scope.rowClone;
+			$scope.editIndex = -1;
+		}
+	};
+
+
+	// Adding to Tables
+	$scope.newItem = {};
+	$scope.add = function () {
+		$scope.serverRequesting = true;
+		var data = {};
+		data.data = JSON.stringify($scope.newItem);
+		data[$scope.csrf] = $scope.csrfHash; 
+		$.ajax({
+			type: 'POST',
+			url: $scope.url+'/add',
+			data: data,
+			success: function() {
+				rebuild();
+			},
+			error: function() {
+				rebuild();
+			}
+		});
+		$mdDialog.hide();
 	};
 
 	$scope.showAddDialog = function(ev) {
@@ -69,101 +217,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		$mdDialog.cancel();
 	};
 
-
-	$scope.edit = function (id) {
-		$scope.cancel();
-		$scope.rowClone = $.extend({}, $scope.data[id]);
-		$scope.isEdit = true;
-		$scope.editIndex = id;
-	};
-
-	$scope.delete = function (id) {
-		$scope.isEdit = false;
-		$scope.editIndex = id;
-	};
-
-	$scope.send = function () {
-		var id = $scope.editIndex;
-		var data = {};
-		$scope.serverRequesting = true;
-		if ($scope.isEdit) {
-			data.data = $scope.data[id];
-			data[$scope.csrf] = $scope.csrfHash; 
-
-			$http.post( $scope.url+'/update/'+id,  data)
-				.then(
-					function(response) {
-						$scope.csrf = response.data.csrf;
-						$scope.csrfHash = response.data.csrf_hash;
-						//console.log(response);
-
-						var dataObj = {};
-						dataObj.headers = $scope.headers;
-						dataObj.data = {};
-						dataObj.data[0] = response.data.data;
-
-						$scope.data[id]= alignTypes(dataObj).data[0];
-						$scope.serverRequesting = false;
-		    		}, function(error){
-						rebuild();
-				    }
-		    	);
-		} else {
-			$http.delete( $scope.url+'/remove/'+id , data)
-				.then(
-					function(response) {
-						$scope.csrf = response.data.csrf;
-						$scope.csrfHash = response.data.csrf_hash;
-		        		//console.log(response);
-		        		$scope.serverRequesting = false;
-		        		delete $scope.data[id];
-		    		}, function(error){
-						rebuild();
-				    }
-		    	);
-		}
-		$scope.editIndex = -1;
-	};
-
-	$scope.cancel = function () {
-		if ($scope.editIndex != -1){
-			if ($scope.isEdit) $scope.data[$scope.editIndex] = $scope.rowClone;
-			$scope.editIndex = -1;
-		}
-		
-	};
-
-	$scope.add = function () {
-		$scope.serverRequesting = true;
-		var data = {};
-		data.data = $scope.newItem;
-		data[$scope.csrf] = $scope.csrfHash; 
-		$http.post( $scope.url+'/add' , data)
-				.then(
-					function(response) {
-						rebuild();
-		    		}, function(error){
-						rebuild();
-				    }
-		    	);
-		$mdDialog.hide();
-	};
-
-	function rebuild() {
-
-		$http.get($scope.url+'/data')
-			.then(function(response) {
-	        	var data = convertData(response.data);
-				$scope.data = data['data'];
-				$scope.idName = data['id'];
-				$scope.headers = data['headers'];
-				$scope.csrf = data['csrf'];
-				$scope.csrfHash = data['csrf_hash'];
-				//console.log(data);
-				$scope.serverRequesting = false;
-	    	});
-		
-	};
+	
 
 }]);
 

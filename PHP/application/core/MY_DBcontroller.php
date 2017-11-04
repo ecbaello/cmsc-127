@@ -34,13 +34,17 @@ class MY_DBcontroller extends CI_Controller
 				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
 	}
 
+	public function search () {
+		$query = json_decode($this->input->post('data'), true);
+		echo var_dump($query);
+	}
+
 	public function update ($id) {
 		
-
-    	$insert = $this->input->post('data');
+    	$insert = json_decode($this->input->post('data'), true);
 
     	$this->model->updateWithPK($id, $insert);
-
+   
     	$this->get($id);
 	}
 
@@ -55,7 +59,7 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function add () {
-		$insert = $this->input->post('data');
+		$insert = json_decode($this->input->post('data'), true);
 
 		$inputs = $this->model->getFields();
 		$arr = array();
@@ -78,7 +82,9 @@ class MY_DBcontroller extends CI_Controller
 				'headers'=>$this->model->getFieldAssociations(),
 				'data'=>$this->model->get()->result(),
 				'csrf' => $token,
-				'csrf_hash' => $hash)
+				'csrf_hash' => $hash,
+			)
+
 		, JSON_NUMERIC_CHECK);
 	}
 }

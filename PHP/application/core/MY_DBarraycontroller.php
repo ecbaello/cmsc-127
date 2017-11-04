@@ -98,7 +98,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	}
 
 	protected function add($subtable) {
-		$insert = $this->input->post('data');
+		$insert = json_decode($this->input->post('data'), true);
 
 		if (!empty($insert)) {
 			$inputs = $this->model->getFields();
@@ -134,7 +134,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	}
 
 	protected function update($subtable, $id) {
-		$insert = $this->input->post('data');
+		$insert = json_decode($this->input->post('data'), true);
 
     	$this->model->updateOnCategoryTable($subtable, $id, $insert);
 
