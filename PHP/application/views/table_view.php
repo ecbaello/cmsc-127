@@ -23,13 +23,16 @@ $CI =& get_instance();
 							}}
 						</span>
 					</span>
-					&amp;
 				</span>
-				|
 			</span>
 		</div>
 		<form class="search-form">
 			<div class="row">
+				<div class="col-1" ng-if="search.length>0">
+					<md-switch ng-model="searchOr">
+						{{searchOr?'OR':'AND'}}
+					</md-switch>
+				</div>
 				<div class="col-2">
 					<md-select ng-model="newSearch[0]" placeholder="Field">
 						<md-option ng-repeat="(key, item) in headers" ng-value="key">
@@ -37,7 +40,7 @@ $CI =& get_instance();
 						</md-option>
 					</md-select>
 				</div>
-				<div class="col-1">
+				<div class="col-2">
 					<md-select ng-model="newSearch[1][0]" placeholder="is">
 						<md-option ng-repeat="(key, item) in searchOperations" ng-value="key">
 							{{ item }}
@@ -62,15 +65,10 @@ $CI =& get_instance();
 					, true); ?>
 				</div>
 				<div class="col-1">
-					<div class="row">
-						<div class="col">
-							<md-button ng-click="addSearch(false)">OR</md-button>
-						</div>
-						<div class="col">
-							<md-button ng-disabled="search.length==0" ng-click="addSearch(true)">AND</md-button>
-						</div>
-					</div>
-					<md-button ng-click="goSearch()">Search</md-button>
+					<md-button ng-click="addSearch(searchOr==false)">Add</md-button>
+				</div>
+				<div class="col-1">
+					<md-button class="md-raised md-primary" ng-click="goSearch()">Search</md-button>
 				</div>
 			</div>
 		</form>

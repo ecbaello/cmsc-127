@@ -41,13 +41,16 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	$scope.headers = [];
 
 	$scope.searchOperations = {
-		range: '->',
-		greater: '>=',
-		equals: '==',
-		lesser: '<=',
-		like: '~',
-		not_like: '!~',
-		not: '!=',
+		equals: 'is equal to',
+		not: 'is not equal to',
+
+		like: 'is like',
+		not_like: 'is not like',
+
+		range: 'ranges',
+		greater: 'is greater than',
+		
+		lesser: 'is less than',
 	};
 
 	// Table State
@@ -78,10 +81,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	$scope.newSearch = ['',[]];
 	$scope.addSearch = function(is_and) {
 		var search = $scope.newSearch;
-		if (is_and) {
-			if ($scope.search.length > 0) {
-				$scope.search[$scope.search.length-1].push(search);
-			}
+		if (is_and && $scope.search.length > 0) {
+			$scope.search[$scope.search.length-1].push(search);
 		} else {
 			var arr = [];
 			arr.push(search);
