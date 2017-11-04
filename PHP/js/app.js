@@ -79,9 +79,11 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	// Searching Tables
 	$scope.search = [];
 	$scope.newSearch = ['',[]];
+	$scope.searchOr = true;
 	$scope.addSearch = function(is_and) {
 		var search = $scope.newSearch;
-		if (is_and && $scope.search.length > 0) {
+		console.log($scope.searchOr);
+		if (is_and) {
 			$scope.search[$scope.search.length-1].push(search);
 		} else {
 			var arr = [];

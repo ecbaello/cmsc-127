@@ -18,7 +18,7 @@ $CI =& get_instance();
 						</span>
 						<span class="search-value">
 							{{ andItem[1][0]=='range' ?
-								andItem[1][1]+'->'+andItem[1][2] :
+								andItem[1][1]+' to '+andItem[1][2] :
 								andItem[1][1]
 							}}
 						</span>
@@ -29,9 +29,10 @@ $CI =& get_instance();
 				</span>
 			</span>
 		</div>
+
 		<form class="search-form">
 			<div class="row">
-				<div class="col-1" ng-if="search.length>0">
+				<div class="col-1" ng-hide="search.length==0">
 					<md-switch ng-model="searchOr">
 						{{searchOr?'OR':'AND'}}
 					</md-switch>
