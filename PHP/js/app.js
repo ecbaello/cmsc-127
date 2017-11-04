@@ -92,10 +92,38 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	$scope.goSearch = function () {
 		var searchQry = JSON.stringify($scope.search);
 
-		var $form = $("<form>", {action: $scope.url+"/search", method: "POST"});
-		var $input = $("<input>", {name: "data", value: searchQry});
-		var $input2 = $("<input>", {name: $scope.csrf, value: $scope.csrfHash});
-		$form.append($input).append($input2).appendTo('body').submit();
+		var data = {};
+		data.data = searchQry;
+		data[$scope.csrf] = $scope.csrfHash;
+
+		$scope.serverRequesting = true;
+
+		$.ajax({
+			type: 'POST',
+			url: $scope.url+'/search',
+			data: data,
+			success: function(resultData) {
+				var response = convertData(JSON.parse(resultData));
+				$scope.data = response.data;
+				$scope.idName = response.id;
+				$scope.headers = response.headers;
+
+				$scope.csrf = response.csrf;
+				$scope.csrfHash = response.csrf_hash;
+				//console.log(data);
+				$scope.serverRequesting = false;
+
+				$scope.$apply();
+			},
+			error: function() {
+				rebuild();
+			}
+		});
+
+		// var $form = $("<form>", {action: $scope.url+"/search", method: "POST"});
+		// var $input = $("<input>", {name: "data", value: searchQry});
+		// var $input2 = $("<input>", {name: $scope.csrf, value: $scope.csrfHash});
+		// $form.append($input).append($input2).appendTo('body').submit();
 	};
 
 

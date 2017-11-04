@@ -36,7 +36,19 @@ class MY_DBcontroller extends CI_Controller
 
 	public function search () {
 		$query = json_decode($this->input->post('data'), true);
-		echo var_dump($query);
+
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+		echo json_encode( 
+			array(
+				'id'=>$this->model->TablePrimaryKey,
+				'headers'=>$this->model->getFieldAssociations(),
+				'data'=>$this->model->find($query)->result(),
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	public function update ($id) {

@@ -1,12 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$qry_CI =& get_instance();
-$qry_CI->load->database();
-
 if ( ! function_exists('qry_exp'))
 {
-    function qry_exp($array)
+    function qry_exp($array, $qry_bdr)
     {
     	if (! isset($array[0])) return;
 
@@ -19,32 +16,32 @@ if ( ! function_exists('qry_exp'))
     	switch ($expression[0]) {
     		case 'range':
     			if (! isset($expression[2])) return;
-    			$this->db->where($base.' >=', $expression[1]);
-				$this->db->where($base.' <=', $expression[2]);
+    			$qry_bdr->where($base.' >=', $expression[1]);
+				$qry_bdr->where($base.' <=', $expression[2]);
     			break;
 
     		case 'greater':
-    			$this->db->where($base.' >', $expression[1]);
+    			$qry_bdr->where($base.' >', $expression[1]);
     			break;
 
     		case 'lesser':
-    			$this->db->where($base.' <', $expression[1]);
+    			$qry_bdr->where($base.' <', $expression[1]);
     			break;
 
     		case 'like':
-    			$this->db->like($base, $expression[1]);
+    			$qry_bdr->like($base, $expression[1]);
     			break;
 
     		case 'not_like':
-    			$this->db->not_like($base, $expression[1]);
+    			$qry_bdr->not_like($base, $expression[1]);
     			break;
 
     		case 'not':
-    			$this->db->where($base.' !=', $expression[1]);
+    			$qry_bdr->where($base.' !=', $expression[1]);
     			break;
     		
     		default:
-    			$this->db->where($base, $expression[1]);
+    			$qry_bdr->where($base, $expression[1]);
     			break;
     	}
     }   
@@ -52,34 +49,36 @@ if ( ! function_exists('qry_exp'))
 
 if ( ! function_exists('qry_and'))
 {
-    function qry_and($array)
+    function qry_and($array, $qry_bdr)
     {
-    	$qry_CI->and_group_start();
         foreach ($array as $exp) {
-        	qry_exp($exp);
+        	qry_exp($exp, $qry_bdr);
         }
-        $qry_CI->group_end();
     }   
 }
 
 if ( ! function_exists('qry_or'))
 {
-    function qry_or($array)
+    function qry_or($array, $qry_bdr)
     {
-    	$qry_CI->or_group_start();
-        foreach ($array as $ands) {
-        	qry_and($ands);
+        for ($i=0; $i < count($array); $i++) { 
+            if ($i==0) $qry_bdr->group_start();
+            else $qry_bdr->or_group_start();
+            qry_and($array[$i], $qry_bdr);
+            $qry_bdr->group_end();
         }
-        $qry_CI->group_end();
+        
     }   
 }
 
 
 if ( ! function_exists('qry_evaluate'))
 {
-    function qry_evaluate($var)
+    function qry_evaluate($var, $qry_bdr)
     {
-        qry_or($var);
+        $qry_bdr->group_start();
+        qry_or($var, $qry_bdr);
+        $qry_bdr->group_end();
     }   
 }
 

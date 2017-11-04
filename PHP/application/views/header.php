@@ -48,9 +48,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </md-toolbar>
         <md-content flex>
           <md-list flex>
-            <md-list-item href="<?= base_url()?>search">
-              Search
-            </md-list-item>
             <md-list-item href="<?=base_url().'detchar' ?>">
               Patient Charges Detail
             </md-list-item>

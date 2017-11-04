@@ -56,8 +56,12 @@ class MY_DBarraymodel extends MY_DBmodel
 
 	public function find ($search, $subtable)
 	{	
-		$this->doFind($search);
-		$this->db->where($this->arrayFieldName, $subtable);
+		// Separate querying name
+		$name = $this->convertNameToCategory($subtable);
+
+		$this->load->helper("query_helper");
+		qry_evaluate($search, $this->db);
+		$this->db->where($this->arrayFieldName, $name);
 		return $this->db->get($this->TableName);
 	}
 
@@ -98,6 +102,7 @@ class MY_DBarraymodel extends MY_DBmodel
 	public function updateOnCategoryTable($name, $pk, $values) {
 		$mvalues = $values;
 		unset($mvalues[$this->TablePrimaryKey]);
+		
 		$mvalues[$this->arrayFieldName] = $this-> convertNameToCategory($name);
 
 		$this->db->where( $this->TablePrimaryKey, $pk);

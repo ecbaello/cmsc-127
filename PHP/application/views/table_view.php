@@ -1,5 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+$CI =& get_instance();
+// $cont_attr?, $swtch, $model, $inp_attr?, $placeholder
 ?>
 <div ng-controller="database" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
 	<?php /** Searching **/ ?>
@@ -29,36 +31,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<form class="search-form">
 			<div class="row">
 				<div class="col-2">
-					<md-select ng-model="newSearch[0]">
+					<md-select ng-model="newSearch[0]" placeholder="Field">
 						<md-option ng-repeat="(key, item) in headers" ng-value="key">
 							{{ item['title'] }}
 						</md-option>
 					</md-select>
 				</div>
 				<div class="col-1">
-					<md-select ng-model="newSearch[1][0]">
+					<md-select ng-model="newSearch[1][0]" placeholder="is">
 						<md-option ng-repeat="(key, item) in searchOperations" ng-value="key">
 							{{ item }}
 						</md-option>
 					</md-select>
 				</div>
 				<div class="col">
-					<md-input-container ng-switch="headers[newSearch[0]].type">
-						<md-datepicker ng-switch-when="DATE" type="date" ng-model="newSearch[1][1]"></md-datepicker>
-						<input ng-switch-when="FLOAT" type="number" step="0.01" ng-model="newSearch[1][1]">
-						<input ng-switch-when="NUMBER" type="number" ng-model="newSearch[1][1]">
-						<textarea ng-switch-when="TEXTAREA" ng-model="newSearch[1][1]"></textarea>
-						<input ng-switch-default ng-model="newSearch[1][1]">
-					</md-input-container>
+					<?= $CI->load->view('input_switcher', 
+						[ 
+							'swtch' => 'headers[newSearch[0]].type',
+							'model' => 'newSearch[1][1]',
+							'placeholder' => 'Value'
+						]
+					, true); ?>
 				</div>
 				<div class="col" ng-if="newSearch[1][0]=='range'">
-					<md-input-container ng-switch="headers[newSearch[0]].type">
-						<md-datepicker ng-switch-when="DATE" type="date" ng-model="newSearch[1][2]"></md-datepicker>
-						<input ng-switch-when="FLOAT" type="number" step="0.01" ng-model="newSearch[1][2]">
-						<input ng-switch-when="NUMBER" type="number" ng-model="newSearch[1][2]">
-						<textarea ng-switch-when="TEXTAREA" ng-model="newSearch[1][2]"></textarea>
-						<input ng-switch-default ng-model="newSearch[1][2]">
-					</md-input-container>
+					<?= $CI->load->view('input_switcher', 
+						[ 
+							'swtch' => 'headers[newSearch[0]].type',
+							'model' => 'newSearch[1][2]',
+						]
+					, true); ?>
 				</div>
 				<div class="col-1">
 					<div class="row">
@@ -93,14 +94,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<span ng-class="item.read_only?'':'cell-value'">
 									{{ item.type=='DATE' ? (value[key] | date: "yyyy-MM-dd") : value[key] }}
 								</span>
-								<md-input-container ng-switch="item.type" ng-if="!item.read_only">
-									<md-datepicker ng-switch-when="DATE" type="date" ng-model="value[key]"></md-datepicker>
-									<input ng-switch-when="FLOAT" type="number" step="0.01" ng-model="value[key]">
-									<input ng-switch-when="NUMBER" type="number" ng-model="value[key]">
-									<textarea ng-switch-when="TEXTAREA" ng-model="value[key]"></textarea>
-									<input ng-switch-default ng-model="value[key]">
-								</md-input-container>
-
+								<?= $CI->load->view('input_switcher', 
+									[ 
+										'swtch' => 'item.type',
+										'model' => 'value[key]',
+										'cont_attr' => 'ng-if="!item.read_only"'
+									]
+								, true); ?>
 							</td>
 							<td class="toolbox">
 								<md-button class="btn-edit md-square md-primary" ng-click="edit(index)"><i class="fa fa-pencil"></i></md-button>
@@ -133,18 +133,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<form ng-cloak>
 						<div layout-padding>
 							<div ng-repeat="(key, item) in headers" ng-if="!item.read_only" class="md-block">
-								<md-input-container>
-									<label>
-										{{item.title}}
-									</label>
-									<span ng-switch="item.type">
-										<md-datepicker ng-switch-when="DATE" 		type="date" 	ng-model="newItem[key]"></md-datepicker>
-										<input 		ng-switch-when="FLOAT" 	type="number" 	step="0.01" 				ng-model="newItem[key]">
-										<input 		ng-switch-when="NUMBER" 	type="number" 	ng-model="newItem[key]">
-										<textarea 	ng-switch-when="TEXTAREA" 	ng-model="newItem[key]"></textarea>
-										<input 		ng-switch-default 			ng-model="newItem[key]">
-									</span>
-								</md-input-container>
+								<?= $CI->load->view('input_switcher', 
+									[ 
+										'swtch' => 'item.type',
+										'model' => 'newItem[key]',
+										'label' => '{{item.title}}'
+									]
+								, true); ?>
 							</div>
 						</div>
 					</form>
