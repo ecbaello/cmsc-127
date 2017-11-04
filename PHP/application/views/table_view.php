@@ -69,7 +69,7 @@ $CI =& get_instance();
 					, true); ?>
 				</div>
 				<div class="col-1">
-					<md-button ng-click="addSearch(searchOr==false)">Add</md-button>
+					<md-button class="md-raised" ng-click="addSearch(searchOr==false)">Add Query</md-button>
 				</div>
 				<div class="col-1">
 					<md-button class="md-raised md-primary" ng-click="goSearch()">Search</md-button>

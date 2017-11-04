@@ -39,11 +39,13 @@ class MY_DBcontroller extends CI_Controller
 
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
+
+		$db = $this->model->find($query); 
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>$this->model->find($query)->result(),
+				'data'=>empty($db)?'':$db->result(),
 				'csrf' => $token,
 				'csrf_hash' => $hash,
 			)
