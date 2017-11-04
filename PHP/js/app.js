@@ -94,11 +94,11 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	};
 	$scope.removeSearch = function (i, j) {
 		
-		if ($scope.search[i].length == 1) {
-			if ($scope.search.length == 1) $scope.search = [];
-			else delete $scope.search[i];
+		if ($scope.search[i].length == 1 && j == 0) {
+			if ($scope.search.length == 1 && i == 0) $scope.search = [];
+			else delete $scope.search.splice(i,1);
 		}
-		else delete $scope.search[i][j];
+		else $scope.search[i].splice(j,1);
 	};
 	$scope.goSearch = function () {
 		var searchQry = JSON.stringify($scope.search);
@@ -154,10 +154,12 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		var index = $scope.editIndex;
 		var id = $scope.data[index][$scope.idName];
 		var data = {};
+
+		data[$scope.csrf] = $scope.csrfHash;
 		$scope.serverRequesting = true;
 		if ($scope.isEdit) {
 			data.data = JSON.stringify($scope.data[index]);
-			data[$scope.csrf] = $scope.csrfHash;
+			
 
 			console.log($scope.data[index]);
 			console.log("id is "+id);

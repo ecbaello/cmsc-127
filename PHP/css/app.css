@@ -127,14 +127,14 @@ body.ng-cloak {
 
 .search-item-or::before, .search-item-and::before {
 	position: absolute;
-	left: -2.5em;
-	background: #888;
+	left: -60px;
+	background: #ccc;
 }
 
 .search-item-or, .search-item-and {
 	position: relative;
 	display: block;
-	margin: 0.5em 0.5em 0.5em 2.5em;
+	margin: 0.5em 0.5em 0.5em 60px;
 }
 
 .search-item-or:first-child, .search-item-and:first-child {
