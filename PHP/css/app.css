@@ -154,11 +154,14 @@ body.ng-cloak {
 }
 
 .search-item, .search-item-or::before, .search-item-and::before {
-	padding: 0.3em;
+	padding: 5px 15px;
 	border-radius: 0.3em;
+	min-height: 58px;
+	line-height: 48px;
 }
 
 .search-item {
 	display: block;
 	background: #9EC6FE;
+
 }

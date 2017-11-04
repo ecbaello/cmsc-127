@@ -90,6 +90,14 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		}
 		$scope.newSearch = ['',[]];
 	};
+	$scope.removeSearch = function (i, j) {
+		
+		if ($scope.search[i].length == 1) {
+			if ($scope.search.length == 1) $scope.search = [];
+			else delete $scope.search[i];
+		}
+		else delete $scope.search[i][j];
+	};
 	$scope.goSearch = function () {
 		var searchQry = JSON.stringify($scope.search);
 
@@ -120,11 +128,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 				rebuild();
 			}
 		});
-
-		// var $form = $("<form>", {action: $scope.url+"/search", method: "POST"});
-		// var $input = $("<input>", {name: "data", value: searchQry});
-		// var $input2 = $("<input>", {name: $scope.csrf, value: $scope.csrfHash});
-		// $form.append($input).append($input2).appendTo('body').submit();
 	};
 
 

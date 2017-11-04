@@ -22,6 +22,9 @@ $CI =& get_instance();
 								andItem[1][1]
 							}}
 						</span>
+						<span style="float: right">
+							<md-button class="md-square md-primary" ng-click="removeSearch(i,j)"><i class="fa fa-lg fa-times"></i></md-button>
+						</span>
 					</span>
 				</span>
 			</span>
