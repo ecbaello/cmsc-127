@@ -18,8 +18,25 @@ $CI =& get_instance();
 						</span>
 						<span class="search-value">
 							{{ andItem[1][0]=='range' ?
-								andItem[1][1]+' to '+andItem[1][2] :
-								andItem[1][1]
+								(<?= $CI->load->view('item_formatter', 
+								[ 
+									'item_type' => "headers[andItem[0]]['type']",
+									'item_value' => 'andItem[1][1]'
+								]
+								, true); ?>)
+								+' to '+
+								(<?= $CI->load->view('item_formatter', 
+								[ 
+									'item_type' => "headers[andItem[0]]['type']",
+									'item_value' => 'andItem[1][2]'
+								]
+								, true); ?>) :
+								(<?= $CI->load->view('item_formatter', 
+								[ 
+									'item_type' => "headers[andItem[0]]['type']",
+									'item_value' => 'andItem[1][1]'
+								]
+								, true); ?>)
 							}}
 						</span>
 						<span style="float: right">
@@ -68,8 +85,8 @@ $CI =& get_instance();
 						]
 					, true); ?>
 				</div>
-				<div class="col-1">
-					<md-button class="md-raised" ng-click="addSearch(searchOr==false)">Add Query</md-button>
+				<div class="col-2">
+					<md-button class="md-raised" ng-disabled="newSearch[0] == '' || newSearch[1][0] == undefined" ng-click="addSearch(searchOr==false)">Add Query</md-button>
 				</div>
 				<div class="col-1">
 					<md-button class="md-raised md-primary" ng-click="goSearch()">Search</md-button>
@@ -94,7 +111,14 @@ $CI =& get_instance();
 					<tr ng-repeat="(index, value) in data" ng-class="{'row-update' : (index==editIndex && isEdit), 'row-edit' : (index==editIndex)}">
 							<td ng-repeat="(key, item) in headers">
 								<span ng-class="item.read_only?'':'cell-value'">
-									{{ item.type=='DATE' ? (value[key] | date: "yyyy-MM-dd") : value[key] }}
+									{{
+									<?= $CI->load->view('item_formatter', 
+									[ 
+										'item_type' => 'item.type',
+										'item_value' => 'value[key]'
+									]
+									, true); ?> 
+									 }}
 								</span>
 								<?= $CI->load->view('input_switcher', 
 									[ 

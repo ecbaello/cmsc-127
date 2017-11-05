@@ -159,10 +159,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		$scope.serverRequesting = true;
 		if ($scope.isEdit) {
 			data.data = JSON.stringify($scope.data[index]);
-			
-
-			console.log($scope.data[index]);
-			console.log("id is "+id);
 
 			$.ajax({
 				type: 'POST',
