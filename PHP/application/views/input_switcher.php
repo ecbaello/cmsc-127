@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // $cont_attr?, $swtch, $model, $inp_attr?, $placeholder, $label
 
+$CI =& get_instance();
+
 if (!isset($cont_attr)) $cont_attr = '';
 if (!isset($inp_attr)) $inp_attr = '';
 
@@ -36,4 +38,8 @@ $label = isset($label)?'<label>'.$label.'</label>':'';
 		<input <?= $input ?> >
 	</span>
 </md-input-container>
+
+<?php
+$CI->load->clear_vars();
+?>
 
