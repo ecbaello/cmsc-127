@@ -49,26 +49,28 @@ $CI =& get_instance();
 
 		<form class="search-form">
 			<div class="row">
-				<div class="col-1" ng-hide="search.length==0">
-					<md-switch ng-model="searchOr">
-						{{searchOr?'OR':'AND'}}
+				<div class="col-lg-1 col-sm-12" ng-hide="search.length==0">
+					<md-switch class="caption-switch" ng-model="searchOr">
+						<span class="caption-switch-title">
+							{{searchOr?'OR':'AND'}}
+						</span>
 					</md-switch>
 				</div>
-				<div class="col-2">
+				<div class="col-lg-2 col-sm-6">
 					<md-select ng-model="newSearch[0]" placeholder="Field">
 						<md-option ng-repeat="(key, item) in headers" ng-value="key">
 							{{ item['title'] }}
 						</md-option>
 					</md-select>
 				</div>
-				<div class="col-2">
+				<div class="col-lg-2 col-sm-6">
 					<md-select ng-model="newSearch[1][0]" placeholder="is">
 						<md-option ng-repeat="(key, item) in searchOperations" ng-value="key">
 							{{ item }}
 						</md-option>
 					</md-select>
 				</div>
-				<div class="col">
+				<div class="col-lg col-sm-12">
 					<?= $CI->load->view('input_switcher', 
 						[ 
 							'swtch' => 'headers[newSearch[0]].type',
@@ -77,19 +79,20 @@ $CI =& get_instance();
 						]
 					, true); ?>
 				</div>
-				<div class="col" ng-if="newSearch[1][0]=='range'">
+				<div class="col-lg col-sm-12" ng-if="newSearch[1][0]=='range'">
 					<?= $CI->load->view('input_switcher', 
 						[ 
 							'swtch' => 'headers[newSearch[0]].type',
 							'model' => 'newSearch[1][2]',
+							'placeholder' => 'To Value'
 						]
 					, true); ?>
 				</div>
-				<div class="col-2">
-					<md-button class="md-raised" ng-disabled="newSearch[0] == '' || newSearch[1][0] == undefined" ng-click="addSearch(searchOr==false)">Add Query</md-button>
+				<div class="col-lg-2 col-sm-6">
+					<md-button class="md-raised w-100" ng-disabled="newSearch[0] == '' || newSearch[1][0] == undefined" ng-click="addSearch(searchOr==false)">Add Query</md-button>
 				</div>
-				<div class="col-1">
-					<md-button class="md-raised md-primary" ng-click="goSearch()">Search</md-button>
+				<div class="col-lg-2 col-sm-6">
+					<md-button class="md-raised md-primary w-100" ng-click="goSearch()">Search</md-button>
 				</div>
 			</div>
 		</form>
@@ -159,7 +162,7 @@ $CI =& get_instance();
 					<form ng-cloak>
 						<div layout-padding>
 							<div ng-repeat="(key, item) in headers" ng-if="!item.read_only" class="md-block">
-								<?= $CI->load->view('input_switcher', 
+								<?php echo $CI->load->view('input_switcher', 
 									[ 
 										'swtch' => 'item.type',
 										'model' => 'newItem[key]',

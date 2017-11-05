@@ -117,7 +117,7 @@ body.ng-cloak {
 #container {
 	width: 100%;
 	overflow: auto;
-	min-height: 360px;
+	min-height: 160px;
 }
 
 
@@ -134,7 +134,7 @@ body.ng-cloak {
 .search-item-or, .search-item-and {
 	position: relative;
 	display: block;
-	margin: 0.5em 0.5em 0.5em 60px;
+	margin: 0.5em 0 0.5em 60px;
 }
 
 .search-item-or:first-child, .search-item-and:first-child {
@@ -154,14 +154,31 @@ body.ng-cloak {
 }
 
 .search-item, .search-item-or::before, .search-item-and::before {
-	padding: 5px 15px;
+	padding: 5px 0 5px 15px;
 	border-radius: 0.3em;
 	min-height: 58px;
 	line-height: 48px;
+}
+
+.search-item-or::before, .search-item-and::before {
+	padding: 5px 5px;
 }
 
 .search-item {
 	display: block;
 	background: #9EC6FE;
 
+}
+
+.caption-switch {
+	position: relative;
+}
+
+.caption-switch-title {
+	position: absolute;
+	z-index: 100;
+	left: 0;
+	bottom: -20px;
+	font-weight: bold;
+	font-size: 15px;
 }
