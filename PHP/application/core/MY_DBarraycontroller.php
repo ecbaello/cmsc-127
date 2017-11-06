@@ -1,4 +1,4 @@
-	<?php
+<?php
 
 class MY_DBarraycontroller extends CI_Controller {
 
@@ -34,6 +34,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->view('model_selector', $settings);
 	}
 
+	// next up: use id variable for pagination
 	public function table($subtable = null, $action = null, $id = null, $other = null) {
 		
 		if ($subtable !== null) {
