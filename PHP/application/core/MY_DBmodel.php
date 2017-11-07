@@ -5,6 +5,7 @@ class MY_DBmodel extends CI_Model
 	const metaTableName = 'db_meta';
 	const modelTableName = 'model_registry';
 	const fieldInputTypeField = 'table_field_input_type';
+	const fieldTypes = ['TEXT', 'TEXTAREA', 'CHECKBOX', 'FLOAT', 'NUMBER', 'DATE'];
 
 	protected $tabletemplate = array(
         'table_open'  => '<table class="table table-striped table-hover">'
@@ -217,23 +218,58 @@ class MY_DBmodel extends CI_Model
 	    return $this->db->get( $this->TableName)->row(); 
 	}
 
+	public function insertField($title, $kind, $default = null) {
+		$field = str_replace(' ', '_', $title);
+		$field = strtolower($this->TableName.'_'.$field);
+
+		$fieldset = array();
+
+		switch ($kind) {
+			case 'TEXT':
+				$fieldset['type'] = 'VARCHAR';
+				$fieldset['constraint'] = '100';
+				break;
+			case 'TEXTAREA':
+				$fieldset['type'] = 'VARCHAR';
+				$fieldset['constraint'] = '300';
+				break;
+			case 'CHECKBOX':
+				$fieldset['type'] = 'BIT';
+				$fieldset['constraint'] = '1';
+				break;
+			case 'FLOAT':
+				$fieldset['type'] = 'NUMERIC';
+				$fieldset['constraint'] = '12,2';
+				break;
+			case 'NUMBER':
+				$fieldset['type'] = 'INT';
+				$fieldset['constraint'] = '9';
+				break;
+			case 'DATE':
+				$fieldset['type'] = 'DATE';
+				break;
+			default:
+				$fieldset = null;
+				break;
+		}
+
+		if ($default == null)
+			$fieldset['null'] = TRUE;
+		else
+			$fieldset['default'] = $default;
+
+		$ins = array( $field => $fieldset );
+
+		$this->dbforge->add_column($this->TableName, $ins);
+		$this->registerFieldTitle($field, $title, $kind);
+	}
+
 	
 
 	/* ---------------------
 	*	Static Functions
 	*  ---------------------
 	*/
-
-
-	public function makeTable($query)
-	{
-		if (empty($query)) return NULL;
-		$fields = $query->list_fields();
-		$headers = $this->convertFields($fields);
-
-		$this->db_table->set_heading($headers);
-		return $this->db_table->generate($query);
-	}
 }
 
 ?>
