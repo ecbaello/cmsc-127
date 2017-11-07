@@ -87,6 +87,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <md-menu-item layout-padding>
                           Email: {{ email }}
                         </md-menu-item>
+                        <md-menu-item>
+                          <md-button class="md-primary" ng-href="<?=base_url()?>auth">
+                            Manage Account
+                          </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                          <md-button class="md-warn" ng-href="<?=base_url()?>auth/logout">
+                            Logout
+                          </md-button>
+                        </md-menu-item>
                       </md-menu-content>
                     </md-menu>
                   </span>

@@ -52,7 +52,7 @@ $CI =& get_instance();
 				<div class="col-lg-1 col-sm-12" ng-hide="search.length==0">
 					<md-switch class="caption-switch" ng-model="searchOr">
 						<span class="caption-switch-title">
-							{{searchOr?'OR':'AND'}}
+							{{ searchOr?'OR':'AND' }}
 						</span>
 					</md-switch>
 				</div>

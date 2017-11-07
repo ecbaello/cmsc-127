@@ -48,6 +48,7 @@ class Auth extends CI_Controller {
 	// log the user in
 	public function login()
 	{
+		$this->load->view('header');
 		$this->data['title'] = $this->lang->line('login_heading');
 
 		//validate form input
@@ -93,6 +94,7 @@ class Auth extends CI_Controller {
 
 			$this->_render_page('auth/login', $this->data);
 		}
+		$this->load->view('footer');
 	}
 
 	// log the user out

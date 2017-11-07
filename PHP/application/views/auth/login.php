@@ -5,23 +5,22 @@
 
 <?php echo form_open("auth/login", [ 'enctype'=>'application/json']);?>
 
-  <p>
-    <?php echo lang('login_identity_label', 'identity');?>
+  <md-input-container>
+    <label>Email</label>
     <?php echo form_input($identity);?>
-  </p>
+  </md-input-container>
 
-  <p>
-    <?php echo lang('login_password_label', 'password');?>
+  <md-input-container>
+    <label>Password</label>
     <?php echo form_input($password);?>
-  </p>
+  </md-input-container>
 
-  <p>
-    <?php echo lang('login_remember_label', 'remember');?>
-    <?php echo form_checkbox('remember', '1', FALSE, 'id="remember"');?>
-  </p>
-
-
-  <p><?php echo form_submit('submit', lang('login_submit_btn'));?></p>
+  <div>
+    <md-checkbox name="remember" value="0" required>
+      Remember Me
+    </md-checkbox>
+  </div>
+  <md-button type="submit" class="md-raised md-primary">Login</md-button>
 
 <?php echo form_close();?>
 
