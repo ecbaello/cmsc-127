@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 ?><!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
@@ -7,8 +8,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Luke Foundation<?php isset($title)?' &gt; '.$title:'' ?></title>
-  
-	
 
   <style type="text/css">
     input, textarea {
@@ -69,13 +68,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <header>
           <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="md-toolbar-tools">
-                <md-button class="md-icon-button" class="navbar-toggle" ng-click="toggleNavi()">
+                <md-button class="md-icon-button" class="navbar-toggle" ng-click="toggleNavi()" hide-gt-md>
                     <span class="sr-only">Toggle navigation</span>
                     <span class="fa fa-navicon fa-lg"></span>
                 </md-button>
-                <h1 class="d-inline">
+
+                <h1 flex class="d-inline">
                   <a href="<?=base_url()?>">Luke Foundation, Inc. Database</a>
                 </h1>
+                
+                <div ng-controller="user">
+                  <span class="user-menu" ng-if="loggedIn">
+                    <md-menu>
+                      <md-button ng-click="$mdMenu.open()">
+                        {{ userTitle }}
+                      </md-button>
+                      <md-menu-content width="4">
+                        <md-menu-item layout-padding>
+                          Email: {{ email }}
+                        </md-menu-item>
+                      </md-menu-content>
+                    </md-menu>
+                  </span>
+                  <span class="user-out" ng-if="!loggedIn">
+                    <md-button class="md-raised" ng-href="<?=base_url()?>auth/login">
+                      Login
+                    </md-button>
+                  </span>
+                </div>
             </div>
           </nav>
         </header>

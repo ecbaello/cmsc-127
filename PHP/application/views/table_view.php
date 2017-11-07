@@ -92,7 +92,7 @@ $CI =& get_instance();
 					<md-button class="md-raised w-100" ng-disabled="newSearch[0] == '' || newSearch[1][0] == undefined" ng-click="addSearch(searchOr==false)">Add Query</md-button>
 				</div>
 				<div class="col-lg-2 col-sm-6">
-					<md-button class="md-raised md-primary w-100" ng-click="goSearch()">Search</md-button>
+					<md-button class="md-raised md-primary w-100" ng-disabled="search.length==0" ng-click="goSearch()">Search</md-button>
 				</div>
 			</div>
 		</form>

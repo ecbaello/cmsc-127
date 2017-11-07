@@ -161,7 +161,7 @@ body.ng-cloak {
 }
 
 .search-item-or::before, .search-item-and::before {
-	padding: 5px 5px;
+	padding: 5px 7.5px;
 }
 
 .search-item {

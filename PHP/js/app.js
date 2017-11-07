@@ -1,10 +1,4 @@
-var app = angular.module('app', ['ngMaterial', 'ngMessages'])
-	.config(function($mdThemingProvider) {
-	  $mdThemingProvider.theme('altTheme')
-	    .primaryPalette('green').dark(); // specify primary color, all
-	                            // other color intentions will be inherited
-	                            // from default
-});
+
 
 function convertData(input) {
 	var data = input;
@@ -298,3 +292,11 @@ app.controller('navi', ['$scope', '$mdSidenav', function($scope,  $mdSidenav){
 	};
 
 }]);
+
+app.controller('user', ['$scope', 'UserService', function($scope,  UserService){
+	$scope.loggedIn = UserService.isLogged;
+	$scope.userTitle = UserService.firstName;
+	$scope.email = UserService.email;
+	$scope.company = UserService.company;
+}]);
+
