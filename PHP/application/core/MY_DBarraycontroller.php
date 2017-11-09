@@ -7,19 +7,18 @@ class MY_DBarraycontroller extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
-		
-		
 	}
 
 	public function index() {
 		$this->load->view('header');
 
-		$this->load->view('html', array('html'=>
-			'<h2 class="view-title">'.$this->model->ModelTitle.'</h2>'
-		));
 		$this->makeSelector();
 		
 		$this->load->view('footer');
+	}
+
+	protected function getAccessURL($file_url) {
+		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
 	}
 
 	protected function makeSelector($table = null, $replacelink = null) {
@@ -85,7 +84,13 @@ class MY_DBarraycontroller extends CI_Controller {
 
 	protected function makeHTML($subtable)
 	{
+		$this->load->view('header');
+		
+		$this->makeSelector($subtable, site_url($this->uri->segment(2)));
+		
+		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle]);
 
+		$this->load->view('footer');
 	}
 
 	protected function data($table) {

@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+$CI =& get_instance();
 
 ?><!DOCTYPE html>
 <html lang="en" ng-app="app">
@@ -21,9 +22,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 }
   </style>
 
-
+  <link rel="stylesheet" href="<?= base_url().'css/roboto.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/bootstrap.min.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/angular-material.css' ?>">
+
 
   <link rel="stylesheet" href="<?= base_url().'css/font-awesome.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/loader.css' ?>">
@@ -42,22 +44,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div layout="row" flex="" ng-cloak>
     <md-sidenav class="md-sidenav-left main-sidenav" md-whiteframe="4" md-component-id="navigation" md-is-locked-open="$mdMedia('gt-md')">
       <div class="h-100" layout="column" md-theme="altTheme">
-        <md-toolbar class="navbar">
+        <md-toolbar class="navbar logo">
           <h2 class="md-toolbar-tools">Menu</h2>
         </md-toolbar>
         <md-content flex>
-          <md-list flex>
-            <md-list-item href="<?=base_url().'detchar' ?>">
-              Patient Charges Detail
+          <md-list class="main-menu" flex>
+            <md-list-item class="active" href="<?=base_url() ?>">
+              <i class="fa fa-dashboard"></i> Dashboard
             </md-list-item>
-            <md-list-item href="<?=base_url().'pcf'?>">
-              Petty Cash Fund
-            </md-list-item>
-            <md-list-item href="<?=base_url().'pcfrr'?>">
-              Petty Cash Fund Replenishment Requests
-            </md-list-item>
-            <md-list-item href="<?=base_url().'patientexp'?>">
-              Patient Expenses
+            <md-list-item href="<?=base_url().'database' ?>">
+              <i class="fa fa-database"></i> Database
             </md-list-item>
           </md-list>
         </md-content>
@@ -101,7 +97,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </md-menu>
                   </span>
                   <span class="user-out" ng-if="!loggedIn">
-                    <md-button class="md-raised" ng-href="<?=base_url()?>auth/login">
+                    <md-button class="md-raised md-accent" ng-href="<?=base_url()?>auth/login">
                       Login
                     </md-button>
                   </span>

@@ -60,6 +60,7 @@ class MY_DBarraymodel extends MY_DBmodel
 		$name = $this->convertNameToCategory($subtable);
 
 		$this->load->helper("query_helper");
+		$this->select();
 		qry_evaluate($search, $this->db);
 		$this->db->where($this->arrayFieldName, $name);
 		return $this->db->get($this->TableName);

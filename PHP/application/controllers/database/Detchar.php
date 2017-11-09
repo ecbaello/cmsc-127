@@ -13,13 +13,7 @@ class Detchar extends MY_DBcontroller {
 
 	protected function makeHTML()
 	{
-
-
 		$this->load->view('header');
-
-		$this->load->view('html', array('html'=>'<h2 class="view-title">'.$this->model->ModelTitle.'</h2>'));
-
-
 
 		$this->makeTableHTML();
 

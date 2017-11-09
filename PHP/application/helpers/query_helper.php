@@ -12,6 +12,8 @@ if ( ! function_exists('qry_exp'))
 
     	$expression = $array['values'];
 
+        if (! isset($expression[0])) return;
+
     	switch ($array['operation']) {
     		case 'range':
     			if (! isset($expression[1])) return;

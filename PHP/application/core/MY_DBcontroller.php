@@ -17,13 +17,21 @@ class MY_DBcontroller extends CI_Controller
 		$this->makeHTML();
 	}
 
-	protected function makeHTML() {
+	protected function getAccessURL($file_url) {
+		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
+	}
 
+	protected function makeHTML() {
+		$this->load->view('header');
+
+		$this->makeTableHTML();
+		
+		$this->load->view('footer');
 	}
 
 	public function makeTableHTML()
 	{
-		$this->load->view('table_view');
+		$this->load->view('table_view', ['title' => $this->model->ModelTitle]);
 	}
 
 

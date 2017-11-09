@@ -117,7 +117,10 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	$scope.removeSearch = function (i, j) {
 		
 		if ($scope.search.rules[i].rules.length == 1 && j == 0) {
-			if ($scope.search.rules.length == 1 && i == 0) $scope.search.rules = [];
+			if ($scope.search.rules.length == 1 && i == 0) {
+				$scope.search.rules = [];
+				rebuild();
+			}
 			else delete $scope.search.rules.splice(i,1);
 		}
 		else $scope.search.rules[i].rules.splice(j,1);
@@ -222,7 +225,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 					var response = JSON.parse(resultData);
 					$scope.csrf = response.csrf;
 					$scope.csrfHash = response.csrf_hash;
-	        		//console.log(response);
+					
 	        		$scope.serverRequesting = false;
 	        		delete $scope.data[id];
 	        		$scope.$apply();
