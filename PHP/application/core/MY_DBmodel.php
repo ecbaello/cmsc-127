@@ -2,9 +2,9 @@
 
 class MY_DBmodel extends CI_Model
 {
-	const searchTableName = 'searches';
-	const metaTableName = 'db_meta';
-	const modelTableName = 'model_registry';
+	const searchTableName = 'fin_searches';
+	const metaTableName = 'fin_db_meta';
+	const modelTableName = 'fin_model_registry';
 	const fieldInputTypeField = 'table_field_input_type';
 	const fieldTypes = ['TEXT', 'TEXTAREA', 'CHECKBOX', 'FLOAT', 'NUMBER', 'DATE'];
 
