@@ -5,43 +5,42 @@ if ( ! function_exists('qry_exp'))
 {
     function qry_exp($array, $qry_bdr)
     {
-    	if (! isset($array[0])) return;
+    	if (! empty($array['condition'])) return;
 
-    	$base = $array[0];
+        $derived = $array['header']['derived'];
+    	$base = $derived ? $array['header']['derivation'] : '`'.$array['header']['key'].'`';
 
-    	if (! isset($array[0]) || ! isset($array[1])) return;
+    	$expression = $array['values'];
 
-    	$expression = $array[1];
-
-    	switch ($expression[0]) {
+    	switch ($array['operation']) {
     		case 'range':
-    			if (! isset($expression[2])) return;
-    			$qry_bdr->where($base.' >=', $expression[1]);
-				$qry_bdr->where($base.' <=', $expression[2]);
+    			if (! isset($expression[1])) return;
+    			$qry_bdr->where($base.' >=', $expression[0], false);
+				$qry_bdr->where($base.' <=', $expression[1], false);
     			break;
 
     		case 'greater':
-    			$qry_bdr->where($base.' >', $expression[1]);
+    			$qry_bdr->where($base.' >', $expression[0], false);
     			break;
 
     		case 'lesser':
-    			$qry_bdr->where($base.' <', $expression[1]);
+    			$qry_bdr->where($base.' <', $expression[0], false);
     			break;
 
     		case 'like':
-    			$qry_bdr->like($base, $expression[1]);
+    			$qry_bdr->like($base, $expression[0], false);
     			break;
 
     		case 'not_like':
-    			$qry_bdr->not_like($base, $expression[1]);
+    			$qry_bdr->not_like($base, $expression[0], false);
     			break;
 
     		case 'not':
-    			$qry_bdr->where($base.' !=', $expression[1]);
+    			$qry_bdr->where($base.' !=', $expression[0], false);
     			break;
     		
     		default:
-    			$qry_bdr->where($base, $expression[1]);
+    			$qry_bdr->where($base, $expression[0], false);
     			break;
     	}
     }   
@@ -51,7 +50,7 @@ if ( ! function_exists('qry_and'))
 {
     function qry_and($array, $qry_bdr)
     {
-        foreach ($array as $exp) {
+        foreach ($array['rules'] as $exp) {
         	qry_exp($exp, $qry_bdr);
         }
     }   
@@ -60,11 +59,12 @@ if ( ! function_exists('qry_and'))
 if ( ! function_exists('qry_or'))
 {
     function qry_or($array, $qry_bdr)
-    {
-        for ($i=0; $i < count($array); $i++) { 
+    {   
+        $j = count($array['rules']);
+        for ($i=0; $i < $j; $i++) { 
             if ($i==0) $qry_bdr->group_start();
             else $qry_bdr->or_group_start();
-            qry_and($array[$i], $qry_bdr);
+            qry_and($array['rules'][$i], $qry_bdr);
             $qry_bdr->group_end();
         }
         

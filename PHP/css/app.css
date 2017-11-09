@@ -182,3 +182,7 @@ body.ng-cloak {
 	font-weight: bold;
 	font-size: 15px;
 }
+
+.chip-hide-removable md-chip {
+	padding-right: 8px !important;
+}

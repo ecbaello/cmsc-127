@@ -2,19 +2,16 @@
 
 class MY_DBmodel extends CI_Model
 {
+	const searchTableName = 'searches';
 	const metaTableName = 'db_meta';
 	const modelTableName = 'model_registry';
 	const fieldInputTypeField = 'table_field_input_type';
 	const fieldTypes = ['TEXT', 'TEXTAREA', 'CHECKBOX', 'FLOAT', 'NUMBER', 'DATE'];
 
-	protected $tabletemplate = array(
-        'table_open'  => '<table class="table table-striped table-hover">'
-	);
-
-
 	public $ModelTitle = '';
 	public $TableName = ''; // Overideable
 	public $TablePrimaryKey = 'id'; // Overideable
+	public $FieldPrefix = null;
 
 	public $ReadOnlyFields = array();
 
@@ -33,7 +30,9 @@ class MY_DBmodel extends CI_Model
 		$this->load->dbforge();
 
 		$this->createMetaTable();
-		if ($this->willRegister) $this->registerModel();
+
+		if ($this->willRegister)
+			$this->registerModel();
 
 		$this->createTable();
 	}
@@ -79,11 +78,20 @@ class MY_DBmodel extends CI_Model
 		if (!($this->db->table_exists(self::metaTableName)))
 		{
 			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
-			$this->dbforge->add_field		("table_field VARCHAR(100) NOT NULL");
+			$this->dbforge->add_field		("table_field TEXT NOT NULL");
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
+			$this->dbforge->add_field		("table_field_derived TEXT DEFAULT NULL");
 			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
-
-			$this->dbforge->create_table	(self::metaTableName);
+			$this->dbforge->add_key 		('table_field', TRUE);
+			$this->dbforge->add_key 		('table_name', TRUE);
+			$this->dbforge->create_table	( self::metaTableName);
+		}
+		if ( !($this->db->table_exists(self::searchTableName)) ) {
+			$this->dbforge->add_field		("id");
+			$this->dbforge->add_field		("table_name TEXT NOT NULL");
+			$this->dbforge->add_field 		("query_title VARCHAR(100) DEFAULT ''");
+			$this->dbforge->add_field 		("search_query TEXT DEFAULT ''");
+			$this->dbforge->create_table	( self::searchTableName );
 		}
 	}
 
@@ -91,7 +99,7 @@ class MY_DBmodel extends CI_Model
 		
 	}
 
-	public function registerFieldTitle( $table_field, $field_title, $inputType = 'TEXT' ) {
+	public function registerFieldTitle( $table_field, $field_title, $inputType = 'TEXT') {
 		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
 
 		$data = array(
@@ -99,6 +107,19 @@ class MY_DBmodel extends CI_Model
 		        'table_field' => $table_field,	
 		        'table_field_title' => $field_title,
 		        'table_field_input_type' => $inputType, 
+		);
+		$this->db->insert(self::metaTableName, $data);
+
+	}
+
+	public function registerDerivedFieldTitle( $table_field, $field_title, $derivation) {
+		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
+
+		$data = array(
+		        'table_name' => $this->TableName,
+		        'table_field' => $table_field,	
+		        'table_field_title' => $field_title,
+		        'table_field_derived' => $derivation
 		);
 		$this->db->insert(self::metaTableName, $data);
 
@@ -121,17 +142,27 @@ class MY_DBmodel extends CI_Model
 		return $arr;
 	}
 
-	public function getFieldAssociations($hide_items = true) {
-		$this->db->select('table_field, table_field_title, '. self::fieldInputTypeField);
+	public function getFieldAssociations() {
+		$this->db->select('table_field, table_field_title, table_field_derived, '.self::fieldInputTypeField);
 		$this->db->where('table_name', $this->TableName);
 
 		$inp = $this->db->get(self::metaTableName)->result_array();
 		$arr = array();
 		foreach ($inp as $assoc) {
+			$read_only = !empty($assoc['table_field_derived']) // is Derived 
+						|| ($this->TablePrimaryKey == $assoc['table_field']) // is ID
+						|| (
+								isset($this->ReadOnlyFields['table_field']) ? // is Specified
+								$this->ReadOnlyFields['table_field'] :
+								FALSE
+							);
+
 			$arr[ $assoc['table_field'] ] = array(
 				TBL_TITLE => $assoc['table_field_title'],
 				TBL_INPUT => $assoc[self::fieldInputTypeField],
-				RD_ONLY	  => ($this->TablePrimaryKey == $assoc['table_field'])||(isset($this->ReadOnlyFields['table_field']) ? $this->ReadOnlyFields['table_field']: FALSE)
+				RD_ONLY	  => $read_only,
+				FLD_DERIVED => !empty($assoc['table_field_derived']),
+				FLD_DERIVATION => !empty($assoc['table_field_derived'])?$assoc['table_field_derived']:null
 			);
 		}
 		return $arr;
@@ -174,8 +205,30 @@ class MY_DBmodel extends CI_Model
 		return $query[0]['table_field'];
 	}
 
+	public function select() {
+		$select = '';
+		$fields = $this->getFieldAssociations();
+
+		$first = true;
+		foreach ($fields as $field => $info) {
+			
+			if (!$first) $select .= ', ';
+			$first = false;
+			if ($info[FLD_DERIVED]) {
+				$select .= $info[FLD_DERIVATION];
+				$select .= ' AS ';
+				$select .= $field;
+			} else {
+				$select .= $field;
+			}
+		}
+
+		$this->db->select($select, false);
+	}
+
 	public function get()
 	{
+		$this->select();
 		return $this->db->get( $this->TableName);
 	}
 
@@ -193,8 +246,11 @@ class MY_DBmodel extends CI_Model
 	public function find ($search)
 	{
 		$this->load->helper("query_helper");
+
+		$this->db->reset_query();
+		$this->select();
 		qry_evaluate($search, $this->db);
-		return $this->get($this->TableName);
+		return $this->db->get($this->TableName);
 	}
 
 	public function insertIntoTable($data) {
@@ -214,57 +270,99 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function getByPK($id) {
+		$this->select();
 		$this->db->where( $this->TablePrimaryKey, $id);
 	    return $this->db->get( $this->TableName)->row(); 
 	}
 
 	public function insertField($title, $kind, $default = null) {
 		$field = str_replace(' ', '_', $title);
-		$field = strtolower($this->TableName.'_'.$field);
+		$field = strtolower(
+			($this->FieldPrefix!=null?$this->FieldPrefix:$this->TableName)
+			.'_'.$field);
 
-		$fieldset = array();
+		if (!$this->db->field_exists($field, $this->TableName)) {
+			$fieldset = array();
 
-		switch ($kind) {
-			case 'TEXT':
-				$fieldset['type'] = 'VARCHAR';
-				$fieldset['constraint'] = '100';
-				break;
-			case 'TEXTAREA':
-				$fieldset['type'] = 'VARCHAR';
-				$fieldset['constraint'] = '300';
-				break;
-			case 'CHECKBOX':
-				$fieldset['type'] = 'BIT';
-				$fieldset['constraint'] = '1';
-				break;
-			case 'FLOAT':
-				$fieldset['type'] = 'NUMERIC';
-				$fieldset['constraint'] = '12,2';
-				break;
-			case 'NUMBER':
-				$fieldset['type'] = 'INT';
-				$fieldset['constraint'] = '9';
-				break;
-			case 'DATE':
-				$fieldset['type'] = 'DATE';
-				break;
-			default:
-				$fieldset = null;
-				break;
+			switch ($kind) {
+				case 'TEXT':
+					$fieldset['type'] = 'VARCHAR';
+					$fieldset['constraint'] = '100';
+					break;
+				case 'TEXTAREA':
+					$fieldset['type'] = 'VARCHAR';
+					$fieldset['constraint'] = '300';
+					break;
+				case 'CHECKBOX':
+					$fieldset['type'] = 'BIT';
+					$fieldset['constraint'] = '1';
+					break;
+				case 'FLOAT':
+					$fieldset['type'] = 'NUMERIC';
+					$fieldset['constraint'] = '12,2';
+					break;
+				case 'NUMBER':
+					$fieldset['type'] = 'INT';
+					$fieldset['constraint'] = '9';
+					break;
+				case 'DATE':
+					$fieldset['type'] = 'DATE';
+					break;
+				default:
+					$fieldset = null;
+					break;
+			}
+
+			if ($default == null)
+				$fieldset['null'] = TRUE;
+			else
+				$fieldset['default'] = $default;
+
+			$ins = array( $field => $fieldset );
+
+			$this->dbforge->add_column($this->TableName, $ins);
+			$this->registerFieldTitle($field, $title, $kind);
 		}
-
-		if ($default == null)
-			$fieldset['null'] = TRUE;
-		else
-			$fieldset['default'] = $default;
-
-		$ins = array( $field => $fieldset );
-
-		$this->dbforge->add_column($this->TableName, $ins);
-		$this->registerFieldTitle($field, $title, $kind);
 	}
 
-	
+	public function removeField($field) {
+		$this->db->where( "table_field", $field );
+		$this->db->where( "table_name", $this->TableName );
+		$done = $this->db->delete( self::metaTableName );
+		$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
+
+		return $done; 
+	}
+
+	public function insertDerivedField($title, $expression) {
+		$selectValue = '';
+		// field operand
+		// [(field type: title: key: )(expression type: value: )(field)]
+		$field = str_replace(' ', '_', $title);
+		$field = strtolower(
+			($this->FieldPrefix!=null?$this->FieldPrefix:$this->TableName)
+			.'_'.$field);
+
+		foreach ($expression as $item) {
+			if ($item['type'] == 'field') {
+				$selectValue .= $item['key'];
+			} else if ($item['type'] == 'operand') {
+				$selectValue .= $item['value'];
+			}
+		}
+
+		$this->registerDerivedFieldTitle($field, $title, $selectValue);
+	}
+
+	public function registerSearchQuery($title, $query) {
+		return $this->db->insert( self::searchTableName, 
+			[
+				'search_query'=>json_encode($query),
+				'query_title'=>$title,
+				'table_name'=>$this->TableName
+			]
+		);
+	}
 
 	/* ---------------------
 	*	Static Functions

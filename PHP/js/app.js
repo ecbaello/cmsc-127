@@ -71,28 +71,56 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	}
 
 	// Searching Tables
-	$scope.search = [];
-	$scope.newSearch = ['',[]];
+	$scope.search = 
+	{
+		condition: 'OR',
+		rules: [],
+		not: false
+	};
+	$scope.newSearch = 
+	{
+		condition: null
+	};
 	$scope.searchOr = true;
 	$scope.addSearch = function(is_and) {
 		var search = $scope.newSearch;
-		console.log($scope.searchOr);
+		$scope.newSearch = 
+		{
+			condition: null
+		};
+
+
+		search.header = {
+			key: search.header,
+			derived: $scope.headers[search.header].derived,
+			derivation: $scope.headers[search.header].select_val
+		};
+
 		if (is_and) {
-			$scope.search[$scope.search.length-1].push(search);
+			$scope.search
+				.rules	// OR
+				[$scope.search.rules.length-1] // last item
+				.rules	// AND
+				.push(search);
 		} else {
-			var arr = [];
-			arr.push(search);
-			$scope.search.push(arr);
+			var arr = 
+			{
+				condition: 'AND',
+				rules: [],
+				not: false
+			};
+			arr.rules.push(search);
+			$scope.search.rules.push(arr);
 		}
-		$scope.newSearch = ['',[]];
+		
 	};
 	$scope.removeSearch = function (i, j) {
 		
-		if ($scope.search[i].length == 1 && j == 0) {
-			if ($scope.search.length == 1 && i == 0) $scope.search = [];
-			else delete $scope.search.splice(i,1);
+		if ($scope.search.rules[i].rules.length == 1 && j == 0) {
+			if ($scope.search.rules.length == 1 && i == 0) $scope.search.rules = [];
+			else delete $scope.search.rules.splice(i,1);
 		}
-		else $scope.search[i].splice(j,1);
+		else $scope.search.rules[i].rules.splice(j,1);
 	};
 	$scope.goSearch = function () {
 		var searchQry = JSON.stringify($scope.search);
@@ -152,7 +180,15 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		data[$scope.csrf] = $scope.csrfHash;
 		$scope.serverRequesting = true;
 		if ($scope.isEdit) {
-			data.data = JSON.stringify($scope.data[index]);
+			var subdata = $.extend({}, $scope.data[index]);
+
+			$.each($scope.headers, function(key, value) {
+				if (value.read_only) {
+					delete subdata[key];
+				}
+			});
+
+			data.data = JSON.stringify(subdata);
 
 			$.ajax({
 				type: 'POST',
@@ -242,9 +278,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	$scope.closeDialog = function() {
 		$mdDialog.cancel();
 	};
-
-	
-
 }]);
 
 app.controller('tables', ['$scope', '$http', function($scope, $http){
@@ -290,7 +323,6 @@ app.controller('navi', ['$scope', '$mdSidenav', function($scope,  $mdSidenav){
 		$mdSidenav('navigation')
 	      .toggle();
 	};
-
 }]);
 
 app.controller('user', ['$scope', 'UserService', function($scope,  UserService){
@@ -298,5 +330,27 @@ app.controller('user', ['$scope', 'UserService', function($scope,  UserService){
 	$scope.userTitle = UserService.firstName;
 	$scope.email = UserService.email;
 	$scope.company = UserService.company;
+}]);
+
+app.controller('expBuilder', ['$scope', function($scope){
+	$scope.expression = [
+	{
+		type: 'field',
+		title: 'Hello',
+		key: 'hi'
+	},
+	{
+		type: 'operand',
+		value: '+'
+	},
+	{
+		type: 'field',
+		title: 'World',
+		key: 'hilo'
+	}
+
+	];
+	$scope.newIsField = true;
+	$scope.newItem = {};
 }]);
 

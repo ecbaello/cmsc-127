@@ -7,34 +7,34 @@ $CI =& get_instance();
 	<?php /** Searching **/ ?>
 	<div class="search-card">
 		<div class="search-input">
-			<span class="search-item-or" ng-repeat="(i, orItem) in search">
-				<span class="search-item-and" ng-repeat="(j, andItem) in orItem">
+			<span class="search-item-or" ng-repeat="(i, orItem) in search.rules">
+				<span class="search-item-and" ng-repeat="(j, andItem) in orItem.rules">
 					<span class="search-item">
 						<span class="search-field">
-							{{ headers[andItem[0]]['title'] }}
+							{{ headers[ andItem.header.key ]['title'] }}
 						</span>
 						<span class="search-op">
-							{{ searchOperations[andItem[1][0]] }}
+							{{ searchOperations[ andItem.operation ] }}
 						</span>
 						<span class="search-value">
 							{{ andItem[1][0]=='range' ?
 								(<?= $CI->load->view('item_formatter', 
 								[ 
-									'item_type' => "headers[andItem[0]]['type']",
-									'item_value' => 'andItem[1][1]'
+									'item_type' => "headers[andItem.header.key]['type']",
+									'item_value' => 'andItem.values[0]'
 								]
 								, true); ?>)
 								+' to '+
 								(<?= $CI->load->view('item_formatter', 
 								[ 
-									'item_type' => "headers[andItem[0]]['type']",
-									'item_value' => 'andItem[1][2]'
+									'item_type' => "headers[andItem.header.key]['type']",
+									'item_value' => 'andItem.values[1]'
 								]
 								, true); ?>) :
 								(<?= $CI->load->view('item_formatter', 
 								[ 
-									'item_type' => "headers[andItem[0]]['type']",
-									'item_value' => 'andItem[1][1]'
+									'item_type' => "headers[andItem.header.key]['type']",
+									'item_value' => 'andItem.values[0]'
 								]
 								, true); ?>)
 							}}
@@ -49,7 +49,7 @@ $CI =& get_instance();
 
 		<form class="search-form">
 			<div class="row">
-				<div class="col-lg-1 col-sm-12" ng-hide="search.length==0">
+				<div class="col-lg-1 col-sm-12" ng-hide="search.rules.length==0">
 					<md-switch class="caption-switch" ng-model="searchOr">
 						<span class="caption-switch-title">
 							{{ searchOr?'OR':'AND' }}
@@ -57,14 +57,14 @@ $CI =& get_instance();
 					</md-switch>
 				</div>
 				<div class="col-lg-2 col-sm-6">
-					<md-select ng-model="newSearch[0]" placeholder="Field">
+					<md-select ng-model="newSearch.header" placeholder="Field">
 						<md-option ng-repeat="(key, item) in headers" ng-value="key">
 							{{ item['title'] }}
 						</md-option>
 					</md-select>
 				</div>
 				<div class="col-lg-2 col-sm-6">
-					<md-select ng-model="newSearch[1][0]" placeholder="is">
+					<md-select ng-model="newSearch.operation" placeholder="is">
 						<md-option ng-repeat="(key, item) in searchOperations" ng-value="key">
 							{{ item }}
 						</md-option>
@@ -73,23 +73,23 @@ $CI =& get_instance();
 				<div class="col-lg col-sm-12">
 					<?= $CI->load->view('input_switcher', 
 						[ 
-							'swtch' => 'headers[newSearch[0]].type',
-							'model' => 'newSearch[1][1]',
+							'swtch' => 'headers[newSearch.header.key].type',
+							'model' => 'newSearch.values[0]',
 							'placeholder' => 'Value'
 						]
 					, true); ?>
 				</div>
-				<div class="col-lg col-sm-12" ng-if="newSearch[1][0]=='range'">
+				<div class="col-lg col-sm-12" ng-if="newSearch.operation=='range'">
 					<?= $CI->load->view('input_switcher', 
 						[ 
-							'swtch' => 'headers[newSearch[0]].type',
-							'model' => 'newSearch[1][2]',
+							'swtch' => 'headers[newSearch.header.key].type',
+							'model' => 'newSearch.values[1]',
 							'placeholder' => 'To Value'
 						]
 					, true); ?>
 				</div>
 				<div class="col-lg-2 col-sm-6">
-					<md-button class="md-raised w-100" ng-disabled="newSearch[0] == '' || newSearch[1][0] == undefined" ng-click="addSearch(searchOr==false)">Add Query</md-button>
+					<md-button class="md-raised w-100" ng-disabled="!newSearch.header || !newSearch.operation" ng-click="addSearch(searchOr==false)">Add Query</md-button>
 				</div>
 				<div class="col-lg-2 col-sm-6">
 					<md-button class="md-raised md-primary w-100" ng-disabled="search.length==0" ng-click="goSearch()">Search</md-button>

@@ -5,7 +5,7 @@ class Database_patient_expenses_model extends MY_DBmodel
 	public $ModelTitle = 'Patient Expenses';
 	public $TableName = 'patient_expenses'; // Overideable
 	public $TablePrimaryKey = 'pe_transaction_id'; // Overideable
-
+	public $FieldPrefix = 'pe';
 
 	public function createTable()
 	{

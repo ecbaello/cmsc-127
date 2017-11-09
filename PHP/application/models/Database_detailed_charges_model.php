@@ -5,6 +5,7 @@ class Database_detailed_charges_model extends MY_DBmodel
 	public $ModelTitle = 'Detailed Charges';
 	public $TableName = 'detailed_charges'; // Overideable
 	public $TablePrimaryKey = 'dc_charge_id'; // Overideable
+	public $FieldPrefix = 'dc';
 
 	public function createTable()
 	{

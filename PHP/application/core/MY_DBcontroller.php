@@ -40,12 +40,14 @@ class MY_DBcontroller extends CI_Controller
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
-		$db = $this->model->find($query); 
+		$db = $this->model->find($query);
+		$db = empty($db)?'':$db->result();
+		
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>empty($db)?'':$db->result(),
+				'data'=>$db,
 				'csrf' => $token,
 				'csrf_hash' => $hash,
 			)
@@ -85,6 +87,29 @@ class MY_DBcontroller extends CI_Controller
 		if (!$this->model->insertIntoTable($arr)){
 			show_error('Data Insertion Failed', 400);
 		}
+	}
+
+	public function addfield () {
+		$data = json_decode($this->input->post('data'), true);
+
+		if ($data['derived']) {
+			return $this->model->insertDerivedField($data['title'], $data['expression']);
+		} else {
+			return $this->model->insertField($data['title'], $data['kind'], $data['default']);
+		}
+	}
+
+	public function removefield () {
+		$key = $this->input->post('key');
+		$this->model->removeField($key);
+	}
+
+	public function headers () {
+		echo json_encode( 
+			array(
+				'headers'=>$this->model->getFieldAssociations()
+			)
+		);
 	}
 
 	public function data () {

@@ -109,4 +109,6 @@ defined('QRY_SUBTABLE')        OR define('QRY_SUBTABLE', 'subtable');
 defined('QRY_DEFAULT')		   OR define('QRY_DEFAULT','General');
 
 defined('RD_ONLY')		   OR define('RD_ONLY','read_only');
+defined('FLD_DERIVED')           OR define('FLD_DERIVED', 'derived');
+defined('FLD_DERIVATION')           OR define('FLD_DERIVATION', 'select_val');
 
