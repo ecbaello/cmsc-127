@@ -19,6 +19,9 @@ $CI =& get_instance();
       	<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
 			<i class="fa fa-plus fa-lg"></i>
 		</md-button>
+		<md-button class="md-icon-button">
+      		<i class="fa fa-print fa-lg"></i>
+      	</md-button>
       </span>
     </md-card-title>
     <md-card-content>
