@@ -42,9 +42,15 @@ $CI =& get_instance();
 												{{ item }}
 											</md-option>
 										</md-select>
-										<md-input-container class="w-100">
-											<input placeholder="Default Value" type="text" ng-model="newColumn.default">
-										</md-input-container>
+										<div class="w-100">
+											<?php echo $CI->load->view('input_switcher', 
+												[ 
+													'swtch' => 'newColumn.kind',
+													'model' => 'newColumn.default',
+													'label' => 'Default Value'
+												]
+											, true); ?>
+										</div>
 									</div>
 										<div ng-if="newColumn.derived">
 											<label>Field Derivation</label>

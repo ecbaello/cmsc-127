@@ -6,15 +6,15 @@ $CI =& get_instance();
 <script type="text/javascript">
 	app.constant('tableURL', '<?= isset($url)?$url:current_url() ?>');
 </script>
-<div ng-controller="database" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
+<div ng-controller="database" ng-init="rebuild()">
 <md-content layout-padding>
   <md-card>
     <md-card-title>
       <span class="md-headline font-weight-bold" flex><?= $title ?></span>
       <span class="table-tools">
       	
-      	<md-button ng-init="hideSearch=true" ng-class="hideSearch?'':' md-focused'" class="md-icon-button" ng-click="hideSearch=!hideSearch">
-      		<i class="fa fa-search fa-lg"></i>
+      	<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-focused'" class="md-icon-button" ng-click="hideFilter=!hideFilter">
+      		<i class="fa fa-filter fa-lg"></i>
       	</md-button>
       	<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
 			<i class="fa fa-plus fa-lg"></i>
@@ -25,19 +25,19 @@ $CI =& get_instance();
       </span>
     </md-card-title>
     <md-card-content>
-			<?php /** Searching **/ ?>
-			<div ng-hide="hideSearch" class="search-card">
-				<div class="search-input">
-					<span class="search-item-or" ng-repeat="(i, orItem) in search.rules">
-						<span class="search-item-and" ng-repeat="(j, andItem) in orItem.rules">
-							<span class="search-item">
-								<span class="search-field">
+			<?php /** filtering **/ ?>
+			<div ng-hide="hideFilter" class="filter-card">
+				<div class="filter-input">
+					<span class="filter-item-or" ng-repeat="(i, orItem) in filter.rules">
+						<span class="filter-item-and" ng-repeat="(j, andItem) in orItem.rules">
+							<span class="filter-item">
+								<span class="filter-field">
 									{{ headers[ andItem.header.key ]['title'] }}
 								</span>
-								<span class="search-op">
-									{{ searchOperations[ andItem.operation ] }}
+								<span class="filter-op">
+									{{ filterOperations[ andItem.operation ] }}
 								</span>
-								<span class="search-value">
+								<span class="filter-value">
 									{{ andItem.operation=='range' ?
 										(<?= $CI->load->view('item_formatter', 
 										[ 
@@ -61,32 +61,32 @@ $CI =& get_instance();
 									}}
 								</span>
 								<span style="float: right">
-									<md-button class="md-square md-primary" ng-click="removeSearch(i,j)"><i class="fa fa-lg fa-times"></i></md-button>
+									<md-button class="md-square md-primary" ng-click="removeFilter(i,j)"><i class="fa fa-lg fa-times"></i></md-button>
 								</span>
 							</span>
 						</span>
 					</span>
 				</div>
 
-				<form class="search-form">
+				<form class="filter-form">
 					<div class="row">
-						<div class="col-lg-1 col-sm-12" ng-hide="search.rules.length==0">
-							<md-switch class="caption-switch" ng-model="searchOr">
+						<div class="col-lg-1 col-sm-12" ng-hide="filter.rules.length==0">
+							<md-switch class="caption-switch" ng-model="filterOr">
 								<span class="caption-switch-title">
-									{{ searchOr?'OR':'AND' }}
+									{{ filterOr?'OR':'AND' }}
 								</span>
 							</md-switch>
 						</div>
 						<div class="col-lg-2 col-sm-6">
-							<md-select ng-model="newSearch.header" placeholder="Field">
+							<md-select ng-model="newFilter.header" placeholder="Field">
 								<md-option ng-repeat="(key, item) in headers" ng-value="key">
 									{{ item['title'] }}
 								</md-option>
 							</md-select>
 						</div>
 						<div class="col-lg-2 col-sm-6">
-							<md-select ng-model="newSearch.operation" placeholder="is">
-								<md-option ng-repeat="(key, item) in searchOperations" ng-value="key">
+							<md-select ng-model="newFilter.operation" placeholder="is">
+								<md-option ng-repeat="(key, item) in filterOperations" ng-value="key">
 									{{ item }}
 								</md-option>
 							</md-select>
@@ -94,26 +94,26 @@ $CI =& get_instance();
 						<div class="col-lg col-sm-12">
 							<?= $CI->load->view('input_switcher', 
 								[ 
-									'swtch' => 'headers[newSearch.header].type',
-									'model' => 'newSearch.values[0]',
+									'swtch' => 'headers[newFilter.header].type',
+									'model' => 'newFilter.values[0]',
 									'placeholder' => 'Value'
 								]
 							, true); ?>
 						</div>
-						<div class="col-lg col-sm-12" ng-if="newSearch.operation=='range'">
+						<div class="col-lg col-sm-12" ng-if="newFilter.operation=='range'">
 							<?= $CI->load->view('input_switcher', 
 								[ 
-									'swtch' => 'headers[newSearch.header].type',
-									'model' => 'newSearch.values[1]',
+									'swtch' => 'headers[newFilter.header].type',
+									'model' => 'newFilter.values[1]',
 									'placeholder' => 'To Value'
 								]
 							, true); ?>
 						</div>
 						<div class="col-lg-2 col-sm-6">
-							<md-button class="md-raised w-100" ng-disabled="!newSearch.header || !newSearch.operation" ng-click="addSearch(searchOr==false)">Add Query</md-button>
+							<md-button class="md-raised w-100" ng-disabled="!newFilter.header || !newFilter.operation" ng-click="addFilter(filterOr==false)">Add Filter</md-button>
 						</div>
 						<div class="col-lg-2 col-sm-6">
-							<md-button class="md-raised md-primary w-100" ng-disabled="search.length==0" ng-click="goSearch()">Search</md-button>
+							<md-button class="md-raised md-primary w-100" ng-disabled="filter.length==0" ng-click="rebuild()">Filter</md-button>
 						</div>
 					</div>
 				</form>
@@ -126,7 +126,7 @@ $CI =& get_instance();
 						<thead>
 							<tr>
 								<th ng-repeat="(key, item) in headers">
-									{{ item['title'] }}
+									<a href="" ng-click="sort(key)">{{ item['title'] }}</a>
 								</th>
 								<th></th>
 							</tr>

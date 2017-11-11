@@ -234,10 +234,29 @@ class MY_DBmodel extends CI_Model
 		$this->db->select($select, false);
 	}
 
-	public function get()
+	public function options($settings) {
+
+		if ( isset( $settings['order_by'] ) ) {
+			$this->db->order_by(
+				$settings['order_by'],
+				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
+			);
+
+			
+		}
+		if ( isset( $settings['limit_by'] ) ) {
+			$this->db->limit(
+				$settings['limit_by'],
+				isset( $settings['limit_offset'] ) ? $settings['limit_offset'] : 0
+			);
+		}
+	}
+
+	public function get($settings = [])
 	{
 		$this->select();
-		return $this->db->get( $this->TableName);
+		$this->options($settings);
+		return $this->db->get($this->TableName);
 	}
 
 	public function convertFields( $fields, $table = NULL ) {
@@ -251,13 +270,14 @@ class MY_DBmodel extends CI_Model
 	}
 
 	
-	public function find ($search)
+	public function find ($search, $settings = [])
 	{
 		$this->load->helper("query_helper");
 
 		$this->db->reset_query();
 		$this->select();
 		qry_evaluate($search, $this->db);
+		$this->options($settings);
 		return $this->db->get($this->TableName);
 	}
 

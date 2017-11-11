@@ -61,8 +61,8 @@ class MY_DBarraycontroller extends CI_Controller {
 					case 'data':
 						$this->data($subtable);
 						break;
-					case 'search':
-						$this->search($subtable);
+					case 'filter':
+						$this->filter($subtable);
 						break;
 					case 'addfield';
 						$this->addfield();
@@ -164,25 +164,25 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
-		$qry = $this->model->getCategoryTable($table);
-		echo json_encode( 
-			array(
-				'id'=>$this->model->TablePrimaryKey,
-				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>$qry->result(),
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'count' => $qry->num_rows()
-			)
-		, JSON_NUMERIC_CHECK);
-	}
 
-	public function search ($table) {
-		$query = json_decode($this->input->post('data'), true);
+		$qry = null;
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-		$qry = $this->model->find($query, $table);
+		$settings = [];
+
+		$orderby = $this->input->get('orderby');
+		if (!empty($orderby)) {
+			$settings['order_by'] = $orderby;
+			$order = $this->input->get('order');
+			if (!empty($order)) $settings['order_dir'] = $order;
+		}
+
+		$filter = $this->input->post('filter');
+		if (!empty($filter)) {
+			$query = json_decode($filter, true);
+			$qry = $this->model->find($query, $table, $settings);
+		} else {
+			$qry = $this->model->getCategoryTable($table, $settings);
+		}
 
 		echo json_encode( 
 			array(
@@ -195,6 +195,14 @@ class MY_DBarraycontroller extends CI_Controller {
 			)
 
 		, JSON_NUMERIC_CHECK);
+	}
+
+	protected function filters ($action) {
+		if ($action == 'add') {
+			$this->model->saveSearch( $this->input->post('data') );
+		} else if ($action == 'remove') {
+			$this->model->saveSearch( $this->input->post('data') );
+		}
 	}
 
 	protected function add($subtable) {

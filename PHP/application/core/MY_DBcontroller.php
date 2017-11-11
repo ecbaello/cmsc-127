@@ -20,7 +20,7 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	protected function getAccessURL($file_url) {
-		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
+		return preg_replace('/\\.[^.\\s]{2,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
 	}
 
 	protected function makeHTML() {
@@ -48,29 +48,7 @@ class MY_DBcontroller extends CI_Controller
 		], JSON_NUMERIC_CHECK);
 	}
 
-	public function search () {
-		$query = json_decode($this->input->post('data'), true);
-
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-
-		$qry = $this->model->find($query);
-		$db = empty($qry)? false :$qry->result();
-		
-		echo json_encode( 
-			array(
-				'id'=>$this->model->TablePrimaryKey,
-				'headers'=>$this->model->getFieldAssociations(),
-				'data'=> $db,
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'count' => $qry->num_rows()
-			)
-
-		, JSON_NUMERIC_CHECK);
-	}
-
-	public function searches ($action) {
+	public function filters ($action) {
 		if ($action == 'add') {
 			$this->model->saveSearch( $this->input->post('data') );
 		} else if ($action == 'remove') {
@@ -180,18 +158,40 @@ class MY_DBcontroller extends CI_Controller
 	public function data () {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
-		$qry = $this->model->get();
+
+		$qry = null;
+
+		$settings = [];
+
+		$orderby = $this->input->get('orderby');
+		if (!empty($orderby)) {
+			$settings['order_by'] = $orderby;
+			$order = $this->input->get('order');
+			if (!empty($order)) $settings['order_dir'] = $order;
+		}
+
+
+		$filter = $this->input->post('filter');
+		if (!empty($filter)) {
+			$query = json_decode($filter, true);
+			$qry = $this->model->find($query, $settings);
+		} else {
+			$qry = $this->model->get($settings);
+		}
+
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>$qry->result(),
+				'data'=> $qry->result(),
 				'csrf' => $token,
 				'csrf_hash' => $hash,
-				'count' => $qry->num_rows(),
+				'count' => $qry->num_rows()
 			)
 
 		, JSON_NUMERIC_CHECK);
+
+		log_message('debug', print_r($qry->result(), true));
 	}
 }
 

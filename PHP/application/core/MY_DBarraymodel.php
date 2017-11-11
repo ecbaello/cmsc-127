@@ -23,12 +23,12 @@ class MY_DBarraymodel extends MY_DBmodel
 	{
 	}
 
-	public function getCategoryTable($query) {
+	public function getCategoryTable($query, $settings = []) {
 		$this->select();
-		$this->db->from($this->TableName);
 		$this->db->join($this->categoryTableName, $this->TableName.'.'.$this->arrayFieldName.' = '.$this->categoryTableName.'.'.$this->arrayFieldName);
 		$this->db->where($this->categoryFieldName, $query);
-		$query = $this->db->get();
+		$this->options($settings);
+		$query = $this->db->get($this->TableName);
 		return $query;
 	}
 
@@ -60,7 +60,7 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $hide_items ? array_diff($fields, array($this->arrayFieldName)) : $fields;
 	}
 
-	public function find ($search, $subtable)
+	public function find ($search, $subtable, $settings = [])
 	{	
 		// Separate querying name
 		$name = $this->convertNameToCategory($subtable);
@@ -69,6 +69,7 @@ class MY_DBarraymodel extends MY_DBmodel
 		$this->select();
 		qry_evaluate($search, $this->db);
 		$this->db->where($this->arrayFieldName, $name);
+		$this->options($settings);
 		return $this->db->get($this->TableName);
 	}
 

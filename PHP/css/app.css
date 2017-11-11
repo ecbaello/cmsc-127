@@ -33,7 +33,7 @@ table md-input-container {
 	float: none !important;
 }
 
-.md-block md-input-container, .search-form md-input-container {
+.md-block md-input-container, .filter-form md-input-container {
 	width: 100%;
 }
 
@@ -118,50 +118,50 @@ body.ng-cloak {
 }
 
 
-.search-input {
+.filter-input {
 	width: 100%;
 }
 
-.search-item-or::before, .search-item-and::before {
+.filter-item-or::before, .filter-item-and::before {
 	position: absolute;
 	left: -60px;
 	background: #ccc;
 }
 
-.search-item-or, .search-item-and {
+.filter-item-or, .filter-item-and {
 	position: relative;
 	display: block;
 	margin: 0.5em 0 0.5em 60px;
 }
 
-.search-item-or:first-child, .search-item-and:first-child {
+.filter-item-or:first-child, .filter-item-and:first-child {
 	margin-left: 0;
 }
 
-.search-item-or::before {
+.filter-item-or::before {
 	content: 'or';
 }
 
-.search-item-and::before {
+.filter-item-and::before {
 	content: 'and';	
 }
 
-.search-item-or:first-child::before, .search-item-and:first-child::before {
+.filter-item-or:first-child::before, .filter-item-and:first-child::before {
 	content: none
 }
 
-.search-item, .search-item-or::before, .search-item-and::before {
+.filter-item, .filter-item-or::before, .filter-item-and::before {
 	padding: 5px 0 5px 15px;
 	border-radius: 0.3em;
 	min-height: 58px;
 	line-height: 48px;
 }
 
-.search-item-or::before, .search-item-and::before {
+.filter-item-or::before, .filter-item-and::before {
 	padding: 5px 7.5px;
 }
 
-.search-item {
+.filter-item {
 	display: block;
 	background: #9EC6FE;
 
@@ -223,6 +223,6 @@ form md-input-container {
 	height: 1.5em;
 }
 
-.search-toggle {
+.filter-toggle {
 	float: right;
 }

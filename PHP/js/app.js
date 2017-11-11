@@ -6,13 +6,6 @@ function convertData(input) {
 	
 	data = alignTypes(data);
 
-	var modelId = data.id;
-	var model = {};
-	$.each(data.data, function(index) {
-		model[ data.data[index][modelId] ] = data.data[index];
-	});
-	data.data = model;
-
 	return data;
 }
 
@@ -31,85 +24,84 @@ function alignTypes(input) {
 app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 	var tables = {};
 
-	tables.get = function (next) {
-		$http.get(tableURL+'/data')
-			.then(function(response) {
-				csrf = response.data.csrf;
-				csrfHash = response.data.csrf_hash;
-				next(response);
+	tables.get = function (options, fsuccess, ferror, gets) {
+		var request = {
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		};
+
+		if (!$.isEmptyObject(options)) {
+			options[csrf] = csrfHash;
+
+			request.data = options;
+			request.type = 'POST';
+
+			request.url = tableURL+'/data'+encodeObject(gets);
+		} else {
+			request.type = 'GET';
+			request.data = gets;
+			request.url = tableURL+'/data';
+		}
+
+		$.ajax(request);
+	};
+
+	var encodeObject = function (getopts) {
+		var append = '';
+		if (getopts !== null && !$.isEmptyObject(getopts)) {
+			var begin = '?';
+			$.each(getopts, function(prop) {
+				append += begin;
+				if (begin == '?') begin = '&';
+				append += encodeURIComponent(prop)+'='+encodeURIComponent(getopts[prop]);
 			});
+		}
+		return append;
+	};
+
+	var reqpost = function (link, id, data, fsuccess, ferror) {
+		
+		data[csrf] = csrfHash;
+		var request = {
+			type: 'POST',
+			data: data,
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		};
+
+		request.url = tableURL+'/'+link;
+
+		if (id !== null) {
+			request.url += '/'+id;
+		}
+
+		$.ajax(request);
 	};
 
 	tables.update = function (id, data, fsuccess, ferror) {
-		data[csrf] = csrfHash;
-		$.ajax({
-			type: 'POST',
-			url: tableURL+'/update/'+id,
-			data: data,
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
-				fsuccess(data);
-			},
-			error: function() {
-				ferror();
-			}
-		});
+		reqpost('update', id, data, fsuccess, ferror);
 	};
 
 	tables.add = function (data, fsuccess, ferror) {
-		data[csrf] = csrfHash;
-		$.ajax({
-			type: 'POST',
-			url: tableURL+'/add',
-			data: data,
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
-				fsuccess(data);
-			},
-			error: function() {
-				ferror();
-			}
-		});
+		reqpost('add', null, data, fsuccess, ferror);
 	};
 
 	tables.remove = function (id, data, fsuccess, ferror) {
-		data[csrf] = csrfHash;
-		$.ajax({
-			type: 'POST',
-			url: tableURL+'/remove/'+id,
-			data: data,
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
-				fsuccess(data);
-			},
-			error: function() {
-				ferror();
-			}
-		});
-	};
-
-	tables.search = function (data, fsuccess, ferror) {
-		data[csrf] = csrfHash;
-		$.ajax({
-			type: 'POST',
-			url: tableURL+'/search',
-			data: data,
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
-				fsuccess(data);
-			},
-			error: function() {
-				ferror();
-			}
-		});
+		reqpost('remove', id, data, fsuccess, ferror);
 	};
 
 	tables.headers = function (next) {
@@ -122,41 +114,12 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 	};
 
 	tables.addColumn = function (data, fsuccess, ferror) {
-		data[csrf] = csrfHash;
-		$.ajax({
-			type: 'POST',
-			url: tableURL+'/addfield',
-			data: data,
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
-				fsuccess(data);
-			},
-			error: function() {
-				ferror();
-			}
-		});
+		reqpost('addfield', null, data, fsuccess, ferror);
 	};
 
 	tables.removeColumn = function (data, fsuccess, ferror) {
-		data[csrf] = csrfHash;
-		$.ajax({
-			type: 'POST',
-			url: tableURL+'/removefield',
-			data: data,
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
-				fsuccess(data);
-			},
-			error: function() {
-				ferror();
-			}
-		});
+		reqpost('removefield', null, data, fsuccess, ferror);
 	};
-
 
 	tables.types = 
 	{
@@ -191,7 +154,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	$scope.idName = '';
 	$scope.headers = [];
 
-	$scope.searchOperations = {
+	$scope.filterOperations = {
 		equals: 'is equal to',
 		not: 'is not equal to',
 
@@ -205,93 +168,35 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	};
 
 	tableChanged.subscribe($scope, function() {
-		rebuild();
+		$scope.filter.rules = [];
+		$scope.rebuild();
 	});
 
 	// Table State
-	$scope.serverRequesting = false;
+	$scope.serverRequesting = true;
 
 	// Loading tables
-	$scope.setURL = function(url) {
-		$scope.serverRequesting = true;
-		$scope.url = url;
-		rebuild();
-	};
-	function rebuild() {
-		tables.get(
-			function(response) {
-	        	var data = convertData(response.data);
-				$scope.data = data.data;
-				$scope.idName = data.id;
-				$scope.headers = data.headers;
-				//console.log(data);
-				$scope.serverRequesting = false;
-	    	});
-	}
-
-	// Searching Tables
-	$scope.search = 
-	{
-		condition: 'OR',
-		rules: [],
-		not: false
-	};
-	$scope.newSearch = 
-	{
-		condition: null
-	};
-	$scope.searchOr = true;
-	$scope.addSearch = function(is_and) {
-		var search = $scope.newSearch;
-		$scope.newSearch = 
-		{
-			condition: null
-		};
-
-		search.header = {
-			key: search.header,
-			derived: $scope.headers[search.header].derived,
-			derivation: $scope.headers[search.header].select_val
-		};
-
-		if (is_and) {
-			$scope.search
-				.rules	// OR
-				[$scope.search.rules.length-1] // last item
-				.rules	// AND
-				.push(search);
-		} else {
-			var arr = 
-			{
-				condition: 'AND',
-				rules: [],
-				not: false
-			};
-			arr.rules.push(search);
-			$scope.search.rules.push(arr);
-		}
-		
-	};
-	$scope.removeSearch = function (i, j) {
-		
-		if ($scope.search.rules[i].rules.length == 1 && j == 0) {
-			if ($scope.search.rules.length == 1 && i == 0) {
-				$scope.search.rules = [];
-				rebuild();
-			}
-			else delete $scope.search.rules.splice(i,1);
-		}
-		else $scope.search.rules[i].rules.splice(j,1);
-	};
-	$scope.goSearch = function () {
-		var searchQry = JSON.stringify($scope.search);
-
+	$scope.rebuild = function() {
 		var data = {};
-		data.data = searchQry;
+
+		if ($scope.filter.rules.length > 0) {
+			var filterQry = JSON.stringify($scope.filter);
+
+			data.filter = filterQry;
+
+			filtering = true;
+		} 
 
 		$scope.serverRequesting = true;
 
-		tables.search(
+		var gets = {};
+
+		if ($scope.sortHeader !== null) {
+			gets.orderby = $scope.sortHeader;
+			gets.order = $scope.isAscending ? 'ASC' : 'DESC';
+		}
+
+		tables.get(
 			data,
 			function(resultData) {
 				var response = convertData(resultData);
@@ -305,9 +210,74 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 				$scope.$apply();
 			},
 			function() {
-				rebuild();
-			}
+				// ERROR
+			},
+			gets
 		);
+	};
+
+	$scope.isAscending = true;
+	$scope.sortHeader = null;
+	$scope.sort = function(header) {
+		if ($scope.sortHeader == header) $scope.isAscending = !$scope.isAscending;
+		else $scope.sortHeader = header;
+		console.log($scope.sortHeader);
+		$scope.rebuild();
+	};
+
+	// filtering Tables
+	var filtering = false;
+	$scope.filter = 
+	{
+		condition: 'OR',
+		rules: [],
+		not: false
+	};
+	$scope.newFilter = 
+	{
+		condition: null
+	};
+	$scope.filterOr = true;
+	$scope.addFilter = function(is_and) {
+		var filter = $scope.newFilter;
+		$scope.newFilter = 
+		{
+			condition: null
+		};
+
+		filter.header = {
+			key: filter.header,
+			derived: $scope.headers[filter.header].derived,
+			derivation: $scope.headers[filter.header].select_val
+		};
+
+		if (is_and) {
+			$scope.filter
+				.rules	// OR
+				[$scope.filter.rules.length-1] // last item
+				.rules	// AND
+				.push(filter);
+		} else {
+			var arr = 
+			{
+				condition: 'AND',
+				rules: [],
+				not: false
+			};
+			arr.rules.push(filter);
+			$scope.filter.rules.push(arr);
+		}
+	};
+
+	$scope.removeFilter = function (i, j) {
+		if ($scope.filter.rules[i].rules.length == 1 && j == 0) {
+			if ($scope.filter.rules.length == 1 && i == 0) {
+				$scope.filter.rules = [];
+				$scope.rebuild();
+			}
+			else delete $scope.filter.rules.splice(i,1);
+		}
+		else $scope.filter.rules[i].rules.splice(j,1);
 	};
 
 
@@ -315,6 +285,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	$scope.editIndex = -1;
 	$scope.isEdit = true;
 	$scope.rowClone = [];
+
+
 
 	$scope.edit = function (index) {
 		$scope.cancel();
@@ -335,15 +307,16 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 		$scope.serverRequesting = true;
 		if ($scope.isEdit) {
-			var subdata = $.extend({}, $scope.data[index]);
+			var subdata = {};
 
 			$.each($scope.headers, function(key, value) {
-				if (value.read_only) {
-					delete subdata[key];
+				if (!value.read_only) {
+					subdata[key] = $scope.data[index][key];
 				}
 			});
 
 			data.data = JSON.stringify(subdata);
+
 			console.log(data);
 
 			tables.update(
@@ -357,12 +330,12 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 					dataObj.data = {};
 					dataObj.data[0] = response.data;
 
-					$scope.data[id]= alignTypes(dataObj).data[0];
+					$scope.data[index]= alignTypes(dataObj).data[0];
 					$scope.serverRequesting = false;
 					$scope.$apply();
 				},
 				function() {
-					rebuild();
+					$scope.rebuild();
 				}
 			);
 		} else {
@@ -374,11 +347,11 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 					var response = resultData;
 					
 	        		$scope.serverRequesting = false;
-	        		delete $scope.data[id];
+	        		delete $scope.data[index];
 	        		$scope.$apply();
 				},
 				function() {
-					rebuild();
+					$scope.rebuild();
 				}
 			);
 
@@ -404,10 +377,10 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		tables.add(
 			data,
 			function() {
-				rebuild();
+				$scope.rebuild();
 			},
 			function() {
-				rebuild();
+				$scope.rebuild();
 			}
 		);
 		$mdDialog.hide();
