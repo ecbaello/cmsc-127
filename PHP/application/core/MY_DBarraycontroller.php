@@ -98,6 +98,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		$hash = $this->security->get_csrf_hash();
 		echo json_encode( 
 			[
+				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
 	    		'csrf' => $token,
 				'csrf_hash' => $hash

@@ -484,11 +484,12 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 	tables.headers(
 			function (response) {
 				$scope.headers = response.data.headers;
-				console.log($scope.headers);
+				$scope.idHeader = response.data.id;
 			}
 		);
 
 	$scope.headers = {};
+	$scope.idHeader = '';
 	$scope.types = tables.types;
 
 	$scope.derivedColumnExpr = [];
@@ -507,7 +508,7 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 		tables.headers(
 			function (response) {
 				$scope.headers = response.data.headers;
-				console.log($scope.headers);
+				$scope.idHeader = response.data.id;
 			}
 		);
 	});

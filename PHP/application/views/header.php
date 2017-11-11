@@ -24,6 +24,9 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 }
   </style>
 
+  <link rel="shortcut icon" href="<?= base_url().'favicon.ico' ?>" type="image/x-icon">
+  <link rel="icon" href="<?= base_url().'favicon.ico' ?>" type="image/x-icon">
+
   <link rel="stylesheet" href="<?= base_url().'css/roboto.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/bootstrap.min.css' ?>">
   <link rel="stylesheet" href="<?= base_url().'css/angular-material.css' ?>">

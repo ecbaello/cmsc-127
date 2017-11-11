@@ -91,7 +91,7 @@ $CI =& get_instance();
 						<md-tab-body>
 							<div layout-padding>
 								<div>
-									<md-button class="md-warn md-raised" ng-repeat="(key, item) in headers" ng-click="removeColumn(key)">
+									<md-button class="md-warn md-raised" ng-repeat="(key, item) in headers" ng-if="key!=idHeader" ng-click="removeColumn(key)">
 										{{ item.title }}&nbsp; <i class="fa fa-times"></i>
 									</md-button>
 								</div>
