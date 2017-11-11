@@ -82,8 +82,6 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_derived TEXT DEFAULT NULL");
 			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
-			$this->dbforge->add_key 		('table_field', TRUE);
-			$this->dbforge->add_key 		('table_name', TRUE);
 			$this->dbforge->create_table	( self::metaTableName);
 		}
 		if ( !($this->db->table_exists(self::searchTableName)) ) {
@@ -114,6 +112,8 @@ class MY_DBmodel extends CI_Model
 
 	public function registerDerivedFieldTitle( $table_field, $field_title, $derivation) {
 		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
+		$success = false;
+
 
 		$data = array(
 		        'table_name' => $this->TableName,
@@ -122,6 +122,14 @@ class MY_DBmodel extends CI_Model
 		        'table_field_derived' => $derivation
 		);
 		return $this->db->insert(self::metaTableName, $data);
+
+	}
+
+	public function fieldExists( $table_field ) {
+		$this->db->where( "table_field", $table_field );
+		$this->db->where( "table_name", $this->TableName );
+		return $this->db->get(self::metaTableName)->num_rows() > 0;
+
 
 	}
 
@@ -309,7 +317,7 @@ class MY_DBmodel extends CI_Model
 			($this->FieldPrefix!=null?$this->FieldPrefix:$this->TableName)
 			.'_'.$field);
 
-		if (!$this->db->field_exists($field, $this->TableName)) {
+		if (!$this->fieldExists($field)) {
 			$fieldset = array();
 
 			switch ($kind) {
@@ -376,6 +384,7 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function insertDerivedField($title, $expression) {
+
 		$selectValue = '';
 		// field operand
 		// [(field type: title: key: )(expression type: value: )(field)]
@@ -384,21 +393,25 @@ class MY_DBmodel extends CI_Model
 			($this->FieldPrefix!=null?$this->FieldPrefix:$this->TableName)
 			.'_'.$field);
 
-		$allfields = $this->getFieldAssociations();
+		if (!$this->fieldExists($field)) {
+			$allfields = $this->getFieldAssociations();
 
-		foreach ($expression as $item) {
-			if ($item['type'] == 'field') {
-				if ($allfields[ $item['header'] ][FLD_DERIVED]) {
-					$selectValue .= $allfields[ $item['header'] ][FLD_DERIVATION];
-				} else {
-					$selectValue .= '`'.$item['header'].'`';
+			foreach ($expression as $item) {
+				if ($item['type'] == 'field') {
+					if ($allfields[ $item['header'] ][FLD_DERIVED]) {
+						$selectValue .= $allfields[ $item['header'] ][FLD_DERIVATION];
+					} else {
+						$selectValue .= '`'.$item['header'].'`';
+					}
+				} else if ($item['type'] == 'operation') {
+					$selectValue .= $item['value'];
 				}
-			} else if ($item['type'] == 'operation') {
-				$selectValue .= $item['value'];
 			}
+			return $this->registerDerivedFieldTitle($field, $title, $selectValue);
 		}
+		return false;
 
-		return $this->registerDerivedFieldTitle($field, $title, $selectValue);
+		
 	}
 
 	public function registerSearchQuery($title, $query) {

@@ -61,14 +61,21 @@ $CI =& get_instance();
 											</md-chip-template>
 											<input type="text" placeholder="Add to Expression">
 										</md-chips>
-										<md-select placeholder="Field" ng-model="newDToken.header">
-											<md-option ng-repeat="(key, item) in headers" ng-value="key">
-												{{ item.title }}
-											</md-option>
-										</md-select>
-										<md-button class="md-raised" ng-click="addDToken()">
-											<i class="fa fa-plus fa-lg"></i> Add Field
-										</md-button>
+										<div class="row" layout-padding>
+											<div class="col-lg-9 col-sm-6">
+												<md-select class="md-no-underline" placeholder="Select a Field" ng-model="newDToken.header">
+													<md-option ng-repeat="(key, item) in headers" ng-value="key">
+														{{ item.title }}
+													</md-option>
+												</md-select>
+											</div>
+											<div class="col-lg-3 col-sm-6 text-right">
+												<md-button class="md-raised" ng-click="addDToken()">
+													<i class="fa fa-plus fa-lg"></i> Add Field
+												</md-button>
+											</div>
+										</div>
+										
 									</div>
 									<div class="text-right">
 										<md-button class="md-raised md-primary" ng-click="addColumn()">
