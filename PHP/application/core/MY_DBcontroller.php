@@ -144,8 +144,21 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function removefield () {
-		$key = $this->input->post('key');
-		$this->model->removeField($key);
+		$key = $this->input->post('header');
+
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$success = $this->model->removeField($key);
+
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	public function headers () {

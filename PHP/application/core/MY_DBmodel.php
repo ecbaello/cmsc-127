@@ -353,10 +353,15 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function removeField($field) {
-		$this->db->where( "table_field", $field );
-		$this->db->where( "table_name", $this->TableName );
-		$done = $this->db->delete( self::metaTableName );
-		$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
+		$done = false;
+		if ($field != $this->TablePrimaryKey) {
+			
+			$this->db->where( "table_field", $field );
+			$this->db->where( "table_name", $this->TableName );
+			$done = $this->db->delete( self::metaTableName );
+
+			$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
+		}
 
 		return $done; 
 	}

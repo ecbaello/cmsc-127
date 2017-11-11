@@ -139,6 +139,24 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		});
 	};
 
+	tables.removeColumn = function (data, fsuccess, ferror) {
+		data[csrf] = csrfHash;
+		$.ajax({
+			type: 'POST',
+			url: tableURL+'/removefield',
+			data: data,
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		});
+	};
+
 
 	tables.types = 
 	{
@@ -153,8 +171,21 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 	return tables;
 }]);
 
+app.factory('tableChanged', function($rootScope) {
+    return {
+        subscribe: function(scope, callback) {
+            var handler = $rootScope.$on('table-changed-event', callback);
+            scope.$on('$destroy', handler);
+        },
 
-app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', function($scope, $http, $mdDialog, tables){
+        notify: function() {
+            $rootScope.$emit('table-changed-event');
+        }
+    };
+});
+
+
+app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChanged', function($scope, $http, $mdDialog, tables, tableChanged){
 	// Table Information
 	$scope.data = [];
 	$scope.idName = '';
@@ -172,6 +203,10 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', function($
 		
 		lesser: 'is less than',
 	};
+
+	tableChanged.subscribe($scope, function() {
+		rebuild();
+	});
 
 	// Table State
 	$scope.serverRequesting = false;
@@ -445,7 +480,7 @@ app.controller('user', ['$scope', 'UserService', function($scope,  UserService){
 	$scope.company = UserService.company;
 }]);
 
-app.controller('tableSettings', ['$scope', 'tables', function ($scope, tables){
+app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($scope, tables, tableChanged){
 	tables.headers(
 			function (response) {
 				$scope.headers = response.data.headers;
@@ -468,6 +503,15 @@ app.controller('tableSettings', ['$scope', 'tables', function ($scope, tables){
 		kind: '',
 		default: ''
 	};
+
+	tableChanged.subscribe($scope, function() {
+		tables.headers(
+			function (response) {
+				$scope.headers = response.data.headers;
+				console.log($scope.headers);
+			}
+		);
+	});
 
 	$scope.addDToken = function(DTokenIsField) {
 		var data = $.extend({}, $scope.newDToken);
@@ -493,7 +537,26 @@ app.controller('tableSettings', ['$scope', 'tables', function ($scope, tables){
 			data: JSON.stringify($scope.newColumn)
 		};
 
-		tables.addColumn(data, function () {}, function () {});
+		tables.addColumn(data,
+			function(){
+				tableChanged.notify();
+			},
+			function(){
+				tableChanged.notify();
+			});
+	};
+
+	$scope.removeColumn = function (key) {
+		var data = {
+			header: key
+		};
+		tables.removeColumn(data,
+			function(){
+				tableChanged.notify();
+			},
+			function(){
+				tableChanged.notify();
+			});
 	};
 }]);
 

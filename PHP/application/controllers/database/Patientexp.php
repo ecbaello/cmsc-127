@@ -18,6 +18,8 @@ class Patientexp extends MY_DBcontroller {
 		$this->load->view('header');
 
 		$this->makeTableHTML();
+
+		$this->load->view('table_settings');
 		
 		$this->load->view('footer');
 	}

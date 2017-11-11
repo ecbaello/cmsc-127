@@ -64,6 +64,15 @@ class MY_DBarraycontroller extends CI_Controller {
 					case 'search':
 						$this->search($subtable);
 						break;
+					case 'addfield';
+						$this->addfield();
+						break;
+					case 'removefield';
+						$this->removefield();
+						break;
+					case 'headers';
+						$this->headers();
+						break;
 					
 					default:
 						show_404();
@@ -82,6 +91,59 @@ class MY_DBarraycontroller extends CI_Controller {
 			}
 			echo json_encode(['data'=>$array]);
 		}
+	}
+
+	protected function headers () {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+		echo json_encode( 
+			[
+				'headers'=>$this->model->getFieldAssociations(),
+	    		'csrf' => $token,
+				'csrf_hash' => $hash
+			]
+		);
+	}
+
+	protected function addfield () {
+		$data = json_decode($this->input->post('data'), true);
+
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$success = false;
+		if ($data['derived']) {
+			$success = $this->model->insertDerivedField($data['title'], $data['expression']);
+		} else {
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default']);
+		}
+
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
+	}
+
+	protected function removefield () {
+		$key = $this->input->post('header');
+
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$success = $this->model->removeField($key);
+
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	protected function makeHTML($subtable)

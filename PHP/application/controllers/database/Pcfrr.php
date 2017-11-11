@@ -20,6 +20,8 @@ class Pcfrr extends MY_DBarraycontroller {
 		
 		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable]);
 
+		$this->load->view('table_settings');
+
 		$this->load->view('footer');
 	}
 }
