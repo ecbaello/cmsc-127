@@ -24,12 +24,18 @@ class MY_DBarraymodel extends MY_DBmodel
 	}
 
 	public function getCategoryTable($query) {
-		$this->db->select(implode(',',$this->getFields()));
+		$this->select();
 		$this->db->from($this->TableName);
 		$this->db->join($this->categoryTableName, $this->TableName.'.'.$this->arrayFieldName.' = '.$this->categoryTableName.'.'.$this->arrayFieldName);
 		$this->db->where($this->categoryFieldName, $query);
 		$query = $this->db->get();
 		return $query;
+	}
+
+	public function getFieldAssociations() {
+		$fields = parent::getFieldAssociations();
+		unset($fields[$this->arrayFieldName]);
+		return $fields;
 	}
 
 	public function getIndividual($id) {

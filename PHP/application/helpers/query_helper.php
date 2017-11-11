@@ -48,38 +48,33 @@ if ( ! function_exists('qry_exp'))
     }   
 }
 
-if ( ! function_exists('qry_and'))
-{
-    function qry_and($array, $qry_bdr)
-    {
-        foreach ($array['rules'] as $exp) {
-        	qry_exp($exp, $qry_bdr);
-        }
-    }   
-}
-
-if ( ! function_exists('qry_or'))
-{
-    function qry_or($array, $qry_bdr)
-    {   
-        $j = count($array['rules']);
-        for ($i=0; $i < $j; $i++) { 
-            if ($i==0) $qry_bdr->group_start();
-            else $qry_bdr->or_group_start();
-            qry_and($array['rules'][$i], $qry_bdr);
-            $qry_bdr->group_end();
-        }
-        
-    }   
-}
-
 
 if ( ! function_exists('qry_evaluate'))
 {
     function qry_evaluate($var, $qry_bdr)
     {
+        $condition = $var['condition'];
+
         $qry_bdr->group_start();
-        qry_or($var, $qry_bdr);
+        if ($condition == 'AND' || $condition == 'OR') {
+
+            $j = count($var['rules']);
+
+            for ($i=0; $i < $j; $i++) {
+
+                if ($i==0 || $condition == 'AND' )
+                $qry_bdr->group_start();
+                else
+                    $qry_bdr->or_group_start();
+
+                qry_evaluate($var['rules'][$i], $qry_bdr);
+
+                $qry_bdr->group_end();
+            }
+            
+        } else {
+            qry_exp($var, $qry_bdr);
+        }  
         $qry_bdr->group_end();
     }   
 }

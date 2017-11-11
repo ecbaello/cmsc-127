@@ -111,6 +111,8 @@ class MY_DBarraycontroller extends CI_Controller {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
+
+
 		$success = false;
 		if ($data['derived']) {
 			$success = $this->model->insertDerivedField($data['title'], $data['expression']);
@@ -158,6 +160,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	}
 
 	protected function data($table) {
+
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 		$qry = $this->model->getCategoryTable($table);
@@ -196,6 +199,9 @@ class MY_DBarraycontroller extends CI_Controller {
 	protected function add($subtable) {
 		$insert = json_decode($this->input->post('data'), true);
 
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
 		if (!empty($insert)) {
 			$inputs = $this->model->getFields();
 			$arr = array();
@@ -204,19 +210,28 @@ class MY_DBarraycontroller extends CI_Controller {
 					$arr[$input] = $insert[$input]; 
 				}
 			}
-			if (!$this->model->insertIntoCategoryTable($subtable, $arr)){
-				show_error('The database doesn\'t accept the input. Check the format of your input.', 400);
-			}
-		} else {
-			show_error('The insertion request is empty.', 406);
-		}
+			$success = $this->model->insertIntoCategoryTable($subtable, $arr);
+		} else 
+			$success = false;
+
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	protected function get($subtable, $id) {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
-    	echo json_encode( ['data'=>$this->model->getIndividual($id),'csrf' => $token,
-				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+    	echo json_encode( [
+    		'data'=>$this->model->getByPK($id),
+    		'csrf' => $token,
+			'csrf_hash' => $hash
+		], JSON_NUMERIC_CHECK);
 	}
 
 	protected function remove($subtable, $id) {

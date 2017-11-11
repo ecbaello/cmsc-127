@@ -100,6 +100,9 @@ class MY_DBcontroller extends CI_Controller
 	public function add () {
 		$insert = json_decode($this->input->post('data'), true);
 
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
 		$inputs = $this->model->getFields();
 		$arr = array();
 		foreach ($inputs as $input) {

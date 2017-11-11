@@ -492,7 +492,6 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 	$scope.types = tables.types;
 
 	$scope.derivedColumnExpr = [];
-	$scope.DTokenIsField = true;
 	$scope.newDToken = {};
 
 	$scope.newColumn = 
@@ -513,25 +512,33 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 		);
 	});
 
-	$scope.addDToken = function(DTokenIsField) {
-		var data = $.extend({}, $scope.newDToken);
-		if (DTokenIsField) {
-			data.type = 'field';
+	$scope.transformChip = function ($chip) {
+		var token = {
+			type: 'operation',
+			value: $chip
+		};
 
-			data.derived = $scope.headers[data.header].derived;
-			data.derivation = $scope.headers[data.header].select_val;
-			
-			data.title = $scope.headers[data.header].title;
-		} else {
-			data.type = 'operation';
-		}
+		$scope.derivedColumnExpr.push(token);
+
+		return null;
+	};
+
+	$scope.addDToken = function() {
+		var data = $.extend({}, $scope.newDToken);
+
+		data.type = 'field';
+
+		data.derived = $scope.headers[data.header].derived;
+		data.derivation = $scope.headers[data.header].select_val;
+		
+		data.title = $scope.headers[data.header].title;
 		$scope.derivedColumnExpr.push(data);
 	};
 
 	$scope.addColumn = function() {
 		if ($scope.newColumn.derived) {
 			$scope.newColumn.expression = $scope.derivedColumnExpr;
-		};
+		}
 
 		var data = {
 			data: JSON.stringify($scope.newColumn)
@@ -557,39 +564,6 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 			function(){
 				tableChanged.notify();
 			});
-	};
-}]);
-
-app.controller('expBuilder', ['$scope', function($scope){
-	$scope.expression = [
-	{
-		type: 'field',
-		title: 'Amount',
-		header: 'hi'
-	},
-	{
-		type: 'operand',
-		value: '*'
-	},
-	{
-		type: 'field',
-		title: 'quantity',
-		key: 'hilo'
-	}
-
-	];
-	$scope.newIsField = true;
-	$scope.newItem = {};
-
-	$scope.addExpr = function() {
-		var data = $.extend({}, $scope.newItem);
-		if ($scope.newIsField) {
-			data.type = "field";
-			data.title = "he";
-		} else {
-			data.type = "operand";
-		}
-		$scope.expression.push(data);
 	};
 }]);
 
