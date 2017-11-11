@@ -1,20 +1,35 @@
-<h1><?php echo lang('edit_group_heading');?></h1>
-<p><?php echo lang('edit_group_subheading');?></p>
+<md-content layout-padding>
+	<md-card>
+		<md-card-title>
+			<md-card-title-text>
+				<span class="md-headline"><?php echo lang('edit_group_heading');?></span>
+				<span class="md-subhead"><?php echo lang('edit_group_subheading');?></span>
+			</md-card-title-text>
+		</md-card-title>
+		<md-card-content>
 
-<div id="infoMessage"><?php echo $message;?></div>
+			<div id="infoMessage"><?php echo $message;?></div>
 
-<?php echo form_open(current_url());?>
+			<?php echo form_open(current_url());?>
 
-      <p>
-            <?php echo lang('edit_group_name_label', 'group_name');?> <br />
-            <?php echo form_input($group_name);?>
-      </p>
+			<md-input-container>
+				<?php echo lang('edit_group_name_label', 'group_name');?> <br />
+				<?php echo form_input($group_name);?>
+			</md-input-container>
 
-      <p>
-            <?php echo lang('edit_group_desc_label', 'description');?> <br />
-            <?php echo form_input($group_description);?>
-      </p>
+			<md-input-container>
+				<?php echo lang('edit_group_desc_label', 'description');?> <br />
+				<?php echo form_input($group_description);?>
+			</md-input-container>
 
-      <p><?php echo form_submit('submit', lang('edit_group_submit_btn'));?></p>
+			<div>
+				<md-button class="md-raised md-primary" type="submit">
+					<?= lang('edit_group_submit_btn') ?>
+				</md-button>
+			</div>
 
-<?php echo form_close();?>
+			<?php echo form_close();?>
+
+		</md-card-content>
+	</md-card>
+</md-content>

@@ -17,6 +17,8 @@ class Detchar extends MY_DBcontroller {
 
 		$this->makeTableHTML();
 
+		$this->load->view('table_settings');
+
 		$this->load->view('footer');
 	}
 	

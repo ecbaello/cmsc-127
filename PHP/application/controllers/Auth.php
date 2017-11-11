@@ -40,8 +40,12 @@ class Auth extends CI_Controller {
 			{
 				$this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
 			}
+			
+			$this->data['userID'] = $this->ion_auth->user()->row()->id;
 
+			$this->load->view('header');
 			$this->_render_page('auth/index', $this->data);
+			$this->load->view('footer');
 		}
 	}
 
@@ -113,6 +117,8 @@ class Auth extends CI_Controller {
 	// change password
 	public function change_password()
 	{
+		$this->load->view('header');
+
 		$this->form_validation->set_rules('old', $this->lang->line('change_password_validation_old_password_label'), 'required');
 		$this->form_validation->set_rules('new', $this->lang->line('change_password_validation_new_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[new_confirm]');
 		$this->form_validation->set_rules('new_confirm', $this->lang->line('change_password_validation_new_password_confirm_label'), 'required');
@@ -176,11 +182,14 @@ class Auth extends CI_Controller {
 				redirect('auth/change_password', 'refresh');
 			}
 		}
+
+		$this->load->view('footer');
 	}
 
 	// forgot password
 	public function forgot_password()
 	{
+		$this->load->view('header');
 		// setting validation rules by checking whether identity is username or email
 		if($this->config->item('identity', 'ion_auth') != 'email' )
 		{
@@ -247,11 +256,13 @@ class Auth extends CI_Controller {
 				redirect("auth/forgot_password", 'refresh');
 			}
 		}
+		$this->load->view('footer');
 	}
 
 	// reset password - final step for forgotten password
 	public function reset_password($code = NULL)
 	{
+		$this->load->view('header');
 		if (!$code)
 		{
 			show_404();
@@ -337,6 +348,7 @@ class Auth extends CI_Controller {
 			$this->session->set_flashdata('message', $this->ion_auth->errors());
 			redirect("auth/forgot_password", 'refresh');
 		}
+		$this->load->view('footer');
 	}
 
 
@@ -369,6 +381,7 @@ class Auth extends CI_Controller {
 	// deactivate the user
 	public function deactivate($id = NULL)
 	{
+		$this->load->view('header');
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
 			// redirect them to the home page because they must be an administrator to view this
@@ -410,11 +423,13 @@ class Auth extends CI_Controller {
 			// redirect them back to the auth page
 			redirect('auth', 'refresh');
 		}
+		$this->load->view('footer');
 	}
 
 	// create a new user
 	public function create_user()
     {
+    	$this->load->view('header');
         $this->data['title'] = $this->lang->line('create_user_heading');
 
         if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
@@ -520,11 +535,13 @@ class Auth extends CI_Controller {
 
             $this->_render_page('auth/create_user', $this->data);
         }
+        $this->load->view('footer');
     }
 
 	// edit a user
 	public function edit_user($id)
 	{
+		$this->load->view('header');
 		$this->data['title'] = $this->lang->line('edit_user_heading');
 
 		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id)))
@@ -671,11 +688,13 @@ class Auth extends CI_Controller {
 		);
 
 		$this->_render_page('auth/edit_user', $this->data);
+		$this->load->view('footer');
 	}
 
 	// create a new group
 	public function create_group()
 	{
+		$this->load->view('header');
 		$this->data['title'] = $this->lang->line('create_group_title');
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
@@ -718,11 +737,13 @@ class Auth extends CI_Controller {
 
 			$this->_render_page('auth/create_group', $this->data);
 		}
+		$this->load->view('footer');
 	}
 
 	// edit a group
 	public function edit_group($id)
 	{
+		$this->load->view('header');
 		// bail if no group id given
 		if(!$id || empty($id))
 		{
@@ -782,6 +803,7 @@ class Auth extends CI_Controller {
 		);
 
 		$this->_render_page('auth/edit_group', $this->data);
+		$this->load->view('footer');
 	}
 
 

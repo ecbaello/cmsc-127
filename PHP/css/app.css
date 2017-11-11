@@ -173,7 +173,7 @@ body.ng-cloak {
 
 .caption-switch-title {
 	position: absolute;
-	z-index: 100;
+	z-index: 1;
 	left: 0;
 	bottom: -20px;
 	font-weight: bold;
@@ -192,8 +192,8 @@ md-list-item.active {
 	background: #222;
 }
 
-md-list-item .fa {
-	margin-right: 1em;
+.fa-spacer .fa {
+	margin-right: 0.5em;
 }
 
 md-sidenav, 
@@ -205,5 +205,24 @@ md-sidenav.md-closed.md-locked-open-add-active {
 } 
 
 md-toolbar.logo {
-	background: transparent;
+	background: #222 !important;
+	color: white !important;
+}
+
+form md-input-container {
+	width: 100%;
+}
+
+.logo h1 {
+	text-transform: uppercase;
+	letter-spacing: 0.3em;
+}
+
+.logo img {
+	margin-right: 0.5em;
+	height: 1.5em;
+}
+
+.search-toggle {
+	float: right;
 }

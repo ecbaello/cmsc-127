@@ -5,6 +5,8 @@ class Main extends CI_Controller {
 
 	public function index()
 	{
+		define('NAV_SELECT', 0);
+
 		$this->load->view('header');
 		
 		$this->load->view('welcome_message');

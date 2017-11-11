@@ -5,6 +5,8 @@ class Main extends CI_Controller {
 
 	public function index()
 	{
+		define('NAV_SELECT', 1);
+		
 		$this->load->view('header');
 		$this->load->view('db_ui/index');
 		$this->load->view('footer');

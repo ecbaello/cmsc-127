@@ -3,15 +3,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $CI =& get_instance();
 // $cont_attr?, $swtch, $model, $inp_attr?, $placeholder, $title
 ?>
+<script type="text/javascript">
+	app.constant('tableURL', '<?= isset($url)?$url:current_url() ?>');
+</script>
+<div ng-controller="database" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
 <md-content layout-padding>
   <md-card>
     <md-card-title>
-      <span class="md-headline"><?= $title ?></span>
+      <span class="md-headline font-weight-bold" flex><?= $title ?></span>
+      <span class="table-tools">
+      	
+      	<md-button ng-init="hideSearch=true" ng-class="hideSearch?'':' md-focused'" class="md-icon-button" ng-click="hideSearch=!hideSearch">
+      		<i class="fa fa-search fa-lg"></i>
+      	</md-button>
+      	<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
+			<i class="fa fa-plus fa-lg"></i>
+		</md-button>
+      </span>
     </md-card-title>
     <md-card-content>
-		<div ng-controller="database" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
 			<?php /** Searching **/ ?>
-			<div class="search-card">
+			<div ng-hide="hideSearch" class="search-card">
 				<div class="search-input">
 					<span class="search-item-or" ng-repeat="(i, orItem) in search.rules">
 						<span class="search-item-and" ng-repeat="(j, andItem) in orItem.rules">
@@ -23,7 +35,7 @@ $CI =& get_instance();
 									{{ searchOperations[ andItem.operation ] }}
 								</span>
 								<span class="search-value">
-									{{ andItem[1][0]=='range' ?
+									{{ andItem.operation=='range' ?
 										(<?= $CI->load->view('item_formatter', 
 										[ 
 											'item_type' => "headers[andItem.header.key]['type']",
@@ -79,7 +91,7 @@ $CI =& get_instance();
 						<div class="col-lg col-sm-12">
 							<?= $CI->load->view('input_switcher', 
 								[ 
-									'swtch' => 'headers[newSearch.header.key].type',
+									'swtch' => 'headers[newSearch.header].type',
 									'model' => 'newSearch.values[0]',
 									'placeholder' => 'Value'
 								]
@@ -88,7 +100,7 @@ $CI =& get_instance();
 						<div class="col-lg col-sm-12" ng-if="newSearch.operation=='range'">
 							<?= $CI->load->view('input_switcher', 
 								[ 
-									'swtch' => 'headers[newSearch.header.key].type',
+									'swtch' => 'headers[newSearch.header].type',
 									'model' => 'newSearch.values[1]',
 									'placeholder' => 'To Value'
 								]
@@ -149,9 +161,6 @@ $CI =& get_instance();
 				</form>
 			</div>
 			<?php /** Adding Items **/ ?>
-			<md-button class="md-primary md-raised" ng-click="showAddDialog($event)">
-				<i class="fa fa-plus"></i> Create Item
-			</md-button>
 			<div style="visibility: hidden">
 				<div class="md-dialog-container" id="addDialog">
 					<md-dialog>
@@ -185,7 +194,7 @@ $CI =& get_instance();
 					</md-dialog>
 				</div>
 			</div>
-		</div>
-	</md-card-content>
-  </md-card>
+		</md-card-content>
+  	</md-card>
 </md-content>
+</div>

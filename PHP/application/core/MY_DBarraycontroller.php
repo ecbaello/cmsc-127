@@ -7,6 +7,8 @@ class MY_DBarraycontroller extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
+
+		define('NAV_SELECT', 1);
 	}
 
 	public function index() {
@@ -96,13 +98,16 @@ class MY_DBarraycontroller extends CI_Controller {
 	protected function data($table) {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
+		$qry = $this->model->getCategoryTable($table);
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>$this->model->getCategoryTable($table)->result(),
+				'data'=>$qry->result(),
 				'csrf' => $token,
-				'csrf_hash' => $hash)
+				'csrf_hash' => $hash,
+				'count' => $qry->num_rows()
+			)
 		, JSON_NUMERIC_CHECK);
 	}
 
@@ -111,13 +116,16 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
+		$qry = $this->model->find($query, $table);
+
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>$this->model->find($query, $table)->result(),
+				'data'=> $qry->result(),
 				'csrf' => $token,
 				'csrf_hash' => $hash,
+				'count' => $qry->num_rows()
 			)
 
 		, JSON_NUMERIC_CHECK);

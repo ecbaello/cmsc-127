@@ -8,7 +8,7 @@ if ( ! function_exists('qry_exp'))
     	if (! empty($array['condition'])) return;
 
         $derived = $array['header']['derived'];
-    	$base = $derived ? $array['header']['derivation'] : '`'.$array['header']['key'].'`';
+    	$base = $derived ? $array['header']['derivation'] : $array['header']['key'];
 
     	$expression = $array['values'];
 
@@ -17,32 +17,32 @@ if ( ! function_exists('qry_exp'))
     	switch ($array['operation']) {
     		case 'range':
     			if (! isset($expression[1])) return;
-    			$qry_bdr->where($base.' >=', $expression[0], false);
-				$qry_bdr->where($base.' <=', $expression[1], false);
+    			$qry_bdr->where($base.' >=', $expression[0], !$derived);
+				$qry_bdr->where($base.' <=', $expression[1], !$derived);
     			break;
 
     		case 'greater':
-    			$qry_bdr->where($base.' >', $expression[0], false);
+    			$qry_bdr->where($base.' >', $expression[0], !$derived);
     			break;
 
     		case 'lesser':
-    			$qry_bdr->where($base.' <', $expression[0], false);
+    			$qry_bdr->where($base.' <', $expression[0], !$derived);
     			break;
 
     		case 'like':
-    			$qry_bdr->like($base, $expression[0], false);
+    			$qry_bdr->like($base, $expression[0], !$derived);
     			break;
 
     		case 'not_like':
-    			$qry_bdr->not_like($base, $expression[0], false);
+    			$qry_bdr->not_like($base, $expression[0], !$derived);
     			break;
 
     		case 'not':
-    			$qry_bdr->where($base.' !=', $expression[0], false);
+    			$qry_bdr->where($base.' !=', $expression[0], !$derived);
     			break;
     		
     		default:
-    			$qry_bdr->where($base, $expression[0], false);
+    			$qry_bdr->where($base, $expression[0], !$derived);
     			break;
     	}
     }   

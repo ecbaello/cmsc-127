@@ -1,4 +1,5 @@
-
+var csrf = '';
+var csrfHash = '';
 
 function convertData(input) {
 	var data = input;
@@ -27,8 +28,133 @@ function alignTypes(input) {
 	return data;
 }
 
+app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
+	var tables = {};
 
-app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $http, $mdDialog){
+	tables.get = function (next) {
+		$http.get(tableURL+'/data')
+			.then(function(response) {
+				csrf = response.data.csrf;
+				csrfHash = response.data.csrf_hash;
+				next(response);
+			});
+	};
+
+	tables.update = function (id, data, fsuccess, ferror) {
+		data[csrf] = csrfHash;
+		$.ajax({
+			type: 'POST',
+			url: tableURL+'/update/'+id,
+			data: data,
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		});
+	};
+
+	tables.add = function (data, fsuccess, ferror) {
+		data[csrf] = csrfHash;
+		$.ajax({
+			type: 'POST',
+			url: tableURL+'/add',
+			data: data,
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		});
+	};
+
+	tables.remove = function (id, data, fsuccess, ferror) {
+		data[csrf] = csrfHash;
+		$.ajax({
+			type: 'POST',
+			url: tableURL+'/remove/'+id,
+			data: data,
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		});
+	};
+
+	tables.search = function (data, fsuccess, ferror) {
+		data[csrf] = csrfHash;
+		$.ajax({
+			type: 'POST',
+			url: tableURL+'/search',
+			data: data,
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		});
+	};
+
+	tables.headers = function (next) {
+		$http.get(tableURL+'/headers')
+			.then(function(response) {
+				csrf = response.data.csrf;
+				csrfHash = response.data.csrf_hash;
+				next(response);
+			});
+	};
+
+	tables.addColumn = function (data, fsuccess, ferror) {
+		data[csrf] = csrfHash;
+		$.ajax({
+			type: 'POST',
+			url: tableURL+'/addfield',
+			data: data,
+			success: function(resultData) {
+				var data = JSON.parse(resultData);
+				csrf = data.csrf;
+				csrfHash = data.csrf_hash;
+				fsuccess(data);
+			},
+			error: function() {
+				ferror();
+			}
+		});
+	};
+
+
+	tables.types = 
+	{
+		TEXT: 'Text',
+		TEXTAREA: 'Long Text',
+		CHECKBOX: 'Checkbox',
+		FLOAT: 'Float',
+		NUMBER: 'Integer',
+		DATE: 'Date'
+	};
+
+	return tables;
+}]);
+
+
+app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', function($scope, $http, $mdDialog, tables){
 	// Table Information
 	$scope.data = [];
 	$scope.idName = '';
@@ -57,14 +183,12 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		rebuild();
 	};
 	function rebuild() {
-		$http.get($scope.url+'/data')
-			.then(function(response) {
+		tables.get(
+			function(response) {
 	        	var data = convertData(response.data);
 				$scope.data = data.data;
 				$scope.idName = data.id;
 				$scope.headers = data.headers;
-				$scope.csrf = data.csrf;
-				$scope.csrfHash = data.csrf_hash;
 				//console.log(data);
 				$scope.serverRequesting = false;
 	    	});
@@ -88,7 +212,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		{
 			condition: null
 		};
-
 
 		search.header = {
 			key: search.header,
@@ -130,31 +253,26 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 
 		var data = {};
 		data.data = searchQry;
-		data[$scope.csrf] = $scope.csrfHash;
 
 		$scope.serverRequesting = true;
 
-		$.ajax({
-			type: 'POST',
-			url: $scope.url+'/search',
-			data: data,
-			success: function(resultData) {
-				var response = convertData(JSON.parse(resultData));
+		tables.search(
+			data,
+			function(resultData) {
+				var response = convertData(resultData);
 				$scope.data = response.data;
 				$scope.idName = response.id;
 				$scope.headers = response.headers;
 
-				$scope.csrf = response.csrf;
-				$scope.csrfHash = response.csrf_hash;
 				//console.log(data);
 				$scope.serverRequesting = false;
 
 				$scope.$apply();
 			},
-			error: function() {
+			function() {
 				rebuild();
 			}
-		});
+		);
 	};
 
 
@@ -180,7 +298,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		var id = $scope.data[index][$scope.idName];
 		var data = {};
 
-		data[$scope.csrf] = $scope.csrfHash;
 		$scope.serverRequesting = true;
 		if ($scope.isEdit) {
 			var subdata = $.extend({}, $scope.data[index]);
@@ -192,15 +309,13 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 			});
 
 			data.data = JSON.stringify(subdata);
+			console.log(data);
 
-			$.ajax({
-				type: 'POST',
-				url: $scope.url+'/update/'+id,
-				data: data,
-				success: function(resultData) {
-					var response = JSON.parse(resultData);
-					$scope.csrf = response.csrf;
-					$scope.csrfHash = response.csrf_hash;
+			tables.update(
+				id,
+				data,
+				function(resultData) {
+					var response = resultData;
 
 					var dataObj = {};
 					dataObj.headers = $scope.headers;
@@ -211,29 +326,26 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 					$scope.serverRequesting = false;
 					$scope.$apply();
 				},
-				error: function() {
+				function() {
 					rebuild();
 				}
-			});
+			);
 		} else {
 
-			$.ajax({
-				type: 'POST',
-				url: $scope.url+'/remove/'+id,
-				data: data,
-				success: function(resultData) {
-					var response = JSON.parse(resultData);
-					$scope.csrf = response.csrf;
-					$scope.csrfHash = response.csrf_hash;
+			tables.remove(
+				id,
+				data,
+				function(resultData) {
+					var response = resultData;
 					
 	        		$scope.serverRequesting = false;
 	        		delete $scope.data[id];
 	        		$scope.$apply();
 				},
-				error: function() {
+				function() {
 					rebuild();
 				}
-			});
+			);
 
 		}
 		$scope.editIndex = -1;
@@ -253,18 +365,16 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 		$scope.serverRequesting = true;
 		var data = {};
 		data.data = JSON.stringify($scope.newItem);
-		data[$scope.csrf] = $scope.csrfHash; 
-		$.ajax({
-			type: 'POST',
-			url: $scope.url+'/add',
-			data: data,
-			success: function() {
+
+		tables.add(
+			data,
+			function() {
 				rebuild();
 			},
-			error: function() {
+			function() {
 				rebuild();
 			}
-		});
+		);
 		$mdDialog.hide();
 	};
 
@@ -283,7 +393,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', function($scope, $ht
 	};
 }]);
 
-app.controller('tables', ['$scope', '$http', function($scope, $http){
+app.controller('selector', ['$scope', '$http', function($scope, $http){
 
 	$scope.options = {};
 
@@ -335,25 +445,88 @@ app.controller('user', ['$scope', 'UserService', function($scope,  UserService){
 	$scope.company = UserService.company;
 }]);
 
+app.controller('tableSettings', ['$scope', 'tables', function ($scope, tables){
+	tables.headers(
+			function (response) {
+				$scope.headers = response.data.headers;
+				console.log($scope.headers);
+			}
+		);
+
+	$scope.headers = {};
+	$scope.types = tables.types;
+
+	$scope.derivedColumnExpr = [];
+	$scope.DTokenIsField = true;
+	$scope.newDToken = {};
+
+	$scope.newColumn = 
+	{
+		derived: false,
+		title: '',
+		expression: [],
+		kind: '',
+		default: ''
+	};
+
+	$scope.addDToken = function(DTokenIsField) {
+		var data = $.extend({}, $scope.newDToken);
+		if (DTokenIsField) {
+			data.type = 'field';
+
+			data.derived = $scope.headers[data.header].derived;
+			data.derivation = $scope.headers[data.header].select_val;
+			
+			data.title = $scope.headers[data.header].title;
+		} else {
+			data.type = 'operation';
+		}
+		$scope.derivedColumnExpr.push(data);
+	};
+
+	$scope.addColumn = function() {
+		if ($scope.newColumn.derived) {
+			$scope.newColumn.expression = $scope.derivedColumnExpr;
+		};
+
+		var data = {
+			data: JSON.stringify($scope.newColumn)
+		};
+
+		tables.addColumn(data, function () {}, function () {});
+	};
+}]);
+
 app.controller('expBuilder', ['$scope', function($scope){
 	$scope.expression = [
 	{
 		type: 'field',
-		title: 'Hello',
-		key: 'hi'
+		title: 'Amount',
+		header: 'hi'
 	},
 	{
 		type: 'operand',
-		value: '+'
+		value: '*'
 	},
 	{
 		type: 'field',
-		title: 'World',
+		title: 'quantity',
 		key: 'hilo'
 	}
 
 	];
 	$scope.newIsField = true;
 	$scope.newItem = {};
+
+	$scope.addExpr = function() {
+		var data = $.extend({}, $scope.newItem);
+		if ($scope.newIsField) {
+			data.type = "field";
+			data.title = "he";
+		} else {
+			data.type = "operand";
+		}
+		$scope.expression.push(data);
+	};
 }]);
 

@@ -108,7 +108,7 @@ class MY_DBmodel extends CI_Model
 		        'table_field_title' => $field_title,
 		        'table_field_input_type' => $inputType, 
 		);
-		$this->db->insert(self::metaTableName, $data);
+		return $this->db->insert(self::metaTableName, $data);
 
 	}
 
@@ -121,7 +121,7 @@ class MY_DBmodel extends CI_Model
 		        'table_field_title' => $field_title,
 		        'table_field_derived' => $derivation
 		);
-		$this->db->insert(self::metaTableName, $data);
+		return $this->db->insert(self::metaTableName, $data);
 
 	}
 
@@ -253,6 +253,34 @@ class MY_DBmodel extends CI_Model
 		return $this->db->get($this->TableName);
 	}
 
+	public function getSearches () {
+		$this->db->where('table_name', $this->TableName);
+		return $this->db->get(self::searchTableName);
+	}
+
+	public function saveSearch ($title, $search) {
+
+		return $this->db->insert( self::searchTableName, 
+			[
+				'table_name' => $this->TableName,
+				'query_title' => $title,
+				'search_query' => json_encode($search)
+			]
+		);
+	}
+
+	public function removeSearch ($id) {
+		$this->db->where('id', $id);
+		$this->db->where('table_name', $this->TableName);
+		return $this->db->delete( self::searchTableName);
+	}
+
+	public function updateSearch ($id, $search) {
+		$this->db->where('id', $id);
+		$this->db->where('table_name', $this->TableName);
+		return $this->db->update( $this->TableName, ['search_query' => json_encode($search)]); 
+	}
+
 	public function insertIntoTable($data) {
 		return $this->db->insert( $this->TableName, $data);
 	}
@@ -320,8 +348,7 @@ class MY_DBmodel extends CI_Model
 
 			$ins = array( $field => $fieldset );
 
-			$this->dbforge->add_column($this->TableName, $ins);
-			$this->registerFieldTitle($field, $title, $kind);
+			return $this->dbforge->add_column($this->TableName, $ins) && $this->registerFieldTitle($field, $title, $kind);
 		}
 	}
 
@@ -343,15 +370,21 @@ class MY_DBmodel extends CI_Model
 			($this->FieldPrefix!=null?$this->FieldPrefix:$this->TableName)
 			.'_'.$field);
 
+		$allfields = $this->getFieldAssociations();
+
 		foreach ($expression as $item) {
 			if ($item['type'] == 'field') {
-				$selectValue .= $item['key'];
-			} else if ($item['type'] == 'operand') {
+				if ($allfields[ $item['header'] ][FLD_DERIVED]) {
+					$selectValue .= $allfields[ $item['header'] ][FLD_DERIVATION];
+				} else {
+					$selectValue .= '`'.$item['header'].'`';
+				}
+			} else if ($item['type'] == 'operation') {
 				$selectValue .= $item['value'];
 			}
 		}
 
-		$this->registerDerivedFieldTitle($field, $title, $selectValue);
+		return $this->registerDerivedFieldTitle($field, $title, $selectValue);
 	}
 
 	public function registerSearchQuery($title, $query) {

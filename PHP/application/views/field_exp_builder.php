@@ -28,4 +28,7 @@
 			</md-option>
 		</md-select>
 	</div>
+	<md-button class="md-raised" ng-click="addExpr()">
+		Add
+	</md-button>
 </div>

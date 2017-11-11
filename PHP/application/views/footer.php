@@ -11,21 +11,7 @@ $logged_in = $CI->ion_auth->logged_in();
 <div style="text-align: center; font-size: 0.7em; margin-top: 2em;">&copy; Copyright 2017. All Rights Reserved.</div>
 		</md-content>
     </div>
-<script src="<?= base_url().'js/jquery.js' ?>"></script>
 
-<script src="<?= base_url().'js/popper.min.js' ?>"></script>
-<script src="<?= base_url().'js/bootstrap.min.js' ?>"></script>
-
-<script src="<?= base_url().'js/form-validator.js' ?>"></script>
-<script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
-
-<script src="<?= base_url().'js/angular.min.js' ?>"></script>
-<script src="<?= base_url().'js/angular-animate.min.js' ?>"></script>
-<script src="<?= base_url().'js/angular-messages.min.js' ?>"></script>
-<script src="<?= base_url().'js/angular-aria.min.js' ?>"></script>
-<script src="<?= base_url().'js/angular-material.min.js' ?>"></script>
-
-<script src="<?= base_url().'js/init.js' ?>"></script>
 
 <script type="text/javascript">
 	app.factory('UserService', [function() {

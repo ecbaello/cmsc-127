@@ -11,6 +11,8 @@ class MY_DBcontroller extends CI_Controller
 
 		$this->load->library('session');
 		$this->load->helper('url');
+
+		define('NAV_SELECT', 1);
 	}
 
 	public function index() {
@@ -38,8 +40,12 @@ class MY_DBcontroller extends CI_Controller
 	public function get ($id) {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
-    	echo json_encode( ['data'=>$this->model->getByPK($id),'csrf' => $token,
-				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+    	echo json_encode( 
+    	[
+    		'data'=>$this->model->getByPK($id),
+    		'csrf' => $token,
+			'csrf_hash' => $hash
+		], JSON_NUMERIC_CHECK);
 	}
 
 	public function search () {
@@ -48,19 +54,28 @@ class MY_DBcontroller extends CI_Controller
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
-		$db = $this->model->find($query);
-		$db = empty($db)?'':$db->result();
+		$qry = $this->model->find($query);
+		$db = empty($qry)? false :$qry->result();
 		
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>$db,
+				'data'=> $db,
 				'csrf' => $token,
 				'csrf_hash' => $hash,
+				'count' => $qry->num_rows()
 			)
 
 		, JSON_NUMERIC_CHECK);
+	}
+
+	public function searches ($action) {
+		if ($action == 'add') {
+			$this->model->saveSearch( $this->input->post('data') );
+		} else if ($action == 'remove') {
+			$this->model->saveSearch( $this->input->post('data') );
+		}
 	}
 
 	public function update ($id) {
@@ -92,19 +107,40 @@ class MY_DBcontroller extends CI_Controller
 				$arr[$input] = $insert[$input]; 
 			}
 		}
-		if (!$this->model->insertIntoTable($arr)){
-			show_error('Data Insertion Failed', 400);
-		}
+		
+		$success = $this->model->insertIntoTable($arr);
+
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	public function addfield () {
 		$data = json_decode($this->input->post('data'), true);
 
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$success = false;
 		if ($data['derived']) {
-			return $this->model->insertDerivedField($data['title'], $data['expression']);
+			$success = $this->model->insertDerivedField($data['title'], $data['expression']);
 		} else {
-			return $this->model->insertField($data['title'], $data['kind'], $data['default']);
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default']);
 		}
+
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	public function removefield () {
@@ -113,23 +149,29 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function headers () {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 		echo json_encode( 
-			array(
-				'headers'=>$this->model->getFieldAssociations()
-			)
+			[
+				'headers'=>$this->model->getFieldAssociations(),
+	    		'csrf' => $token,
+				'csrf_hash' => $hash
+			]
 		);
 	}
 
 	public function data () {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
+		$qry = $this->model->get();
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=>$this->model->get()->result(),
+				'data'=>$qry->result(),
 				'csrf' => $token,
 				'csrf_hash' => $hash,
+				'count' => $qry->num_rows(),
 			)
 
 		, JSON_NUMERIC_CHECK);
