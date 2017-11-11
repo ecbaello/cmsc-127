@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       
     </md-card-title>
     <md-card-content>
-		<img width= src="http://luke:8080/svg/luke.svg">
+		<img width="30%" src="http://luke:8080/svg/luke.svg">
 	</md-card-content>
   </md-card>
 </md-content>
