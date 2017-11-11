@@ -19,8 +19,9 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->view('footer');
 	}
 
+	// DIRECTORY_SEPARATOR
 	protected function getAccessURL($file_url) {
-		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(array(APPPATH.'controllers/',APPPATH.'controllers\\'), '', $file_url));
+		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers'.DIRECTORY_SEPARATOR, '', $file_url));
 	}
 
 	protected function makeSelector($table = null, $replacelink = null) {
