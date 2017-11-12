@@ -18,6 +18,8 @@ class MY_DBmodel extends CI_Model
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
 
+
+	// note drop tables
 	/**
 	* The constructor method
 	*
