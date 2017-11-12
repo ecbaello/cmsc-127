@@ -51,7 +51,7 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $hide_items ? array_diff($fields, array($this->arrayFieldName)) : $fields;
 	}
 
-	public function find ($subtable, $search = null, $settings = [])
+	public function find ($subtable, $search = null, $settings = [], $fields = null)
 	{	
 		// Separate querying name
 		$name = $this->convertNameToCategory($subtable);
@@ -70,13 +70,11 @@ class MY_DBarraymodel extends MY_DBmodel
 		if ($defjoin)
 			$this->db->select( $this->TablePrimaryKey );
 		else
-			$this->select();
+			$this->select($fields);
 
 		if ( !empty($search) ) qry_evaluate($search, $this->db);
 
 		$this->db->where($this->arrayFieldName, $name);
-
-		$this->options($settings);
 
 		if ( isset( $settings['order_by'] ) ) {
 			$this->db->order_by(
@@ -93,7 +91,7 @@ class MY_DBarraymodel extends MY_DBmodel
 
 			$select = $this->db->get_compiled_select($this->TableName);
 
-			$this->select();
+			$this->select($fields);
 			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
 		}
 

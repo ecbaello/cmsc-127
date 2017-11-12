@@ -149,6 +149,7 @@ app.factory('tableChanged', function($rootScope) {
 
 
 app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChanged', function($scope, $http, $mdDialog, tables, tableChanged){
+
 	// Table Information
 	$scope.data = [];
 	$scope.idName = '';
@@ -169,14 +170,14 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 	tableChanged.subscribe($scope, function() {
 		$scope.filter.rules = [];
-		$scope.rebuild();
+		$scope.rebuild(true);
 	});
 
 	// Table State
 	$scope.serverRequesting = true;
 
 	// Loading tables
-	$scope.rebuild = function() {
+	$scope.rebuild = function(withHeaders) {
 		var data = {};
 
 		if ($scope.filter.rules.length > 0) {
@@ -191,6 +192,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 		var gets = {};
 
+		if (withHeaders) gets.headers = 1;
+
 		if ($scope.sortHeader !== null) {
 			gets.orderby = $scope.sortHeader;
 			gets.order = $scope.isAscending ? 'ASC' : 'DESC';
@@ -201,9 +204,12 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			function(resultData) {
 				var response = convertData(resultData);
 				$scope.data = response.data;
-				$scope.idName = response.id;
-				$scope.headers = response.headers;
 
+				if (withHeaders) {
+					$scope.idName = response.id;
+					$scope.headers = response.headers;
+				}
+				
 				//console.log(data);
 				$scope.serverRequesting = false;
 
@@ -229,7 +235,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		if ($scope.sortHeader == header) $scope.isAscending = !$scope.isAscending;
 		else $scope.sortHeader = header;
 		console.log($scope.sortHeader);
-		$scope.rebuild();
+		$scope.rebuild(false);
 	};
 
 	// filtering Tables
@@ -280,7 +286,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		if ($scope.filter.rules[i].rules.length == 1 && j == 0) {
 			if ($scope.filter.rules.length == 1 && i == 0) {
 				$scope.filter.rules = [];
-				$scope.rebuild();
+				$scope.rebuild(false);
 			}
 			else delete $scope.filter.rules.splice(i,1);
 		}
@@ -342,7 +348,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 					$scope.$apply();
 				},
 				function() {
-					$scope.rebuild();
+					$scope.rebuild(true);
 				}
 			);
 		} else {
@@ -358,7 +364,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	        		$scope.$apply();
 				},
 				function() {
-					$scope.rebuild();
+					$scope.rebuild(true);
 				}
 			);
 
@@ -384,10 +390,10 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		tables.add(
 			data,
 			function() {
-				$scope.rebuild();
+				$scope.rebuild(false);
 			},
 			function() {
-				$scope.rebuild();
+				$scope.rebuild(true);
 			}
 		);
 		$mdDialog.hide();

@@ -6,7 +6,7 @@ $CI =& get_instance();
 <script type="text/javascript">
 	app.constant('tableURL', '<?= isset($url)?$url:current_url() ?>');
 </script>
-<div ng-controller="database" ng-init="rebuild()">
+<div ng-controller="database" ng-init="rebuild(true)">
 <md-content layout-padding>
   <md-card class="p-0">
   	<md-progress-linear md-mode="indeterminate" ng-disabled="!serverRequesting"></md-progress-linear>
@@ -114,7 +114,7 @@ $CI =& get_instance();
 							<md-button class="md-raised w-100" ng-disabled="!newFilter.header || !newFilter.operation" ng-click="addFilter(filterOr==false)">Add Filter</md-button>
 						</div>
 						<div class="col-lg-2 col-sm-6">
-							<md-button class="md-raised md-primary w-100" ng-disabled="filter.length==0" ng-click="rebuild()">Filter</md-button>
+							<md-button class="md-raised md-primary w-100" ng-disabled="filter.length==0" ng-click="rebuild(false)">Filter</md-button>
 						</div>
 					</div>
 				</form>

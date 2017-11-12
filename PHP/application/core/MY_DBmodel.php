@@ -81,6 +81,8 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_field		("table_field TEXT NOT NULL");
 			$this->dbforge->add_field		("table_field_title VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("table_field_derived TEXT DEFAULT NULL");
+			$this->dbforge->add_field		("field_prefix VARCHAR(100) DEFAULT ''");
+			$this->dbforge->add_field		("field_suffix VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
 			$this->dbforge->create_table	( self::metaTableName);
 		}
@@ -151,7 +153,7 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function getFieldAssociations() {
-		$this->db->select('table_field, table_field_title, table_field_derived, '.self::fieldInputTypeField);
+		$this->db->select('table_field, table_field_title, table_field_derived, field_prefix, field_suffix, '.self::fieldInputTypeField);
 		$this->db->where('table_name', $this->TableName);
 
 		$inp = $this->db->get(self::metaTableName)->result_array();
@@ -170,7 +172,9 @@ class MY_DBmodel extends CI_Model
 				TBL_INPUT => $assoc[self::fieldInputTypeField],
 				RD_ONLY	  => $read_only,
 				FLD_DERIVED => !empty($assoc['table_field_derived']),
-				FLD_DERIVATION => !empty($assoc['table_field_derived'])?$assoc['table_field_derived']:null
+				FLD_DERIVATION => !empty($assoc['table_field_derived'])?$assoc['table_field_derived']:null,
+				'prefix' => $assoc['field_prefix'],
+				'suffix' => $assoc['field_suffix']
 			);
 		}
 		return $arr;
@@ -213,9 +217,9 @@ class MY_DBmodel extends CI_Model
 		return $query[0]['table_field'];
 	}
 
-	public function select() {
+	public function select($fields = null) {
 		$select = '';
-		$fields = $this->getFieldAssociations();
+		if ($fields == null) $fields = $this->getFieldAssociations();
 
 		$first = true;
 		foreach ($fields as $field => $info) {
@@ -234,19 +238,6 @@ class MY_DBmodel extends CI_Model
 		$this->db->select($select, false);
 	}
 
-	public function options($settings) {
-
-		
-		
-	}
-
-	public function get($settings = [])
-	{
-		$this->select();
-		$this->options($settings);
-		return $this->db->get($this->TableName);
-	}
-
 	public function convertFields( $fields, $table = NULL ) {
 		$arr = array();
 		foreach ($fields as $field) {
@@ -258,7 +249,7 @@ class MY_DBmodel extends CI_Model
 	}
 
 	
-	public function find ($search = null, $settings = [])
+	public function find ($search = null, $settings = [], $fields = null)
 	{
 		$this->load->helper("query_helper");
 
@@ -274,11 +265,9 @@ class MY_DBmodel extends CI_Model
 		if ($defjoin)
 			$this->db->select( $this->TablePrimaryKey );
 		else
-			$this->select();
+			$this->select($fields);
 
 		if ( !empty($search) ) qry_evaluate($search, $this->db);
-
-		$this->options($settings);
 
 		if ( isset( $settings['order_by'] ) ) {
 			$this->db->order_by(
@@ -297,7 +286,7 @@ class MY_DBmodel extends CI_Model
 		if ($defjoin) {
 			$select = $this->db->get_compiled_select($this->TableName);
 
-			$this->select();
+			$this->select($fields);
 			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
 		}
 
@@ -348,8 +337,8 @@ class MY_DBmodel extends CI_Model
 	    return $this->db->delete( $this->TableName); 
 	}
 
-	public function getByPK($id) {
-		$this->select();
+	public function getByPK($id, $fields = null) {
+		$this->select($fields);
 		$this->db->where( $this->TablePrimaryKey, $id);
 	    return $this->db->get( $this->TableName)->row(); 
 	}

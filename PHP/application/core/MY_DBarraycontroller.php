@@ -182,23 +182,32 @@ class MY_DBarraycontroller extends CI_Controller {
 			$settings['limit_offset'] = $page*$limit;
 		}
 
+		$headers = $this->model->getFieldAssociations();
+
 		$filter = $this->input->post('filter');
 		if (!empty($filter)) {
 			$query = json_decode($filter, true);
-			$qry = $this->model->find($table, $query, $settings);
+			$qry = $this->model->find($table, $query, $settings, $headers);
 		} else {
-			$qry = $this->model->find($table, null, $settings);
+			$qry = $this->model->find($table, null, $settings, $headers);
+		}
+
+		$response = 
+		[
+			'data'=> $qry ? $qry->result() : '',
+			'csrf' => $token,
+			'csrf_hash' => $hash,
+			'count' => $qry ? $qry->num_rows() : -1,
+			'success' => !empty($qry)
+		];
+
+		if ($this->input->get('headers') == 1) {
+			$response['headers'] = $headers;
+			$response['id'] = $this->model->TablePrimaryKey;
 		}
 
 		echo json_encode( 
-			array(
-				'id'=>$this->model->TablePrimaryKey,
-				'headers'=>$this->model->getFieldAssociations(),
-				'data'=> $qry->result(),
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'count' => $qry->num_rows()
-			)
+			$response
 
 		, JSON_NUMERIC_CHECK);
 	}

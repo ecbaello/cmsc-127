@@ -176,28 +176,35 @@ class MY_DBcontroller extends CI_Controller
 		if (!empty($limit)) {
 			$settings['limit_by'] = $limit;
 			$page = $this->input->get('page');
-			$settings['limit_offset'] = ( empty($page) ? 0 : $page ) * $limit;
+			$settings['limit_offset'] = ( empty($page) ? 0 : $page )*$limit;
 		}
 
+		$headers =  $this->model->getFieldAssociations();
 
 		$filter = $this->input->post('filter');
 		if (!empty($filter)) {
 			$query = json_decode($filter, true);
-			$qry = $this->model->find($query, $settings);
+			$qry = $this->model->find($query, $settings, $headers);
 		} else {
-			$qry = $this->model->find(null, $settings);
+			$qry = $this->model->find(null, $settings, $headers);
+		}
+
+		$response = 
+		[
+			'data'=> $qry ? $qry->result() : '',
+			'csrf' => $token,
+			'csrf_hash' => $hash,
+			'count' => $qry ? $qry->num_rows() : -1,
+			'success' => !empty($qry)
+		];
+
+		if ($this->input->get('headers') == 1) {
+			$response['headers'] = $headers;
+			$response['id'] = $this->model->TablePrimaryKey;
 		}
 
 		echo json_encode( 
-			array(
-				'id'=>$this->model->TablePrimaryKey,
-				'headers'=>$this->model->getFieldAssociations(),
-				'data'=> $qry ? $qry->result() : '',
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'count' => $qry ? $qry->num_rows() : -1,
-				'success' => !empty($qry)
-			)
+			$response
 
 		, JSON_NUMERIC_CHECK);
 	}
