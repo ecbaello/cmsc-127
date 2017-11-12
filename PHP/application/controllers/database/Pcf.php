@@ -17,7 +17,7 @@ class Pcf extends MY_DBarraycontroller {
 
 		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable]);
 
-		$this->makeSelector($subtable, site_url($this->getAccessURL(__FILE__)) );
+		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
 
 		$this->load->view('table_settings');
 
