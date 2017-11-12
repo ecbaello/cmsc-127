@@ -1,20 +1,11 @@
-create table hospbill(
-    bill_num numeric(10) not null unique,
-    partient_name varchar(20) not null,
-    patient_num numeric(7) not null,
-    patient_id varchar(7),
-    room varchar(10),
-    admission_date date not null,
-    rate float not null,
-    rate_desc varchar(20),
-    tot_days integer not null,
-    date date not null,
-    ref_num numeric(10),
-    description varchar(40),
-    quantity numeric(5,2) not null,
- 	section varchar(30) not null,
-    section_subtot numeric(10,2) not null,
-    hospbill_grandtot numeric(10,2) not null,
-    Primary key(bill_num),
-    Foreign key(patient_id) references patient_data(patient_id) on update cascade
+create table detailed_charges (
+	patient_id varchar(5),
+	charge_id varchar(5) not null unique,
+	ref_num varchar(8),
+	date date not null,
+	description varchar(30),
+	quantity int(3),
+	amount numeric(7,2) not null,
+	Primary key (charge_id),
+	Foreign key (patient_id) references Patient (patient_id) on update cascade
 );
