@@ -141,6 +141,7 @@ $CI =& get_instance();
 							<tr ng-repeat="(index, value) in data" ng-class="{'row-update' : (index==editIndex && isEdit), 'row-edit' : (index==editIndex)}">
 									<td ng-repeat="(key, item) in headers">
 										<span ng-class="item.read_only?'':'cell-value'">
+											{{ item.prefix }}
 											{{
 											<?= $CI->load->view('item_formatter', 
 											[ 
@@ -149,6 +150,7 @@ $CI =& get_instance();
 											]
 											, true); ?> 
 											 }}
+											{{ item.suffix }}
 										</span>
 										<?= $CI->load->view('input_switcher', 
 											[ 

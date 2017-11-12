@@ -209,7 +209,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 					$scope.idName = response.id;
 					$scope.headers = response.headers;
 				}
-				
+
 				//console.log(data);
 				$scope.serverRequesting = false;
 
@@ -427,7 +427,6 @@ app.controller('selector', ['$scope', '$http', function($scope, $http){
 	$scope.setURL = function(url) {
 		$scope.selectorUrl = url;
 		loadOptions();
-		
 	};
 
 	$scope.setSelected = function(select) {

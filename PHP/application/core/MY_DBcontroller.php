@@ -107,11 +107,17 @@ class MY_DBcontroller extends CI_Controller
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
+		$prefix = null;
+		$suffix = null;
+
+		if (isset($data['prefix'])) $prefix = $data['prefix'];
+		if (isset($data['suffix'])) $suffix = $data['suffix'];
+
 		$success = false;
 		if ($data['derived']) {
-			$success = $this->model->insertDerivedField($data['title'], $data['expression']);
+			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix);
 		} else {
-			$success = $this->model->insertField($data['title'], $data['kind'], $data['default']);
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
 		}
 
 		echo json_encode( 
@@ -205,7 +211,6 @@ class MY_DBcontroller extends CI_Controller
 
 		echo json_encode( 
 			$response
-
 		, JSON_NUMERIC_CHECK);
 	}
 }

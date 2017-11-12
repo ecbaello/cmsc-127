@@ -47,13 +47,14 @@ $CI =& get_instance();
 												[ 
 													'swtch' => 'newColumn.kind',
 													'model' => 'newColumn.default',
-													'label' => 'Default Value'
+													'label' => 'Default Value',
+													'cont_attr' => 'class="w-100"'
 												]
 											, true); ?>
 										</div>
 									</div>
-										<div ng-if="newColumn.derived">
-											<label>Field Derivation</label>
+									<div ng-if="newColumn.derived">
+										<label>Field Derivation</label>
 										<md-chips ng-model="derivedColumnExpr" md-transform-chip="transformChip($chip)">
 											<md-chip-template>
 												<span ng-switch="$chip.type">
@@ -81,7 +82,18 @@ $CI =& get_instance();
 												</md-button>
 											</div>
 										</div>
-										
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<md-input-container class="w-100">
+												<input placeholder="Prefix" type="text" ng-model="newColumn.prefix">
+											</md-input-container>
+										</div>
+										<div class="col-6">
+											<md-input-container class="w-100">
+												<input placeholder="Suffix" type="text" ng-model="newColumn.suffix">
+											</md-input-container>
+										</div>
 									</div>
 									<div class="text-right">
 										<md-button class="md-raised md-primary" ng-click="addColumn()">
