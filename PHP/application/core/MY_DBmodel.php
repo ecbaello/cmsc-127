@@ -12,7 +12,8 @@ class MY_DBmodel extends CI_Model
 	public $TableName = ''; // Overideable
 	public $TablePrimaryKey = 'id'; // Overideable
 	public $FieldPrefix = null;
-
+	
+	public $fieldsToHide = array();
 	public $ReadOnlyFields = array();
 
 	protected $isArrayModel = FALSE;
@@ -139,7 +140,7 @@ class MY_DBmodel extends CI_Model
 
 	}
 
-	public function getFields($hide_items = false) {
+	public function getFields($hide_items = true) {
 		$this->db->select('table_field');
 		$this->db->where('table_name', $this->TableName);
 
@@ -152,11 +153,11 @@ class MY_DBmodel extends CI_Model
 			array_push( $arr,  $item);
 		}
 
-		//if ($hide_items) $arr = array_diff($arr, $this->fieldsToHide, array($this->TablePrimaryKey));
+		if ($hide_items) $arr = array_diff($arr, $this->fieldsToHide, array($this->TablePrimaryKey));
 		return $arr;
 	}
 
-	public function getFieldAssociations() {
+	public function getFieldAssociations($hide_items = true) {
 		$this->db->select('table_field, table_field_title, table_field_derived, field_prefix, field_suffix, '.self::fieldInputTypeField);
 		$this->db->where('table_name', $this->TableName);
 
@@ -181,6 +182,13 @@ class MY_DBmodel extends CI_Model
 				'suffix' => $assoc['field_suffix']
 			);
 		}
+		
+		if ($hide_items){
+		    foreach($this->fieldsToHide as $field){
+		        unset($arr[$field]);
+            }
+        }
+
 		return $arr;
 	}
 

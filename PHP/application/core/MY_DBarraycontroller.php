@@ -41,6 +41,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		
 		if ($subtable !== null) {
 			$subtable = urldecode($subtable);
+			$this->model->hideFields($subtable);
 			if ($action === null) $this->makeHTML($subtable);
 			else {
 				switch ($action) {
