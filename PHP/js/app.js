@@ -216,6 +216,13 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		);
 	};
 
+	// table customize ui
+	$scope.tableView = {
+		compact: false,
+		bordered: true,
+		striped: true
+	};
+
 	$scope.isAscending = true;
 	$scope.sortHeader = null;
 	$scope.sort = function(header) {

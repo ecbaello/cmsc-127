@@ -8,7 +8,8 @@ $CI =& get_instance();
 </script>
 <div ng-controller="database" ng-init="rebuild()">
 <md-content layout-padding>
-  <md-card>
+  <md-card class="p-0">
+  	<md-progress-linear md-mode="indeterminate" ng-disabled="!serverRequesting"></md-progress-linear>
     <md-card-title>
       <span class="md-headline font-weight-bold" flex><?= $title ?></span>
       <span class="table-tools">
@@ -16,12 +17,12 @@ $CI =& get_instance();
       	<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-focused'" class="md-icon-button" ng-click="hideFilter=!hideFilter">
       		<i class="fa fa-filter fa-lg"></i>
       	</md-button>
+      	<md-button class="md-icon-button">
+      		<i class="fa fa-print fa-lg"></i>
+      	</md-button>
       	<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
 			<i class="fa fa-plus fa-lg"></i>
 		</md-button>
-		<md-button class="md-icon-button">
-      		<i class="fa fa-print fa-lg"></i>
-      	</md-button>
       </span>
     </md-card-title>
     <md-card-content>
@@ -121,12 +122,17 @@ $CI =& get_instance();
 			<?php /** Table **/ ?>
 			<div id="container">
 				<form>
-					<md-progress-linear md-mode="indeterminate" ng-disabled="!serverRequesting"></md-progress-linear>
-					<table class="table" id="db-table">
+					<table class="table table-striped table-bordered table-hover" id="db-table">
 						<thead>
 							<tr>
-								<th ng-repeat="(key, item) in headers">
-									<a href="" ng-click="sort(key)">{{ item['title'] }}</a>
+								<th ng-repeat="(key, item) in headers" class="{{key==idName?'id-header':''}}">
+									<a class="no-decor" href="" ng-click="sort(key)">
+										{{ item['title'] }}
+										<span ng-if="key==sortHeader">
+											<i class="fa {{ isAscending ? 'fa-chevron-up' : 'fa-chevron-down' }}"></i>
+										</span>
+									</a>
+									
 								</th>
 								<th></th>
 							</tr>

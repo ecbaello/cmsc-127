@@ -227,7 +227,7 @@ class MY_DBmodel extends CI_Model
 				$select .= ' AS ';
 				$select .= $field;
 			} else {
-				$select .= $field;
+				$select .= '`'.$this->TableName.'`.`'.$field.'`';
 			}
 		}
 
@@ -236,20 +236,8 @@ class MY_DBmodel extends CI_Model
 
 	public function options($settings) {
 
-		if ( isset( $settings['order_by'] ) ) {
-			$this->db->order_by(
-				$settings['order_by'],
-				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
-			);
-
-			
-		}
-		if ( isset( $settings['limit_by'] ) ) {
-			$this->db->limit(
-				$settings['limit_by'],
-				isset( $settings['limit_offset'] ) ? $settings['limit_offset'] : 0
-			);
-		}
+		
+		
 	}
 
 	public function get($settings = [])
@@ -270,14 +258,49 @@ class MY_DBmodel extends CI_Model
 	}
 
 	
-	public function find ($search, $settings = [])
+	public function find ($search = null, $settings = [])
 	{
 		$this->load->helper("query_helper");
 
 		$this->db->reset_query();
-		$this->select();
-		qry_evaluate($search, $this->db);
+
+		$defjoin = isset( $settings['limit_by'] );
+
+		// Use deffered join for limit N offset X
+		// We search only for the Primary Keys of the rows we need
+		// Then we use join for SQL to only fetch those rows.
+		// More efficient because Primary Keys are stored differently on disk
+ 
+		if ($defjoin)
+			$this->db->select( $this->TablePrimaryKey );
+		else
+			$this->select();
+
+		if ( !empty($search) ) qry_evaluate($search, $this->db);
+
 		$this->options($settings);
+
+		if ( isset( $settings['order_by'] ) ) {
+			$this->db->order_by(
+				$settings['order_by'],
+				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
+			);
+		}
+
+		if ( $defjoin ) {
+			$this->db->limit(
+				$settings['limit_by'],
+				isset( $settings['limit_offset'] ) ? $settings['limit_offset'] : 0
+			);
+		}
+
+		if ($defjoin) {
+			$select = $this->db->get_compiled_select($this->TableName);
+
+			$this->select();
+			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
+		}
+
 		return $this->db->get($this->TableName);
 	}
 
@@ -421,7 +444,7 @@ class MY_DBmodel extends CI_Model
 					if ($allfields[ $item['header'] ][FLD_DERIVED]) {
 						$selectValue .= $allfields[ $item['header'] ][FLD_DERIVATION];
 					} else {
-						$selectValue .= '`'.$item['header'].'`';
+						$selectValue .= '`'.$this->TableName.'`.`'.$item['header'].'`';
 					}
 				} else if ($item['type'] == 'operation') {
 					$selectValue .= $item['value'];

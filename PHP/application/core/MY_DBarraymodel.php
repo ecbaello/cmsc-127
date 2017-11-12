@@ -23,15 +23,6 @@ class MY_DBarraymodel extends MY_DBmodel
 	{
 	}
 
-	public function getCategoryTable($query, $settings = []) {
-		$this->select();
-		$this->db->join($this->categoryTableName, $this->TableName.'.'.$this->arrayFieldName.' = '.$this->categoryTableName.'.'.$this->arrayFieldName);
-		$this->db->where($this->categoryFieldName, $query);
-		$this->options($settings);
-		$query = $this->db->get($this->TableName);
-		return $query;
-	}
-
 	public function getFieldAssociations() {
 		$fields = parent::getFieldAssociations();
 		unset($fields[$this->arrayFieldName]);
@@ -60,16 +51,52 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $hide_items ? array_diff($fields, array($this->arrayFieldName)) : $fields;
 	}
 
-	public function find ($search, $subtable, $settings = [])
+	public function find ($subtable, $search = null, $settings = [])
 	{	
 		// Separate querying name
 		$name = $this->convertNameToCategory($subtable);
 
 		$this->load->helper("query_helper");
-		$this->select();
-		qry_evaluate($search, $this->db);
+
+		$this->db->reset_query();
+
+		$defjoin = isset( $settings['limit_by'] );
+
+		// Use deffered join for limit N offset X
+		// We search only for the Primary Keys of the rows we need
+		// Then we use join for SQL to only fetch those rows.
+		// More efficient because Primary Keys are stored differently on disk
+ 
+		if ($defjoin)
+			$this->db->select( $this->TablePrimaryKey );
+		else
+			$this->select();
+
+		if ( !empty($search) ) qry_evaluate($search, $this->db);
+
 		$this->db->where($this->arrayFieldName, $name);
+
 		$this->options($settings);
+
+		if ( isset( $settings['order_by'] ) ) {
+			$this->db->order_by(
+				$settings['order_by'],
+				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
+			);
+		}
+
+		if ( $defjoin ) {
+			$this->db->limit(
+				$settings['limit_by'],
+				isset( $settings['limit_offset'] ) ? $settings['limit_offset'] : 0
+			);
+
+			$select = $this->db->get_compiled_select($this->TableName);
+
+			$this->select();
+			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
+		}
+
 		return $this->db->get($this->TableName);
 	}
 

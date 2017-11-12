@@ -15,11 +15,13 @@ class Pcf extends MY_DBarraycontroller {
 		
 		$this->load->view('header');
 
-		$this->makeSelector($subtable, site_url($this->getAccessURL(__FILE__)) );
-		
 		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable]);
 
+		$this->makeSelector($subtable, site_url($this->getAccessURL(__FILE__)) );
+
 		$this->load->view('table_settings');
+
+		
 		
 		$this->load->view('footer');
 

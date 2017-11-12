@@ -37,7 +37,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	}
 
 	// next up: use id variable for pagination
-	public function table($subtable = null, $action = null, $id = null, $other = null) {
+	public function table($subtable = null, $action = null, $arg0 = null, $arg1 = 0) {
 		
 		if ($subtable !== null) {
 			$subtable = urldecode($subtable);
@@ -48,19 +48,19 @@ class MY_DBarraycontroller extends CI_Controller {
 						$this->add($subtable);
 						break;
 					case 'get':
-						if ($id !== null) $this->get($subtable, $id);
+						if ($arg0 !== null) $this->get($subtable, $arg0);
 						else show_404();
 						break;
 					case 'update':
-						if ($id !== null) $this->update($subtable, $id);
+						if ($arg0 !== null) $this->update($subtable, $arg0);
 						else show_404();
 						break;
 					case 'remove':
-						if ($id !== null) $this->remove($subtable, $id);
+						if ($arg0 !== null) $this->remove($subtable, $arg0);
 						else show_404();
 						break;
 					case 'data':
-						$this->data($subtable);
+						$this->data($subtable, $arg0, $arg1);
 						break;
 					case 'filter':
 						$this->filter($subtable);
@@ -177,12 +177,17 @@ class MY_DBarraycontroller extends CI_Controller {
 			if (!empty($order)) $settings['order_dir'] = $order;
 		}
 
+		if (!empty($limit)) {
+			$settings['limit_by'] = $limit;
+			$settings['limit_offset'] = $page*$limit;
+		}
+
 		$filter = $this->input->post('filter');
 		if (!empty($filter)) {
 			$query = json_decode($filter, true);
-			$qry = $this->model->find($query, $table, $settings);
+			$qry = $this->model->find($table, $query, $settings);
 		} else {
-			$qry = $this->model->getCategoryTable($table, $settings);
+			$qry = $this->model->find($table, null, $settings);
 		}
 
 		echo json_encode( 

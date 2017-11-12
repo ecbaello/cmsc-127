@@ -164,10 +164,19 @@ class MY_DBcontroller extends CI_Controller
 		$settings = [];
 
 		$orderby = $this->input->get('orderby');
+
 		if (!empty($orderby)) {
 			$settings['order_by'] = $orderby;
 			$order = $this->input->get('order');
 			if (!empty($order)) $settings['order_dir'] = $order;
+		}
+
+		$limit = $this->input->get('limit');
+		
+		if (!empty($limit)) {
+			$settings['limit_by'] = $limit;
+			$page = $this->input->get('page');
+			$settings['limit_offset'] = ( empty($page) ? 0 : $page ) * $limit;
 		}
 
 
@@ -176,22 +185,21 @@ class MY_DBcontroller extends CI_Controller
 			$query = json_decode($filter, true);
 			$qry = $this->model->find($query, $settings);
 		} else {
-			$qry = $this->model->get($settings);
+			$qry = $this->model->find(null, $settings);
 		}
 
 		echo json_encode( 
 			array(
 				'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations(),
-				'data'=> $qry->result(),
+				'data'=> $qry ? $qry->result() : '',
 				'csrf' => $token,
 				'csrf_hash' => $hash,
-				'count' => $qry->num_rows()
+				'count' => $qry ? $qry->num_rows() : -1,
+				'success' => !empty($qry)
 			)
 
 		, JSON_NUMERIC_CHECK);
-
-		log_message('debug', print_r($qry->result(), true));
 	}
 }
 

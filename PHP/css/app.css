@@ -226,3 +226,12 @@ form md-input-container {
 .filter-toggle {
 	float: right;
 }
+
+.no-decor {
+	text-decoration: none !important;
+}
+
+.id-header {
+	width: 1%;
+	white-space: nowrap;
+}
