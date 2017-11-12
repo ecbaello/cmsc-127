@@ -200,7 +200,7 @@ class MY_DBcontroller extends CI_Controller
 			'data'=> $qry ? $qry->result() : '',
 			'csrf' => $token,
 			'csrf_hash' => $hash,
-			'count' => $qry ? $qry->num_rows() : -1,
+			'count' => $this->model->lastFindCount,
 			'success' => !empty($qry)
 		];
 

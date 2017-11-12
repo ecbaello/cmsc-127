@@ -235,3 +235,7 @@ form md-input-container {
 	width: 1%;
 	white-space: nowrap;
 }
+
+.mini-select {
+	width: 3em;
+}

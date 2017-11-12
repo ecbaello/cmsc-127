@@ -21,6 +21,12 @@ function alignTypes(input) {
 	return data;
 }
 
+app.filter('page', function() {
+  return function(input) {
+    return input === 0 ? 1 : Math.ceil(input);
+  };
+});
+
 app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 	var tables = {};
 
@@ -155,6 +161,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	$scope.idName = '';
 	$scope.headers = [];
 
+	$scope.fetchableCount = 0;
+
 	$scope.filterOperations = {
 		equals: 'is equal to',
 		not: 'is not equal to',
@@ -199,6 +207,11 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			gets.order = $scope.isAscending ? 'ASC' : 'DESC';
 		}
 
+		gets.page = $scope.page;
+		gets.limit = $scope.limit;
+
+		$scope.editIndex = -1;
+
 		tables.get(
 			data,
 			function(resultData) {
@@ -209,6 +222,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 					$scope.idName = response.id;
 					$scope.headers = response.headers;
 				}
+
+				$scope.fetchableCount = response.count;
 
 				//console.log(data);
 				$scope.serverRequesting = false;
@@ -233,8 +248,10 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	$scope.sortHeader = null;
 	$scope.sort = function(header) {
 		if ($scope.sortHeader == header) $scope.isAscending = !$scope.isAscending;
-		else $scope.sortHeader = header;
-		console.log($scope.sortHeader);
+		else {
+			$scope.sortHeader = header;
+			$scope.isAscending = true;
+		}
 		$scope.rebuild(false);
 	};
 
@@ -281,7 +298,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			$scope.filter.rules.push(arr);
 		}
 	};
-
 	$scope.removeFilter = function (i, j) {
 		if ($scope.filter.rules[i].rules.length == 1 && j == 0) {
 			if ($scope.filter.rules.length == 1 && i == 0) {
@@ -293,6 +309,26 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		else $scope.filter.rules[i].rules.splice(j,1);
 	};
 
+	$scope.limitOptions = [5, 10, 20, 30, 50 ,100, 150];
+	$scope.limit = 10;
+	$scope.page = 0;
+	$scope.navigate = function (forward) {
+		var changed = false;
+		
+		if (forward) {
+			if ( $scope.page + 1 < Math.ceil($scope.fetchableCount/$scope.limit) ) {
+				$scope.page++;
+				changed = true;
+			}
+		} else {
+			if ( $scope.page > 0 ) {
+				$scope.page--;
+				changed = true;
+			}
+		}
+
+		if (changed) $scope.rebuild(false);
+	};
 
 	// Editing Tables
 	$scope.editIndex = -1;
@@ -357,11 +393,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 				id,
 				data,
 				function(resultData) {
-					var response = resultData;
-					
-	        		$scope.serverRequesting = false;
-	        		delete $scope.data[index];
-	        		$scope.$apply();
+					$scope.rebuild(false);
 				},
 				function() {
 					$scope.rebuild(true);

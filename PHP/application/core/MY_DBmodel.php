@@ -15,6 +15,8 @@ class MY_DBmodel extends CI_Model
 
 	public $ReadOnlyFields = array();
 
+	public $lastFindCount = 0;
+
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
 
@@ -230,16 +232,22 @@ class MY_DBmodel extends CI_Model
 			
 			if (!$first) $select .= ', ';
 			$first = false;
-			if ($info[FLD_DERIVED]) {
-				$select .= $info[FLD_DERIVATION];
-				$select .= ' AS ';
-				$select .= $field;
-			} else {
-				$select .= '`'.$this->TableName.'`.`'.$field.'`';
-			}
+			$select .= $this->selectHeader($field, $info);
 		}
 
 		$this->db->select($select, false);
+	}
+
+	public function selectHeader($field, $info) {
+		$select = '';
+		if ($info[FLD_DERIVED]) {
+			$select .= $info[FLD_DERIVATION];
+			$select .= ' AS ';
+			$select .= $field;
+		} else {
+			$select .= '`'.$this->TableName.'`.`'.$field.'`';
+		}
+		return $select;
 	}
 
 	public function convertFields( $fields, $table = NULL ) {
@@ -257,44 +265,69 @@ class MY_DBmodel extends CI_Model
 	{
 		$this->load->helper("query_helper");
 
+		if ($fields == null) $fields = $this->getFieldAssociations();
+
 		$this->db->reset_query();
 
 		$defjoin = isset( $settings['limit_by'] );
+		$ordered = isset( $settings['order_by']);
 
 		// Use deffered join for limit N offset X
 		// We search only for the Primary Keys of the rows we need
 		// Then we use join for SQL to only fetch those rows.
 		// More efficient because Primary Keys are stored differently on disk
  
-		if ($defjoin)
+		if ($defjoin) {
 			$this->db->select( $this->TablePrimaryKey );
+
+			if ($ordered && $this->TablePrimaryKey != $settings['order_by']) {
+				$this->db->select(
+					$this->selectHeader($settings['order_by'], $fields[ $settings['order_by'] ]), 
+					false
+				);
+			}
+
+			$this->db->start_cache();
+		}
 		else
 			$this->select($fields);
 
-		if ( !empty($search) ) qry_evaluate($search, $this->db);
+		if ( !empty($search) )
+			qry_evaluate($search, $this->db);
 
-		if ( isset( $settings['order_by'] ) ) {
+		if ( $defjoin )
+			$this->db->stop_cache();
+
+		if ( $ordered ) {
 			$this->db->order_by(
 				$settings['order_by'],
 				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
 			);
 		}
 
-		if ( $defjoin ) {
+		if ($defjoin) {
+
 			$this->db->limit(
 				$settings['limit_by'],
 				isset( $settings['limit_offset'] ) ? $settings['limit_offset'] : 0
 			);
-		}
 
-		if ($defjoin) {
 			$select = $this->db->get_compiled_select($this->TableName);
+
+			$this->lastFindCount = $this->db->count_all_results($this->TableName);
+
+			$this->db->flush_cache();
 
 			$this->select($fields);
 			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
 		}
 
-		return $this->db->get($this->TableName);
+		$result = $this->db->get($this->TableName);
+
+		if (!$defjoin)
+			$this->lastFindCount = $result->num_rows();
+
+		return $result;
 	}
 
 	public function getSearches () {
