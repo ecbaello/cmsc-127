@@ -97,11 +97,27 @@ app.controller('dateRangeSelector',['$scope',function($scope){
 
 	$scope.fromDate = new Date();
 	$scope.toDate = new Date();
+	$scope.table = '';
+	
+	$scope.setURL = function(url) {
+        $scope.selectorUrl = url;
+    };
 
-	function init(){
-		console.log('data ');
-		//setMax();
-		//setMin();
+	$scope.makeTable = function(subtable){
+		
+		var fromDate = $scope.fromDate.getFullYear()+'-'+($scope.fromDate.getMonth()+1)+'-'+$scope.fromDate.getDate();
+		var toDate = $scope.toDate.getFullYear()+'-'+($scope.toDate.getMonth()+1)+'-'+$scope.toDate.getDate();
+		
+		console.log($scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/'+fromDate+'/'+toDate);
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/'+fromDate+'/'+toDate,
+            dataType: "json",
+            success: function (data) {
+            	$scope.table = data;
+				$scope.$apply();
+            }
+        });
 	}
 
 

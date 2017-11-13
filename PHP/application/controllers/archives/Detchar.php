@@ -1,15 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Pcf extends MY_DBarraycontroller {
+class Detchar extends MY_DBcontroller {
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->filepath = __FILE__;
-		$this->load->model('database_pcf_model');
-		$this->model = $this->database_pcf_model;
+		$this->load->model('archive_detailed_charges_model');
+
+		$this->model = $this->archive_detailed_charges_model;
+
 		$this->model->init();
 	}
-
+	
+	
 }
