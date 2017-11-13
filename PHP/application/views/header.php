@@ -86,7 +86,7 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
               <i class="fa fa-archive fa-lg fa-fw"></i> Table Manager
             </md-list-item>
             <?php endif ?>
-            <md-list-item class="<?= $selectNav==4 ? 'active' : '' ?>" href="<?=base_url().'permissions' ?>">
+            <md-list-item class="<?= $selectNav==4 ? 'active' : '' ?>" href="<?=base_url().'archives' ?>">
               <i class="fa fa-archive fa-lg fa-fw"></i> Archive
             </md-list-item>
           </md-list>
