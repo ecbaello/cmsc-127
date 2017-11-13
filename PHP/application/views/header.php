@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 $CI =& get_instance();
-$CI->load->model('permission_model');
 
 $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 
@@ -39,19 +38,17 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 
   <script src="<?= base_url().'js/jquery.js' ?>"></script>
 
-  <script src="<?= base_url().'js/bootstrap/popper.min.js' ?>"></script>
-  <script src="<?= base_url().'js/bootstrap/bootstrap.min.js' ?>"></script>
+  <script src="<?= base_url().'js/popper.min.js' ?>"></script>
+  <script src="<?= base_url().'js/bootstrap.min.js' ?>"></script>
 
-  <script src="<?= base_url().'js/form-validator/form-validator.js' ?>"></script>
+  <script src="<?= base_url().'js/form-validator.js' ?>"></script>
   <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
-  <script src="<?= base_url().'js/chart.min.js' ?>"></script>
 
-  <script src="<?= base_url().'js/angular/angular.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular/angular-animate.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular/angular-messages.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular/angular-aria.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular/angular-material.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular/angular-chart.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-animate.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-messages.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-aria.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-material.min.js' ?>"></script>
   <script src="<?= base_url().'js/init.js' ?>"></script>
 
 </head>
@@ -78,11 +75,12 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
             <md-list-item class="<?= $selectNav==1 ? 'active' : '' ?>" href="<?=base_url().'database' ?>">
               <i class="fa fa-database fa-lg fa-fw"></i> Database
             </md-list-item>
-            <?php if ($CI->permission_model->adminAllow()): ?>
-            <md-list-item class="<?= $selectNav==2 ? 'active' : '' ?>" href="<?=base_url().'permissions' ?>">
+            <md-list-item class="<?= $selectNav==2 ? 'active' : '' ?>" href="<?=base_url().'database' ?>">
               <i class="fa fa-group fa-lg fa-fw"></i> Permissions
             </md-list-item>
-            <?php endif ?>
+			<md-list-item class="<?= $selectNav==3 ? 'active' : '' ?>" href="<?=base_url().'database' ?>">
+              <i class="fa fa-archive fa-lg fa-fw"></i> Archives
+            </md-list-item>
           </md-list>
         </md-content>
       </div>
