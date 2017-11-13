@@ -11,7 +11,7 @@ class MY_Archarraycontroller extends CI_Controller {
 
 		$this->load->model('permission_model');
 
-		define('NAV_SELECT', 3);
+		define('NAV_SELECT', 4);
 	}
 
 	public function index() {
