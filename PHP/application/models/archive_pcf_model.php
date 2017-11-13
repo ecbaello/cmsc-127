@@ -1,10 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class archive_pcf_model extends MY_DBarraymodel
+class Archive_pcf_model extends MY_DBarraymodel
 {
 	public $ModelTitle = 'Petty Cash Fund';
-	public $TableName = 'pcf';
+	public $TableName = 'pcf_arch';
 	public $TablePrimaryKey = 'pcf_expense_id';
 
 	public $categoryTableName = 'pcf_type_table';
