@@ -19,3 +19,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	</md-card-content>
   </md-card>
 </md-content>
+<script type="text/javascript" src="<?= base_url().'js/controllers/selector.js' ?>"></script>

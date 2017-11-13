@@ -120,3 +120,4 @@ $CI =& get_instance();
 			</md-card>
 	</md-content>
 </div>
+<script type="text/javascript" src="<?= base_url().'js/controllers/tablesettings.js' ?>"></script>

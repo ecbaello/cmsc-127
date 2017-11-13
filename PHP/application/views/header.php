@@ -39,19 +39,19 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 
   <script src="<?= base_url().'js/jquery.js' ?>"></script>
 
-  <script src="<?= base_url().'js/popper.min.js' ?>"></script>
-  <script src="<?= base_url().'js/bootstrap.min.js' ?>"></script>
+  <script src="<?= base_url().'js/bootstrap/popper.min.js' ?>"></script>
+  <script src="<?= base_url().'js/bootstrap/bootstrap.min.js' ?>"></script>
 
-  <script src="<?= base_url().'js/form-validator.js' ?>"></script>
+  <script src="<?= base_url().'js/form-validator/form-validator.js' ?>"></script>
   <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
   <script src="<?= base_url().'js/chart.min.js' ?>"></script>
 
-  <script src="<?= base_url().'js/angular.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-animate.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-messages.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-aria.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-material.min.js' ?>"></script>
-  <script src="<?= base_url().'js/angular-chart.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular/angular.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular/angular-animate.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular/angular-messages.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular/angular-aria.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular/angular-material.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular/angular-chart.min.js' ?>"></script>
   <script src="<?= base_url().'js/init.js' ?>"></script>
 
 </head>
