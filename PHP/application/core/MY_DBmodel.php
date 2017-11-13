@@ -37,23 +37,35 @@ class MY_DBmodel extends CI_Model
 
 	public function init() {	
 		$this->createMetaTable();
-		if (!$this->db->table_exists($this->TableName))
-		{
-			if ($this->willRegister)
-			$this->registerModel();
-		}
+		$this->registerModel();
 		$this->createTable();
 	}
 
 	public function createTableWithID() {
+		if (!$this->db->table_exists($this->TableName)){
+			$fields = array(
+        		$this->TablePrimaryKey => array(
+	                'type' => 'INT',
+	                'constraint' => 9,
+	                'auto_increment' => TRUE
+	            )
+       		);
+       		$this->dbforge->add_field		($fields);
 
+       		$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
+			$this->dbforge->create_table	($this->TableName);
+
+			$this->registerFieldTitle( $this->TablePrimaryKey, '#');
+		}
 	}
 
 	private function registerModel() {
 
+		$class = get_class($this);
+
 		$this->registry_model->registerModel(
 			$this->ModelTitle,
-			strtolower(get_class($this)),
+			($class == 'MY_DBmodel')?null:strtolower($class),
 			$this->isArrayModel?1:0,
 			$this->TableName,
 			$this->TablePrimaryKey,

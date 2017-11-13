@@ -62,7 +62,7 @@ class Registry_model extends CI_Model
 	}
 
 	public function registerModel($title, $class, $array, $tablename, $pk, $prefix = null, $private = false) {
-		$this->db->insert(self::modelTableName,
+		return $this->db->insert(self::modelTableName,
 			array(
 				MDL_NAME => $title,
 				MDL_CLASS => $class,
@@ -77,6 +77,11 @@ class Registry_model extends CI_Model
 
 	public function models() {
 		$this->db->select('table_name, '.MDL_NAME);
+		return $this->db->get(self::modelTableName);
+	}
+
+	public function customs() {
+		$this->db->where('mdl_class IS NULL', null, false);
 		return $this->db->get(self::modelTableName);
 	}
 

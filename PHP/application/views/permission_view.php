@@ -37,6 +37,9 @@ $CI =& get_instance();
 							</md-list>
 						</div>
 					</div>
+					<div ng-if="models.length == 0">
+						Open any table in the database for them to be registered here.
+					</div>
 				</div>
 			</md-card-content>
 		</md-card>

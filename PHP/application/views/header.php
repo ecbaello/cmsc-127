@@ -82,8 +82,11 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
             <md-list-item class="<?= $selectNav==2 ? 'active' : '' ?>" href="<?=base_url().'permissions' ?>">
               <i class="fa fa-group fa-lg fa-fw"></i> Permissions
             </md-list-item>
+            <md-list-item class="<?= $selectNav==3 ? 'active' : '' ?>" href="<?=base_url().'tablemanager' ?>">
+              <i class="fa fa-archive fa-lg fa-fw"></i> Table Manager
+            </md-list-item>
             <?php endif ?>
-            <md-list-item class="<?= $selectNav==3 ? 'active' : '' ?>" href="<?=base_url().'permissions' ?>">
+            <md-list-item class="<?= $selectNav==4 ? 'active' : '' ?>" href="<?=base_url().'permissions' ?>">
               <i class="fa fa-archive fa-lg fa-fw"></i> Archive
             </md-list-item>
           </md-list>
