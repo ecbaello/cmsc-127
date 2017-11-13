@@ -4,7 +4,6 @@ class MY_DBmodel extends CI_Model
 {
 	const searchTableName = 'fin_searches';
 	const metaTableName = 'fin_db_meta';
-	const modelTableName = 'fin_model_registry';
 	const fieldInputTypeField = 'table_field_input_type';
 	const fieldTypes = ['TEXT', 'TEXTAREA', 'CHECKBOX', 'FLOAT', 'NUMBER', 'DATE'];
 
@@ -31,47 +30,35 @@ class MY_DBmodel extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
-		$this->createMetaTable();
+		
 
-		if ($this->willRegister)
+		$this->load->model('registry_model');
+	}
+
+	public function init() {
+
+		if (!$this->db->table_exists($this->TableName))
+		{
+			if ($this->willRegister)
 			$this->registerModel();
+		}
 
 		$this->createTable();
+
+		$this->createMetaTable();
+
+		
 	}
 
 	private function registerModel() {
-		if (!($this->db->table_exists(self::modelTableName))) {
 
-			$fields = array(
-        		MDL_CLASS => array(
-	                'type' => 'VARCHAR',
-	                'constraint' => 100
-	            ),
-	            MDL_NAME => array(
-	                'type' => 'VARCHAR',
-	                'constraint' => 100
-	            ),
-	            MDL_ARRAY => array(
-	                'type' => 'TINYINT',
-	                'constraint' => 1
-	            )
-       		);
-
-			$this->dbforge->add_field		($fields);
-			$this->dbforge->add_key 		(MDL_CLASS, TRUE);
-			$this->dbforge->create_table	(self::modelTableName);
-		}
-		
-		$this->db->from(self::modelTableName);
-		$this->db->where(MDL_CLASS, strtolower(get_class($this)));
-		if($this->db->get()->num_rows() != 0) return;
-		
-		$this->db->insert(self::modelTableName,
-			array(
-				MDL_NAME => $this->ModelTitle,
-				MDL_CLASS => strtolower(get_class($this)),
-				MDL_ARRAY => $this->isArrayModel?1:0
-			)
+		$this->registry_model->registerModel(
+			$this->ModelTitle,
+			strtolower(get_class($this)),
+			$this->isArrayModel?1:0,
+			$this->TableName,
+			$this->TablePrimaryKey,
+			$this->FieldPrefix
 		);
 	}
 

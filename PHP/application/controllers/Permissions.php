@@ -7,6 +7,7 @@ class Permissions extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('permission_model');
+		$this->load->model('registry_model');
 
 		define('NAV_SELECT', 2);
 	}
@@ -16,7 +17,7 @@ class Permissions extends CI_Controller {
 		if ( $this->permission_model->adminAllow() ) {
 			// load view
 			$this->load->view('header');
-			echo 'no scope';
+			$this->load->view('permission_view');
 			$this->load->view('footer');
 		} else {
 			show_error('You\'re not allowed to access this page.', 403);
@@ -33,11 +34,12 @@ class Permissions extends CI_Controller {
 				[
 					'csrf' => $token,
 					'csrf_hash' => $hash,
-					'data' => $this->permission_model->getPermissionGroups()->result()
+					'models' => $this->registry_model->models()->result(),
+					'groups' => $this->permission_model->groups()->result(),
+					'data' => $this->permission_model->getPermissionGroups()
+
 				]
 				,JSON_NUMERIC_CHECK);
-			// json encode stuff
-			// send csrf
 		} else {
 			show_error('You\'re not allowed to access this page.', 403);
 		}
@@ -46,14 +48,25 @@ class Permissions extends CI_Controller {
 	public function set()
 	{
 		if ( $this->permission_model->adminAllow() ) {
+
 			$token = $this->security->get_csrf_token_name();
 			$hash = $this->security->get_csrf_hash();
+			
+			$permission = $this->input->post('permission');
+			$table = $this->input->post('table');
+			$for = $this->input->post('group');
+
+			$result = false;
+
+			if (is_numeric ($permission))
+				$result = $this->permission_model->setPermission($table, $for, $permission);
 
 			echo json_encode(
 				[
 					'csrf' => $token,
 					'csrf_hash' => $hash,
-					'success' => $true
+					'permission' => $this->permission_model->groupPermission($table, $for),
+					'success' => $result
 				]
 				,JSON_NUMERIC_CHECK);
 

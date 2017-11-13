@@ -51,6 +51,8 @@ class Permission_model extends CI_Model {
 			$permission = $this->groupPermission($table, $grpid);
 			$maxPermission = max( $permission, $maxPermission );
 		}
+
+		log_message('debug', 'user: '.$maxPermission);
 		// return max
 		return $maxPermission;
 	}
@@ -63,11 +65,12 @@ class Permission_model extends CI_Model {
 		$this->db->where('group_id', $groupid);
 		$qry = $this->db->get(self::tableName);
 
-		return $qry->num_rows() > 0 ? $qry->result->row()->permission : ($returnNull ? null : -1);
+		return $qry->num_rows() > 0 ? $qry->row()->permission : ($returnNull ? null : -1);
 	}
 
 	public function setPermission($table, $groupid, $permission) {
 		$res = false;
+
 		if ( $this->groupPermission($table, $groupid, true) == null ) {
 			$res = $this->db->insert(self::tableName, [
 				'table_name' => $table,
@@ -84,14 +87,34 @@ class Permission_model extends CI_Model {
 		return $res;
 	}
 
-	public function getPermissionGroups($groupids = [], $includeAdmin = false) {
+	public function getPermissionGroups($≈ = [], $includeAdmin = false) {
 		if (!empty($groupids))
 			$this->db->where_in('group_id', $groupids);
 
 		if ($includeAdmin)
 			$this->db->where('group_id !=', 1); // admin
 
-		return $qry = $this->db->get(self::tableName);
+		$qry = $this->db->get(self::tableName);
+
+		$array = [];
+
+		foreach ($qry->result() as $permit) {
+			$table = $permit->table_name;
+			$group = $permit->group_id;
+
+			if (!isset($array[ $table ])) {
+				$array[ $table ] = [];
+			}
+
+			$array[ $table ][ $group ] = $permit->permission;
+		}
+
+		return $array;
+	}
+
+	public function groups() {
+		$this->ion_auth->where('id !=','1');
+		return $this->ion_auth->groups();
 	}
 
 	public function adminAllow() {

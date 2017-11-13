@@ -7,5 +7,6 @@ class Pcfrr extends MY_DBarraycontroller {
 		parent::__construct();
 		$this->load->model('database_pcfrr_model');
 		$this->model = $this->database_pcfrr_model;
+		$this->model->init();
 	}
 }

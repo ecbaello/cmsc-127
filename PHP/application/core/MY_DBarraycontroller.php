@@ -186,11 +186,12 @@ class MY_DBarraycontroller extends CI_Controller {
 	{
 		$this->load->view('header');
 
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable]);
+		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable, 'permission' => $this->getUserPermission()]);
 
 		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
 
-		$this->load->view('table_settings');
+		if ($this->getUserPermission() >= PERMISSION_ALTER)
+			$this->load->view('table_settings');
 		
 		$this->load->view('footer');
 	}

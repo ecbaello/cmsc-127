@@ -10,3 +10,6 @@ var app = angular.module('app', ['ngMaterial', 'ngMessages','chart.js'])
 	                            // other color intentions will be inherited
 	                            // from default
 	});
+
+var csrf = '';
+var csrfHash = '';

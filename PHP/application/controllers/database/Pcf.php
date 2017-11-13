@@ -8,6 +8,7 @@ class Pcf extends MY_DBarraycontroller {
 		parent::__construct();
 		$this->load->model('database_pcf_model');
 		$this->model = $this->database_pcf_model;
+		$this->model->init();
 	}
 
 }
