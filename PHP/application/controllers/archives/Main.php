@@ -5,7 +5,7 @@ class Main extends CI_Controller {
 
 	public function index()
 	{
-		define('NAV_SELECT', 3);
+		define('NAV_SELECT', 4);
 		
 		$this->load->view('header');
 		$this->load->view('arch_ui/index');
