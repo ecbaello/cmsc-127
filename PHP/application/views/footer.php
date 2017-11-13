@@ -26,6 +26,5 @@ $logged_in = $CI->ion_auth->logged_in();
 </script>
 
 <script src="<?= base_url().'js/app.js' ?>"></script>
-
 </body>
 </html>

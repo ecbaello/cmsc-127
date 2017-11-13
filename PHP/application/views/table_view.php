@@ -250,3 +250,4 @@ if (!isset($permission)) $permission = 0;
 		</md-card>
 	</md-content>
 </div>
+<script type="text/javascript" src="<?= base_url().'js/controllers/database.js' ?>"></script>

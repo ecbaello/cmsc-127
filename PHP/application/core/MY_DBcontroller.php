@@ -73,7 +73,6 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function update ($id) {
-		$permit = $this->permission;
 
 		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
 			$insert = json_decode($this->input->post('data'), true);
@@ -85,7 +84,6 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function remove ($id) {
-		$permit = $this->permission;
 
 		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
 			$token = $this->security->get_csrf_token_name();
@@ -100,7 +98,6 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function add () {
-		$permit = $this->permission;
 
 		if ($this->getUserPermission() >= PERMISSION_ADD) {
 			$insert = json_decode($this->input->post('data'), true);
@@ -131,7 +128,6 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function addfield () {
-		$permit = $this->permission;
 
 		if ($this->getUserPermission() >= PERMISSION_ALTER) {
 			$data = json_decode($this->input->post('data'), true);
@@ -166,7 +162,6 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function removefield () {
-		$permit = $this->permission;
 
 		if ($this->getUserPermission() >= PERMISSION_ALTER) {
 			$key = $this->input->post('header');
