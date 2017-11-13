@@ -54,6 +54,25 @@ class Pcfreport extends MY_DBarraycontroller {
 
     }
 
+    public function getMonthlyExpenses($action=null){
+
+        $expenses = array();
+
+        $categories = $this->model->getCategories();
+       // print_r(date(strtotime('January 5 2015')));die();
+
+        foreach($categories as $subtable) {
+            for ($i = 1; $i <= 12; $i++) {
+
+                $expenses[$subtable][date("F", mktime(0, 0, 0, $i, 10))] = $this->getExpense($subtable, null, date('Y-' . $i . '-01'), date('Y-' . $i . '-t'));
+
+            }
+        }
+        //print_r($expenses);die();
+        echo json_encode($expenses);
+
+        return $expenses;
+    }
     //Get total from date 1 to date 2
     public function getExpense($subtable,$action=null, $fromDate = null, $toDate=null){
     //public function getExpense(){
@@ -88,7 +107,7 @@ class Pcfreport extends MY_DBarraycontroller {
         if($action !==null)
             echo json_encode(array('total'=>$total));
 
-        return $total;
+        return $total === null ? 0:$total;
 
     }
 
