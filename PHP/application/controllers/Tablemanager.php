@@ -30,7 +30,6 @@ class Tablemanager extends CI_Controller {
 
 			$name = $this->input->post('title');
 			$prefix = $this->input->post('prefix');
-			
 
 			$field = str_replace(' ', '_', $title);
 			$field = strtolower(

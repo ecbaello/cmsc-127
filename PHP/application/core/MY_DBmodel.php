@@ -35,22 +35,18 @@ class MY_DBmodel extends CI_Model
 		$this->load->model('registry_model');
 	}
 
-	public function init() {
-
+	public function init() {	
+		$this->createMetaTable();
 		if (!$this->db->table_exists($this->TableName))
 		{
 			if ($this->willRegister)
 			$this->registerModel();
 		}
-
 		$this->createTable();
-
-		$this->createMetaTable();
-
 	}
 
 	public function createTableWithID() {
-		
+
 	}
 
 	private function registerModel() {
