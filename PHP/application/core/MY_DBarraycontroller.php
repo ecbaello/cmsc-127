@@ -4,7 +4,9 @@ class MY_DBarraycontroller extends CI_Controller {
 
 	public $model = NULL;
 	protected $userPermission = null;
-
+	
+	protected $filepath = __FILE__; 
+	
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
@@ -188,7 +190,7 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable, 'permission' => $this->getUserPermission()]);
 
-		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
+		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
 
 		if ($this->getUserPermission() >= PERMISSION_ALTER)
 			$this->load->view('table_settings');
