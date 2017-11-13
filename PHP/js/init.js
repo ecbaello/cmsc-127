@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngMaterial', 'ngMessages'])
+var app = angular.module('app', ['ngMaterial', 'ngMessages','chart.js'])
 	.config(function($mdThemingProvider) {
 	  $mdThemingProvider.theme('altTheme')
 	    .primaryPalette('grey').dark(); // specify primary color, all

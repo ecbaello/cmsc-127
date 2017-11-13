@@ -43,12 +43,14 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 
   <script src="<?= base_url().'js/form-validator.js' ?>"></script>
   <script src="<?= base_url().'js/stickytableheaders.js' ?>"></script>
+  <script src="<?= base_url().'js/chart.min.js' ?>"></script>
 
   <script src="<?= base_url().'js/angular.min.js' ?>"></script>
   <script src="<?= base_url().'js/angular-animate.min.js' ?>"></script>
   <script src="<?= base_url().'js/angular-messages.min.js' ?>"></script>
   <script src="<?= base_url().'js/angular-aria.min.js' ?>"></script>
   <script src="<?= base_url().'js/angular-material.min.js' ?>"></script>
+  <script src="<?= base_url().'js/angular-chart.min.js' ?>"></script>
   <script src="<?= base_url().'js/init.js' ?>"></script>
 
 </head>

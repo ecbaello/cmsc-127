@@ -16,7 +16,7 @@ class MY_DBarraycontroller extends CI_Controller {
 
 	public function index() {
 		$this->load->view('header');
-
+        $this->load->view('graph');
 		$this->makeSelector();
 		
 		$this->load->view('footer');

@@ -586,3 +586,67 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 	};
 }]);
 
+app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
+
+    $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August","September","October","November","December"];
+
+
+    $scope.series = [];
+    $scope.colors = [{strokeColor:'#f00'},{strokeColor:'#0f0'},{strokeColor:'#00f'}];
+
+    $scope.data = [
+        [65, 59, 80, 81, 56, 55, 40],
+        [28, 48, 40, 19, 86, 27, 90],
+		[12, 51, 57, 68, 52, 90, 54]
+    ];
+    $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+    };
+
+    $scope.setURL = function(url) {
+        $scope.selectorUrl = url;
+        loadSeries();
+    };
+
+    function loadSeries() {
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/table',
+            dataType: "json",
+            success: function (data) {
+            	var log=[];
+            	angular.forEach(data.data, function(value,key){
+					this.push(value.title);
+				},log);
+            	$scope.series=log;
+
+                $scope.series.forEach(function(value){
+                	loadData(value);
+				});
+            }
+        });
+
+    }
+
+    function loadData(table){
+		console.log('DATA '+table);
+	}
+
+    $scope.options = {
+        title:{
+        	display:true,
+			text: 'Petty Cash Fund Expenses'
+		},
+		legend:{
+        	display:true
+		}
+    };
+    // Simulate async data update
+    /*$timeout(function () {
+        $scope.data = [
+            [28, 48, 40, 19, 86, 27, 90],
+            [65, 59, 80, 81, 56, 55, 40]
+        ];
+    }, 3000);*/
+}]);
+
