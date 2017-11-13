@@ -22,7 +22,9 @@ if (!isset($permission)) $permission = 0;
 						<md-button class="md-icon-button">
 							<i class="fa fa-print fa-lg"></i>
 						</md-button>
-
+						<md-button class="md-icon-button">
+							<i class="fa fa-upload fa-lg"></i>
+						</md-button>
 						<?php if ($permission >= PERMISSION_ADD): ?>
 						<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
 							<i class="fa fa-plus fa-lg"></i>
