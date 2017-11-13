@@ -16,8 +16,8 @@
 				<md-list-item href="<?=base_url().'database/pcf'?>">
 					Petty Cash Fund
 				</md-list-item>
-				<md-list-item href="<?=base_url().'database/pcfrr'?>">
-					Petty Cash Fund Replenishment Requests
+				<md-list-item href="<?=base_url().'database/pcfreport'?>">
+					Petty Cash Fund Report
 				</md-list-item>
 				<md-list-item href="<?=base_url().'database/patientexp'?>">
 					Patient Expenses

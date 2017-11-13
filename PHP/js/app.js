@@ -641,13 +641,10 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
 
 
     $scope.series = [];
-    $scope.colors = [{strokeColor:'#f00'},{strokeColor:'#0f0'},{strokeColor:'#00f'}];
+    $scope.colors = [{borderColor:'#f00'},{borderColor:'#0f0'},{borderColor:'#00f'}];
 
-    $scope.data = [
-        [65, 59, 80, 81, 56, 55, 40],
-        [28, 48, 40, 19, 86, 27, 90],
-		[12, 51, 57, 68, 52, 90, 54]
-    ];
+    $scope.data = [0];
+
     $scope.onClick = function (points, evt) {
         console.log(points, evt);
     };
@@ -678,7 +675,26 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
     }
 
     function loadData(table){
-		console.log('DATA '+table);
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/getMonthlyExpenses',
+            dataType: "json",
+            success: function (data) {
+                var log=[];
+
+                angular.forEach(data, function(value,key){
+                	var log2=[];
+                    angular.forEach(value, function(value,key){
+						//console.log(value);
+						this.push(value);
+					},log2);
+                    this.push(log2);
+                },log);
+
+               	$scope.data = log;
+            }
+        });
+
 	}
 
     $scope.options = {
@@ -691,11 +707,7 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
 		}
     };
     // Simulate async data update
-    /*$timeout(function () {
-        $scope.data = [
-            [28, 48, 40, 19, 86, 27, 90],
-            [65, 59, 80, 81, 56, 55, 40]
-        ];
-    }, 3000);*/
+    $timeout(function () {
+    }, 500);
 }]);
 
