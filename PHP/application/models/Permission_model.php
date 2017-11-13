@@ -50,9 +50,10 @@ class Permission_model extends CI_Model {
 			$grpid = $group->id;
 			$permission = $this->groupPermission($table, $grpid);
 			$maxPermission = max( $permission, $maxPermission );
+			log_message('debug', 'user: '.$maxPermission);
 		}
 
-		log_message('debug', 'user: '.$maxPermission);
+		
 		// return max
 		return $maxPermission;
 	}
@@ -87,7 +88,7 @@ class Permission_model extends CI_Model {
 		return $res;
 	}
 
-	public function getPermissionGroups($≈ = [], $includeAdmin = false) {
+	public function getPermissionGroups($groupids = [], $includeAdmin = false) {
 		if (!empty($groupids))
 			$this->db->where_in('group_id', $groupids);
 

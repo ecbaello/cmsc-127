@@ -27,9 +27,7 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	protected function getUserPermission() {
-		if ($this->userPermission == null)
-			$this->userPermission = $this->permission_model->userPermission($this->model->TableName);
-		return $this->userPermission;
+		return $this->permission_model->userPermission($this->model->TableName);
 	}
 
 	protected function makeHTML() {

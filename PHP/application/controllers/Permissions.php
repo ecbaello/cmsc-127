@@ -19,9 +19,7 @@ class Permissions extends CI_Controller {
 			$this->load->view('header');
 			$this->load->view('permission_view');
 			$this->load->view('footer');
-		} else {
-			show_error('You\'re not allowed to access this page.', 403);
-		}
+		} else show_404();
 	}
 
 	public function data()
@@ -40,9 +38,7 @@ class Permissions extends CI_Controller {
 
 				]
 				,JSON_NUMERIC_CHECK);
-		} else {
-			show_error('You\'re not allowed to access this page.', 403);
-		}
+		} else show_404();
 	}
 
 	public function set()
@@ -70,8 +66,6 @@ class Permissions extends CI_Controller {
 				]
 				,JSON_NUMERIC_CHECK);
 
-		} else {
-			show_error('You\'re not allowed to do this action.', 403);
-		}
+		} else show_404();
 	}
 }

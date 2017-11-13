@@ -47,6 +47,9 @@ class MY_DBmodel extends CI_Model
 
 		$this->createMetaTable();
 
+	}
+
+	public function createTableWithID() {
 		
 	}
 

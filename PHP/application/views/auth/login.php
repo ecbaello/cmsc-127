@@ -23,10 +23,15 @@
 			</md-input-container>
 
 			<div>
+				<label class="form-check-label">
+					<input type="checkbox" class="form-check-input" name="remember" value="0">
+					Remember Me
+				</label>
+			</div>
+
+			<div>
 				<md-button type="submit" class="md-raised md-primary">Login</md-button>
-				<md-checkbox class="ml-3" name="remember" value="0" required>
-				Remember Me
-				</md-checkbox>
+				
 			</div>
 
 

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $CI =& get_instance();
 // $cont_attr?, $swtch, $model, $inp_attr?, $placeholder, $title
 ?>
-<div ng-controller="tableSettings" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
+<div ng-controller="tableSettings">
 	<md-content layout-padding>
 			<md-card class="p-0">
 				<md-toolbar>
