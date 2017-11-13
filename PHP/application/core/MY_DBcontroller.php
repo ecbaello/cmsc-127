@@ -6,7 +6,7 @@ class MY_DBcontroller extends CI_Controller
 	protected $model = NULL;
 	protected $userPermission = null;
 
-	public function __construct()
+	public function __construct($model = null)
 	{
 		parent::__construct(); // do constructor for parent class
 
@@ -15,7 +15,11 @@ class MY_DBcontroller extends CI_Controller
 
 		$this->load->model('permission_model');
 
-		define('NAV_SELECT', 1);
+		if (!empty($model)) {
+			$this->model = $model;
+		}
+
+		defined('NAV_SELECT') or define('NAV_SELECT', 1);
 	}
 
 	public function index() {

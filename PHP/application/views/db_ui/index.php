@@ -22,6 +22,13 @@
 				<md-list-item href="<?=base_url().'database/patientexp'?>">
 					Patient Expenses
 				</md-list-item>
+				<?php if (isset($extratables)): ?>
+					<?php foreach($extratables as $value): ?>
+						<md-list-item href="<?=base_url().'database/custom/load/'.urlencode($value->table_name)?>">
+							<?= $value->mdl_name ?>
+						</md-list-item>
+					<?php endforeach; ?>
+				<?php endif ?>
 			</md-list>
 		</md-card-content>
 	</md-card>

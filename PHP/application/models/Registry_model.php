@@ -80,6 +80,11 @@ class Registry_model extends CI_Model
 		return $this->db->get(self::modelTableName);
 	}
 
+	public function customtable($table) {
+		$this->db->where('table_name', $table);
+		return $this->db->get(self::modelTableName);
+	}
+
 	public function customs() {
 		$this->db->where('mdl_class IS NULL', null, false);
 		return $this->db->get(self::modelTableName);

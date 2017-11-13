@@ -30,8 +30,6 @@ class MY_DBmodel extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
-		
-
 		$this->load->model('registry_model');
 	}
 
