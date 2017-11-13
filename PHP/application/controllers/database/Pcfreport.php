@@ -31,27 +31,21 @@ class Pcfreport extends MY_DBarraycontroller {
 
         $this->load->view('graph', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
         $this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
-        $this->makeDateSelector($subtable);
+        $this->makeDateSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))));
 
         $this->load->view('footer');
 
 
     }
 
-    protected function makeDateSelector($subtable){
+    protected function makeDateSelector($subtable,$url){
 
-        $this->load->view('html',array(
+        /*$this->load->view('html',array(
             'html'=>'<div layout-padding>This Month: '.$this->getExpense($subtable,null,date('Y-m-01'),date('Y-m-t')).'<br/>
                     This Year: '.$this->getExpense($subtable,null,date('Y'),date('Y-m-t',strtotime('Dec 31'))).'</div>'
-        ));
+        ));*/
 
-        $this->load->view('date_range_selector');
-
-    }
-
-    protected function getTotal($expense_id){
-
-
+        $this->load->view('date_range_selector',array('subtable'=>$subtable,'url'=>$url));
 
     }
 
@@ -118,15 +112,17 @@ class Pcfreport extends MY_DBarraycontroller {
     }
 
     public function getExpenseTable($subtable,$fromDate,$toDate){
-
+		
         $pcfDateName = 'pcf_date';
         $pcfIdName = 'pcf_type';
-
+		
+		$subtable = urldecode($subtable);
         $subtable = $this->model->convertNameToCategory($subtable);
         $numerics = $this->getNumericalFields();
         $table = array();
 
         $fields = $this->model->getFields();
+		$firstField = reset($fields);
 
         $headers = array();
         foreach($fields as $field) {
@@ -155,6 +151,7 @@ class Pcfreport extends MY_DBarraycontroller {
         $this->db->select(implode(" , ",$summations));
         $this->db->where($pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
         $this->db->where($pcfIdName,$subtable);
+		//print_r($this->db->get_compiled_select($this->model->TableName));die();
         $result = $this->db->get($this->model->TableName)->result_array();
 
         $subtotals = array();
@@ -169,11 +166,14 @@ class Pcfreport extends MY_DBarraycontroller {
                 }
             }
             $subtotals['total'] = $grandtotal;
+			$subtotals[$firstField]='Sub-Totals';
         }
 
         array_push($table,$subtotals);
 
         echo json_encode($table);
+		
+		return $table;
         //print_r($table);die();
 
     }
