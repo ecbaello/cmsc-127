@@ -17,13 +17,13 @@ $CI =& get_instance();
 				<table class="table">
 					<tr>
 						<th>
-							Table Name
+							Custom Table Name
 						</th>
 						<th>
-							Table Mapping
+							Custom Table Mapping
 						</th>
 						<th>
-							Table Prefix
+							Custom Table Prefix
 						</th>
 						<th>
 							
@@ -47,7 +47,7 @@ $CI =& get_instance();
 						</th>
 					</tr>
 				</table>
-				<form>
+				<form class="p-4" ng-submit="new()">
 					<h5>
 					New Custom Table
 					</h5>
@@ -59,7 +59,7 @@ $CI =& get_instance();
 						<input placeholder="Prefix" ng-model="newItem.prefix" required>
 
 					</md-input-container>
-					<md-button ng-click="new()">
+					<md-button class="md-raised md-primary" type="submit">
 						Add New
 					</md-button>
 				</form>

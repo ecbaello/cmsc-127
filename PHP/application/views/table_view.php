@@ -156,7 +156,7 @@ if (!isset($permission)) $permission = 0;
 				</div>
 				<?php /** Table **/ ?>
 				<div id="container">
-					<form>
+					
 						<table class="table table-striped table-bordered table-hover" id="db-table">
 							<thead>
 								<tr>
@@ -210,7 +210,6 @@ if (!isset($permission)) $permission = 0;
 								<i class="fa fa-minus-circle"></i> <em> Nothing to see here...</em>
 							</div>
 						</div>
-					</form>
 				</div>
 				<?php /** Adding Items **/ ?>
 				<?php if ($permission >= PERMISSION_ADD): ?>
@@ -226,24 +225,28 @@ if (!isset($permission)) $permission = 0;
 									</md-button>
 								</div>
 							</md-toolbar>
+							<form ng-cloak name="add" ng-submit="add()">
 							<md-dialog-content>
-								<form ng-cloak>
+								
 									<div layout-padding>
 										<div ng-repeat="(key, item) in headers" ng-if="!item.read_only" class="md-block">
 											<?php echo $CI->load->view('input_switcher', 
 												[
 													'swtch' => 'item.type',
 													'model' => 'newItem[key]',
-													'label' => '{{item.title}}'
+													'label' => '{{item.title}}',
+													'required' => 'item.required'
 												]
 											, true); ?>
+											
 										</div>
 									</div>
-								</form>
+								
 							</md-dialog-content>
 							<md-dialog-actions layout="row">
-								<md-button class="btn-confirm md-raised md-primary" ng-click="add()"><i class="fa fa-save"></i> Save</md-button>
+								<md-button ng-disabled="!add.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
 							</md-dialog-actions>
+							</form>
 						</md-dialog>
 					</div>
 				</div>

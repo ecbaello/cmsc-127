@@ -82,6 +82,7 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_field		("field_prefix VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("field_suffix VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
+			$this->dbforge->add_field		("required TINYINT(1) DEFAULT 0");
 			$this->dbforge->create_table	( self::metaTableName);
 		}
 		if ( !($this->db->table_exists(self::searchTableName)) ) {
@@ -97,7 +98,7 @@ class MY_DBmodel extends CI_Model
 		
 	}
 
-	public function registerFieldTitle( $table_field, $field_title, $inputType = 'TEXT', $presuff = ['', '']) {
+	public function registerFieldTitle( $table_field, $field_title, $inputType = 'TEXT', $presuff = ['', ''], $required = false) {
 		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
 
 		$data = array(
@@ -106,16 +107,17 @@ class MY_DBmodel extends CI_Model
 		        'table_field_title' => $field_title,
 		        'table_field_input_type' => $inputType, 
 		        'field_prefix' => $presuff[0],
-		        'field_suffix' => $presuff[1]
+		        'field_suffix' => $presuff[1],
+		        'required' => $required
 		);
+
+
 		return $this->db->insert(self::metaTableName, $data);
 
 	}
 
-	public function registerDerivedFieldTitle( $table_field, $field_title, $derivation, $presuff = ['', '']) {
+	public function registerDerivedFieldTitle( $table_field, $field_title, $derivation, $presuff = ['', ''], $required = false) {
 		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
-		$success = false;
-
 
 		$data = array(
 		        'table_name' => $this->TableName,
@@ -123,8 +125,10 @@ class MY_DBmodel extends CI_Model
 		        'table_field_title' => $field_title,
 		        'table_field_derived' => $derivation, 
 		        'field_prefix' => $presuff[0],
-		        'field_suffix' => $presuff[1]
+		        'field_suffix' => $presuff[1],
+		        'required' => $required
 		);
+
 		return $this->db->insert(self::metaTableName, $data);
 
 	}
@@ -155,7 +159,7 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function getFieldAssociations() {
-		$this->db->select('table_field, table_field_title, table_field_derived, field_prefix, field_suffix, '.self::fieldInputTypeField);
+		$this->db->select('table_field, table_field_title, table_field_derived, field_prefix, field_suffix, required, '.self::fieldInputTypeField);
 		$this->db->where('table_name', $this->TableName);
 
 		$inp = $this->db->get(self::metaTableName)->result_array();
@@ -176,7 +180,8 @@ class MY_DBmodel extends CI_Model
 				FLD_DERIVED => !empty($assoc['table_field_derived']),
 				FLD_DERIVATION => !empty($assoc['table_field_derived'])?$assoc['table_field_derived']:null,
 				'prefix' => $assoc['field_prefix'],
-				'suffix' => $assoc['field_suffix']
+				'suffix' => $assoc['field_suffix'],
+				'required' => $assoc['required']
 			);
 		}
 		return $arr;
@@ -376,7 +381,8 @@ class MY_DBmodel extends CI_Model
 	    return $this->db->get( $this->TableName)->row(); 
 	}
 
-	public function insertField($title, $kind, $default = null, $prefix = null, $suffix = null) {
+	public function insertField($title, $kind, $default = null, $prefix = null, $suffix = null, $require = false) {
+
 		$field = str_replace(' ', '_', $title);
 		$field = strtolower(
 			($this->FieldPrefix!=null?$this->FieldPrefix:$this->TableName)
@@ -427,7 +433,7 @@ class MY_DBmodel extends CI_Model
 			return
 				!$this->fieldExists($field)
 				&& $this->dbforge->add_column($this->TableName, $ins) // if field exists skip this
-				&& $this->registerFieldTitle($field, $title, $kind, [$prefix, $suffix]); // if column was not added skip this
+				&& $this->registerFieldTitle($field, $title, $kind, [$prefix, $suffix], $require); // if column was not added skip this
 		}
 	}
 

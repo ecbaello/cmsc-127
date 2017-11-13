@@ -147,13 +147,19 @@ class MY_DBarraycontroller extends CI_Controller {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
+		$prefix = null;
+		$suffix = null;
+		$required = false;
 
+		if (isset($data['prefix'])) $prefix = $data['prefix'];
+		if (isset($data['suffix'])) $suffix = $data['suffix'];
+		if (isset($data['required'])) $required = $data['required'];
 
 		$success = false;
 		if ($data['derived']) {
-			$success = $this->model->insertDerivedField($data['title'], $data['expression']);
+			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix, $required);
 		} else {
-			$success = $this->model->insertField($data['title'], $data['kind'], $data['default']);
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
 		}
 
 		echo json_encode( 

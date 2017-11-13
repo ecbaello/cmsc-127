@@ -10,27 +10,21 @@ $CI =& get_instance();
 					<h5 class="md-toolbar-tools">Settings</h5>
 				</md-toolbar>
 				<md-tabs md-dynamic-height md-selected="0" md-align-tabs="top">
-					<md-tab id="ts-tab1">
-						<md-tab-label>General</md-tab-label>
-						<md-tab-body>
-							<div layout-padding>
-								<div>
-								</div>
-							</div>
-						</md-tab-body>
-					</md-tab>
 					<md-tab id="ts-tab2">
 						<md-tab-label>Add Field</md-tab-label>
 						<md-tab-body>
 							<div layout-padding>
 								<div>
 									<div class="row">
-										<div class="col-lg-10 col-sm-9">
+										<div class="col-lg-8 col-sm-6">
 											<md-input-container class="w-100">
 												<input placeholder="Title" type="text" ng-model="newColumn.title">
 											</md-input-container>
 										</div>
-										<div class="col-lg-2 col-sm-3">
+										<div class="col-lg-4 col-sm-6">
+											<md-checkbox class="md-warn" ng-model="newColumn.required">
+												Required
+											</md-checkbox>
 											<md-checkbox value="0" ng-model="newColumn.derived">
 												Derived
 											</md-checkbox>
