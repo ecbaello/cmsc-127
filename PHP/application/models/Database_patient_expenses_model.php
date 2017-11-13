@@ -1,5 +1,5 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 class Database_patient_expenses_model extends MY_DBmodel
 {
 	public $ModelTitle = 'Patient Expenses';

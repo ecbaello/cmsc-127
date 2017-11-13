@@ -10,17 +10,6 @@ class Detchar extends MY_DBcontroller {
 
 		$this->model = $this->database_detailed_charges_model;
 	}
-
-	protected function makeHTML()
-	{
-		$this->load->view('header');
-
-		$this->makeTableHTML();
-
-		$this->load->view('table_settings');
-
-		$this->load->view('footer');
-	}
 	
 	
 }

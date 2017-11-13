@@ -9,13 +9,13 @@ if (!isset($cont_attr)) $cont_attr = '';
 if (!isset($inp_attr)) $inp_attr = '';
 
 $placeholder = (isset($placeholder)?'placeholder = "'.$placeholder.'"':'').' ';
-$model = 'ng-model = "'.$model.'" ';
+$modelstr = 'ng-model = "'.$model.'" ';
 $inp_attr .= ' ';
 
 $swtch = 'ng-switch = "'.$swtch.'" ';
 $cont_attr .= ' ';
 
-$input = $model.$placeholder.$inp_attr;
+$input = $modelstr.$placeholder.$inp_attr;
 $container = $swtch.$cont_attr;
 $label = isset($label)?'<label>'.$label.'</label>':'';
 

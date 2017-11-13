@@ -1,5 +1,5 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 class Database_detailed_charges_model extends MY_DBmodel
 {
 	public $ModelTitle = 'Detailed Charges';
@@ -32,10 +32,8 @@ class Database_detailed_charges_model extends MY_DBmodel
 			$this->registerFieldTitle('dc_description', 'Description', 'TEXTAREA');
 			$this->registerFieldTitle('dc_quantity', 'Quantity', 'NUMBER');
 			$this->registerFieldTitle('dc_amount', 'Amount', 'FLOAT');
-
 		}
 	}
-
 }
 
 ?>

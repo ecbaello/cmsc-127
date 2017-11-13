@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 $CI =& get_instance();
+$CI->load->model('permission_model');
+if (!isset($permission)) $permission = 0;
 // $cont_attr?, $swtch, $model, $inp_attr?, $placeholder, $title
 ?>
 <script type="text/javascript">
@@ -20,9 +22,12 @@ $CI =& get_instance();
 						<md-button class="md-icon-button">
 							<i class="fa fa-print fa-lg"></i>
 						</md-button>
+
+						<?php if ($permission >= PERMISSION_ADD): ?>
 						<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
 							<i class="fa fa-plus fa-lg"></i>
 						</md-button>
+						<?php endif ?>
 					</div>
 				</span>
 			</md-card-title>
@@ -132,7 +137,7 @@ $CI =& get_instance();
 				</div>
 				<div layout="row" class="p-0" layout-padding>
 					<div layout-fill class="align-middle">
-						<span class="">Page <strong>{{ page + 1 }}</strong> of <strong>{{ (fetchableCount / limit) | page }}</strong></span>
+						<span class="">Page <strong>{{ page + 1 }}</strong> of <strong>{{ (fetchableCount / limit) | page }}</strong>, {{ fetchableCount }} item{{ fetchableCount>1?'s':'' }}</span>
 						<md-button class="md-icon-button">
 							<i class="fa fa-bolt"></i>
 						</md-button>
@@ -159,22 +164,25 @@ $CI =& get_instance();
 											<i class="fa {{ key==sortHeader ? ( isAscending ? 'fa-sort-asc' : 'fa-sort-desc' ) : 'fa-sort' }}"></i>
 										</a>
 									</th>
+									<?php if ($permission >= PERMISSION_CHANGE): ?>
 									<th></th>
+									<?php endif ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr ng-repeat="(index, value) in data" ng-class="{'row-update' : (index==editIndex && isEdit), 'row-edit' : (index==editIndex)}">
 										<td ng-repeat="(key, item) in headers">
 											<span ng-class="item.read_only?'':'cell-value'" class="{{ key==sortHeader ? 'font-weight-bold' : '' }}">
-												{{ item.prefix }}{{
+												{{ item.prefix }} {{
 												<?= $CI->load->view('item_formatter', 
 												[ 
 													'item_type' => 'item.type',
 													'item_value' => 'value[key]'
 												]
 												, true); ?> 
-												 }}{{ item.suffix }}
+												 }} {{ item.suffix }}
 											</span>
+											<?php if ($permission >= PERMISSION_CHANGE): ?>
 											<?= $CI->load->view('input_switcher', 
 												[ 
 													'swtch' => 'item.type',
@@ -182,22 +190,28 @@ $CI =& get_instance();
 													'cont_attr' => 'ng-if="!item.read_only"'
 												]
 											, true); ?>
+											<?php endif ?>
 										</td>
+										<?php if ($permission >= PERMISSION_CHANGE): ?>
 										<td class="toolbox">
 											<md-button class="btn-edit md-square md-primary" ng-click="edit(index)"><i class="fa fa-pencil"></i></md-button>
 											<md-button class="btn-edit md-square md-warn" ng-click="delete(index)"><i class="fa fa-trash"></i></md-button>
 											<md-button class="btn-confirm md-square md-raised md-accent" ng-click="send()"><i class="fa fa-check"></i></md-button>
 											<md-button class="btn-confirm md-square md-raised md-warn" ng-click="cancel()"><i class="fa fa-times"></i></md-button>
 										</td>
+										<?php endif ?>
 								</tr>
 							</tbody>
 						</table>
-						<div class="text-center" ng-if="data.length==0">
-							<i class="fa fa-minus-circle"></i> <em> Nothing to see here...</em>
+						<div class="text-center" ng-if="data.length==0" layout-padding>
+							<div>
+								<i class="fa fa-minus-circle"></i> <em> Nothing to see here...</em>
+							</div>
 						</div>
 					</form>
 				</div>
 				<?php /** Adding Items **/ ?>
+				<?php if ($permission >= PERMISSION_ADD): ?>
 				<div style="visibility: hidden">
 					<div class="md-dialog-container" id="addDialog">
 						<md-dialog>
@@ -231,6 +245,7 @@ $CI =& get_instance();
 						</md-dialog>
 					</div>
 				</div>
+				<?php endif ?>
 			</md-card-content>
 		</md-card>
 	</md-content>

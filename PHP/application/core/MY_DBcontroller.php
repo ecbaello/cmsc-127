@@ -1,9 +1,10 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBcontroller extends CI_Controller
 {
 
 	protected $model = NULL;
+	protected $userPermission = null;
 
 	public function __construct()
 	{
@@ -11,6 +12,8 @@ class MY_DBcontroller extends CI_Controller
 
 		$this->load->library('session');
 		$this->load->helper('url');
+
+		$this->load->model('permission_model');
 
 		define('NAV_SELECT', 1);
 	}
@@ -23,17 +26,30 @@ class MY_DBcontroller extends CI_Controller
 		return preg_replace('/\\.[^.\\s]{2,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
 	}
 
+	protected function getUserPermission() {
+		if ($this->userPermission == null)
+			$this->userPermission = $this->permission_model->userPermission($this->model->TableName);
+		return $this->userPermission;
+	}
+
 	protected function makeHTML() {
 		$this->load->view('header');
 
 		$this->makeTableHTML();
-		
+
+		if ($this->getUserPermission() >= PERMISSION_ALTER)
+			$this->load->view('table_settings');
+
 		$this->load->view('footer');
+	}
+
+	protected function permissionError() {
+		show_error('The user doesn\'t have the permission to perform this action.', 403, 'Forbidden');
 	}
 
 	public function makeTableHTML()
 	{
-		$this->load->view('table_view', ['title' => $this->model->ModelTitle]);
+		$this->load->view('table_view', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 	}
 
 
@@ -57,95 +73,120 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function update ($id) {
-		
-    	$insert = json_decode($this->input->post('data'), true);
+		$permit = $this->permission;
 
-    	$this->model->updateWithPK($id, $insert);
-   
-    	$this->get($id);
+		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
+			$insert = json_decode($this->input->post('data'), true);
+
+	    	$this->model->updateWithPK($id, $insert);
+	   
+	    	$this->get($id);
+		} else $this->permissionError();
 	}
 
 	public function remove ($id) {
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
+		$permit = $this->permission;
 
-		$this->model->deleteWithPK($id);
+		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
+			$token = $this->security->get_csrf_token_name();
+			$hash = $this->security->get_csrf_hash();
 
-		echo json_encode(['success'=>true,'csrf' => $token,
-				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+			$this->model->deleteWithPK($id);
+
+			echo json_encode(['success'=>true,'csrf' => $token,
+					'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+		} else $this->permissionError();
+		
 	}
 
 	public function add () {
-		$insert = json_decode($this->input->post('data'), true);
+		$permit = $this->permission;
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() >= PERMISSION_ADD) {
+			$insert = json_decode($this->input->post('data'), true);
 
-		$inputs = $this->model->getFields();
-		$arr = array();
-		foreach ($inputs as $input) {
-			if (isset($insert[$input])) {
-				$arr[$input] = $insert[$input]; 
+			$token = $this->security->get_csrf_token_name();
+			$hash = $this->security->get_csrf_hash();
+
+			$inputs = $this->model->getFields();
+			$arr = array();
+			foreach ($inputs as $input) {
+				if (isset($insert[$input])) {
+					$arr[$input] = $insert[$input]; 
+				}
 			}
-		}
+			
+			$success = $this->model->insertIntoTable($arr);
+
+			echo json_encode( 
+				array(
+					'csrf' => $token,
+					'csrf_hash' => $hash,
+					'success' => $success
+				)
+
+			, JSON_NUMERIC_CHECK);
+		} else $this->permissionError();
 		
-		$success = $this->model->insertIntoTable($arr);
-
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-
-		, JSON_NUMERIC_CHECK);
 	}
 
 	public function addfield () {
-		$data = json_decode($this->input->post('data'), true);
+		$permit = $this->permission;
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() >= PERMISSION_ALTER) {
+			$data = json_decode($this->input->post('data'), true);
 
-		$prefix = null;
-		$suffix = null;
+			$token = $this->security->get_csrf_token_name();
+			$hash = $this->security->get_csrf_hash();
 
-		if (isset($data['prefix'])) $prefix = $data['prefix'];
-		if (isset($data['suffix'])) $suffix = $data['suffix'];
+			$prefix = null;
+			$suffix = null;
 
-		$success = false;
-		if ($data['derived']) {
-			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix);
-		} else {
-			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
-		}
+			if (isset($data['prefix'])) $prefix = $data['prefix'];
+			if (isset($data['suffix'])) $suffix = $data['suffix'];
 
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
+			$success = false;
+			if ($data['derived']) {
+				$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix);
+			} else {
+				$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
+			}
 
-		, JSON_NUMERIC_CHECK);
+			echo json_encode( 
+				array(
+					'csrf' => $token,
+					'csrf_hash' => $hash,
+					'success' => $success
+				)
+
+			, JSON_NUMERIC_CHECK);
+		} else $this->permissionError();
+
+		
 	}
 
 	public function removefield () {
-		$key = $this->input->post('header');
+		$permit = $this->permission;
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() >= PERMISSION_ALTER) {
+			$key = $this->input->post('header');
 
-		$success = $this->model->removeField($key);
+			$token = $this->security->get_csrf_token_name();
+			$hash = $this->security->get_csrf_hash();
 
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
+			$success = $this->model->removeField($key);
 
-		, JSON_NUMERIC_CHECK);
+			echo json_encode( 
+				array(
+					'csrf' => $token,
+					'csrf_hash' => $hash,
+					'success' => $success
+				)
+
+			, JSON_NUMERIC_CHECK);
+		} else $this->permissionError();
+
+		
 	}
 
 	public function headers () {

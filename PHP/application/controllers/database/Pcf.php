@@ -10,22 +10,4 @@ class Pcf extends MY_DBarraycontroller {
 		$this->model = $this->database_pcf_model;
 	}
 
-	protected function makeHTML($subtable)
-	{
-		
-		$this->load->view('header');
-
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable]);
-
-		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
-
-		$this->load->view('table_settings');
-
-		
-		
-		$this->load->view('footer');
-
-	}
-	
-
 }

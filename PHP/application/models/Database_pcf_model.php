@@ -1,5 +1,5 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 class Database_pcf_model extends MY_DBarraymodel
 {
 	public $ModelTitle = 'Petty Cash Fund';

@@ -4,7 +4,7 @@ var csrfHash = '';
 function convertData(input) {
 	var data = input;
 	
-	data = alignTypes(data);
+	//data = alignTypes(data);
 
 	return data;
 }
@@ -184,12 +184,13 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	// Table State
 	$scope.serverRequesting = true;
 
+
 	// Loading tables
 	$scope.rebuild = function(withHeaders) {
 		var data = {};
 
 		if ($scope.filter.rules.length > 0) {
-			var filterQry = JSON.stringify($scope.filter);
+			var filterQry = angular.toJson($scope.filter);
 
 			data.filter = filterQry;
 
@@ -364,7 +365,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 				}
 			});
 
-			data.data = JSON.stringify(subdata);
+			data.data = angular.toJson(subdata);
 
 			console.log(data);
 
@@ -417,7 +418,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	$scope.add = function () {
 		$scope.serverRequesting = true;
 		var data = {};
-		data.data = JSON.stringify($scope.newItem);
+		data.data = angular.toJson($scope.newItem);
 
 		tables.add(
 			data,
@@ -559,7 +560,7 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 		}
 
 		var data = {
-			data: JSON.stringify($scope.newColumn)
+			data: angular.toJson($scope.newColumn)
 		};
 
 		tables.addColumn(data,

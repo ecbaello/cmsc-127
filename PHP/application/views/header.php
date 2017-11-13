@@ -75,7 +75,7 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
             <md-list-item class="<?= $selectNav==1 ? 'active' : '' ?>" href="<?=base_url().'database' ?>">
               <i class="fa fa-database fa-lg fa-fw"></i> Database
             </md-list-item>
-            <md-list-item class="<?= $selectNav==2 ? 'active' : '' ?>" href="<?=base_url().'database' ?>">
+            <md-list-item class="<?= $selectNav==2 ? 'active' : '' ?>" href="<?=base_url().'permissions' ?>">
               <i class="fa fa-group fa-lg fa-fw"></i> Permissions
             </md-list-item>
           </md-list>

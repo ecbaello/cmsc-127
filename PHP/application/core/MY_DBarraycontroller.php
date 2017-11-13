@@ -1,12 +1,15 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBarraycontroller extends CI_Controller {
 
 	public $model = NULL;
+	protected $userPermission = null;
 
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
+
+		$this->load->model('permission_model');
 
 		define('NAV_SELECT', 1);
 	}
@@ -17,6 +20,16 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->makeSelector();
 		
 		$this->load->view('footer');
+	}
+
+	protected function permissionError() {
+		show_error('The user doesn\'t have the permission to perform this action.', 403, 'Forbidden');
+	}
+
+	protected function getUserPermission() {
+		if ($this->userPermission == null)
+			$this->userPermission = $this->permission_model->userPermission($this->model->TableName);
+		return $this->userPermission;
 	}
 
 	// DIRECTORY_SEPARATOR
@@ -45,18 +58,31 @@ class MY_DBarraycontroller extends CI_Controller {
 			else {
 				switch ($action) {
 					case 'add':
-						$this->add($subtable);
+						if ($this->getUserPermission() >= PERMISSION_ADD)
+							$this->add($subtable);
+						else 
+							$this->permissionError();
 						break;
 					case 'get':
 						if ($arg0 !== null) $this->get($subtable, $arg0);
 						else show_404();
 						break;
 					case 'update':
-						if ($arg0 !== null) $this->update($subtable, $arg0);
+						if ($arg0 !== null) {
+							if ($this->getUserPermission() >= PERMISSION_CHANGE)
+								$this->update($subtable, $arg0);
+							else 
+								$this->permissionError();
+						}
 						else show_404();
 						break;
 					case 'remove':
-						if ($arg0 !== null) $this->remove($subtable, $arg0);
+						if ($arg0 !== null) {
+							if ($this->getUserPermission() >= PERMISSION_CHANGE)
+								$this->remove($subtable, $arg0);
+							else 
+								$this->permissionError();
+						}
 						else show_404();
 						break;
 					case 'data':
@@ -66,10 +92,16 @@ class MY_DBarraycontroller extends CI_Controller {
 						$this->filter($subtable);
 						break;
 					case 'addfield';
-						$this->addfield();
+						if ($this->getUserPermission() >= PERMISSION_ALTER)
+							$this->addfield();
+						else 
+							$this->permissionError();
 						break;
 					case 'removefield';
-						$this->removefield();
+						if ($this->getUserPermission() >= PERMISSION_ALTER)
+							$this->removefield();
+						else 
+							$this->permissionError();
 						break;
 					case 'headers';
 						$this->headers();
@@ -153,11 +185,13 @@ class MY_DBarraycontroller extends CI_Controller {
 	protected function makeHTML($subtable)
 	{
 		$this->load->view('header');
-		
-		$this->makeSelector($subtable, site_url($this->uri->segment(2)));
-		
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle]);
 
+		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable]);
+
+		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
+
+		$this->load->view('table_settings');
+		
 		$this->load->view('footer');
 	}
 

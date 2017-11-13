@@ -1,5 +1,5 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBmodel extends CI_Model
 {
 	const searchTableName = 'fin_searches';
