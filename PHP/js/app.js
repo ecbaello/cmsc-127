@@ -666,15 +666,13 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
 				},log);
             	$scope.series=log;
 
-                $scope.series.forEach(function(value){
-                	loadData(value);
-				});
+                loadData();
             }
         });
 
     }
 
-    function loadData(table){
+    function loadData(){
         $.ajax({
             method: "GET",
             url: $scope.selectorUrl+'/getMonthlyExpenses',
@@ -708,6 +706,20 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
     };
     // Simulate async data update
     $timeout(function () {
-    }, 500);
+    }, 1000);
+}]);
+
+app.controller('dateRangeSelector',['$scope',function($scope){
+
+	$scope.fromDate = new Date();
+	$scope.toDate = new Date();
+
+	function init(){
+		console.log('data ');
+		//setMax();
+		//setMin();
+	}
+
+
 }]);
 
