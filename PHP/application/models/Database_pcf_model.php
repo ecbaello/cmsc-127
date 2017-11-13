@@ -1,10 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 class Database_pcf_model extends MY_DBarraymodel
 {
 	public $ModelTitle = 'Petty Cash Fund';
 	public $TableName = 'pcf';
-	public $TablePrimaryKey = 'pcf_id';
+	public $TablePrimaryKey = 'pcf_expense_id';
 
 	public $categoryTableName = 'pcf_type_table';
 	public $arrayFieldName = 'pcf_type';
@@ -39,6 +40,8 @@ class Database_pcf_model extends MY_DBarraymodel
        		);
 			$this->dbforge->add_field		($fields);
 			$this->dbforge->add_field		("pcf_name VARCHAR(100) NOT NULL");
+            $this->dbforge->add_field		("pcf_allotted_fund FLOAT NOT NULL DEFAULT 5000.0");
+            $this->dbforge->add_field		("pcf_expense_threshold FLOAT NOT NULL DEFAULT 3000.0");
 			$this->dbforge->add_key 		('pcf_type', TRUE);
 			$this->dbforge->create_table	($this->categoryTableName);
 		}
@@ -61,6 +64,7 @@ class Database_pcf_model extends MY_DBarraymodel
 	            )
        		);
 			$this->dbforge->add_field		($fields);
+            $this->dbforge->add_field		("pcf_date DATE NOT NULL");
 			$this->dbforge->add_field		("pcf_particulars VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("pcf_supporting_documents VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		("pcf_screening_training FLOAT DEFAULT 0.0");
@@ -75,6 +79,7 @@ class Database_pcf_model extends MY_DBarraymodel
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle(  $this->TablePrimaryKey, '#');
+            $this->registerFieldTitle( 'pcf_date', 'Date', 'DATE');
 			$this->registerFieldTitle( 'pcf_particulars', 'Particulars', 'TEXTAREA');
 			$this->registerFieldTitle( 'pcf_supporting_documents', 'Documents', 'URL');
 			$this->registerFieldTitle( 'pcf_screening_training', 'Screening/Training', 'FLOAT');
