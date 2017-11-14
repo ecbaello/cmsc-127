@@ -6,8 +6,10 @@ class Pcfreport extends MY_DBarraycontroller {
     public function __construct()
     {
         parent::__construct();
+		$this->filepath = __FILE__;
         $this->load->model('database_pcf_model');
         $this->model = $this->database_pcf_model;
+		$this->model->init();
     }
 
     public function index(){
@@ -17,7 +19,8 @@ class Pcfreport extends MY_DBarraycontroller {
         $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
 
         $this->load->view('graph');
-
+		
+		$this->makeReports();
         $this->makeSelector();
 
         $this->load->view('footer');
@@ -37,6 +40,12 @@ class Pcfreport extends MY_DBarraycontroller {
 
 
     }
+	
+	protected function makeReports(){
+		
+		$categories = $this->model->getCategories();
+		
+	}
 
     protected function makeDateSelector($subtable,$url){
 
@@ -138,8 +147,10 @@ class Pcfreport extends MY_DBarraycontroller {
         $this->db->where($pcfIdName,$subtable);
 
         $result = $this->db->get($this->model->TableName)->result_array();
-
-        foreach($result as $r){
+		
+        foreach($result as $k=>$r){
+			if(isset($r['total']))
+				$r['total'] = round($r['total'],2);
             array_push($table,$r);
         }
 
@@ -159,13 +170,13 @@ class Pcfreport extends MY_DBarraycontroller {
         if(sizeof($result) > 0) {
             foreach ($fields as $field) {
                 if(in_array($field,$numerics)) {
-                    $subtotals[$field] = $result[0][$field];
+                    $subtotals[$field] = round($result[0][$field],2);
                     $grandtotal +=  $result[0][$field];
                 }else{
                     $subtotals[$field] = '';
                 }
             }
-            $subtotals['total'] = $grandtotal;
+            $subtotals['total'] = round($grandtotal,2);
 			$subtotals[$firstField]='Sub-Totals';
         }
 

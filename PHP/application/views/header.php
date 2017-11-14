@@ -52,6 +52,7 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
   <script src="<?= base_url().'js/angular/angular-aria.min.js' ?>"></script>
   <script src="<?= base_url().'js/angular/angular-material.min.js' ?>"></script>
   <script src="<?= base_url().'js/angular/angular-chart.min.js' ?>"></script>
+  <script src="<?= base_url().'js/ng-table-to-csv.min.js' ?>"></script>
   <script src="<?= base_url().'js/init.js' ?>"></script>
 
 </head>

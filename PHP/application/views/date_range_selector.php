@@ -14,9 +14,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <md-button class="md-primary" ng-init="makeTable('<?= $subtable ?>')" ng-click="makeTable('<?= $subtable ?>')">Go</md-button>
 				<div id="container">
-				<table class="table table-striped table-bordered table-hover">
+				
+				<a class="btn" title="Export Table" ng-click='csvCustom.generate()' ng-href="{{ csvCustom.link() }}" download="fin_custom_report.csv">
+					<i class="fa fa-download fa-lg"></i>
+				</a>
+				
+				<table class="table table-striped table-bordered table-hover" export-csv="csvCustom">
+					<thead>
+						<tr>
+							<th ng-repeat="(key, value) in table[0]">{{value}}</th>
+						</tr>
+					</thead>
 					<tbody>
-						<tr ng-repeat="data in table">
+						<tr ng-repeat="data in table" ng-if="!$first">
 							<td ng-repeat="(key,value) in data">{{value}}</td>
 						</tr>
 					</tbody>
