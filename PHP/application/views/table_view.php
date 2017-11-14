@@ -20,9 +20,6 @@ if (!isset($permission)) $permission = 0;
 							<i class="fa fa-filter fa-lg"></i>
 						</md-button>
 						<md-button class="md-icon-button">
-							<i class="fa fa-print fa-lg"></i>
-						</md-button>
-						<md-button class="md-icon-button">
 							<i class="fa fa-upload fa-lg"></i>
 						</md-button>
 						<?php if ($permission >= PERMISSION_ADD): ?>
