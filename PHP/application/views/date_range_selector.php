@@ -13,12 +13,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <md-datepicker md-min-date="fromDate" ng-required="TRUE" md-placeholder="To" ng-model="toDate"></md-datepicker>
 
                 <md-button class="md-primary" ng-init="makeTable('<?= $subtable ?>')" ng-click="makeTable('<?= $subtable ?>')">Go</md-button>
-				<div id="container">
-				
 				<a class="btn" title="Export Table" ng-click='csvCustom.generate()' ng-href="{{ csvCustom.link() }}" download="fin_custom_report.csv">
 					<i class="fa fa-download fa-lg"></i>
 				</a>
-				
+				<div id="container">
+
 				<table class="table table-striped table-bordered table-hover" export-csv="csvCustom">
 					<thead>
 						<tr>

@@ -123,3 +123,26 @@ app.controller('dateRangeSelector',['$scope',function($scope){
 
 }]);
 
+app.controller('reportTable',['$scope',function($scope){
+	
+	$scope.setURL = function(url) {
+        $scope.selectorUrl = url;
+		makeTable();
+    };
+
+	function makeTable(){
+
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/getReports',
+            dataType: "json",
+            success: function (data) {
+            	$scope.table = data;
+				$scope.$apply();
+            }
+        });
+	}
+
+
+}]);
+

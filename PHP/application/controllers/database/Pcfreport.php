@@ -20,7 +20,7 @@ class Pcfreport extends MY_DBarraycontroller {
 
         $this->load->view('graph');
 		
-		$this->makeReports();
+		$this->load->view('reports',array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
         $this->makeSelector();
 
         $this->load->view('footer');
@@ -33,6 +33,7 @@ class Pcfreport extends MY_DBarraycontroller {
         $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
 
         $this->load->view('graph', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
+		$this->load->view('reports',array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
         $this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
         $this->makeDateSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))));
 
@@ -41,9 +42,53 @@ class Pcfreport extends MY_DBarraycontroller {
 
     }
 	
-	protected function makeReports(){
+	public function getReports(){
 		
 		$categories = $this->model->getCategories();
+		$table = array();
+		
+		$headers = array('Category','Annual','Quarterly', 'Monthly');
+		array_push($table,$headers);
+		
+		/** Getting the Current Quarter **/
+		$current_month = date('m');
+
+		if($current_month>=1 && $current_month<=3)
+		{
+		$start_date = strtotime('first day of January');
+		$end_date = strtotime('last day of March');
+		}
+		else  if($current_month>=4 && $current_month<=6)
+		{
+		$start_date = strtotime('first day of April');
+		$end_date = strtotime('last day of June');
+		}
+		else  if($current_month>=7 && $current_month<=9)
+		{
+		$start_date = strtotime('first day of July');
+		$end_date = strtotime('last day of September');
+		}
+		else  if($current_month>=10 && $current_month<=12)
+		{
+		$start_date = strtotime('first day of October');
+		$end_date = strtotime('last day of December'); 
+		}
+
+		
+		foreach($categories as $category){
+			$body = array();
+			array_push($body,$category);
+			
+			array_push($body,round($this->getExpense($category,null,date('Y'),date('Y-m-t',strtotime('Dec 31'))),2)); //Anual
+			array_push($body,round($this->getExpense($category,null,date('Y-m-d',$start_date),date('Y-m-d',$end_date)),2)); //Quarterly
+			array_push($body,round($this->getExpense($category,null,date('Y-m-01'),date('Y-m-t')),2)); //Monthly
+			
+			array_push($table,$body);
+		}
+		
+		echo json_encode($table);
+		return $table;
+		
 		
 	}
 
