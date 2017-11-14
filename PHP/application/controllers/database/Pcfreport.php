@@ -15,7 +15,7 @@ class Pcfreport extends MY_DBarraycontroller {
     public function index(){
 
         $this->load->view('header');
-
+		$this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
         $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
 
         $this->load->view('graph');
@@ -29,7 +29,7 @@ class Pcfreport extends MY_DBarraycontroller {
     protected function makeHTML($subtable){
 
         $this->load->view('header');
-
+		$this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
         $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
 
         $this->load->view('graph', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
