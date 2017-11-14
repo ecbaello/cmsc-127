@@ -117,24 +117,26 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
                       <md-button ng-click="$mdMenu.open()">
                         <i class="fa fa-user-circle fa-fw fa-lg"> </i> {{ userTitle }}
                       </md-button>
+
                       <md-menu-content width="4">
                         <md-menu-item layout-padding>
-                          Email: {{ email }}
+                          <i class="fa fa-envelope mr-3 fa-fw"></i> {{ email }}
                         </md-menu-item>
-                        
+                        <?php if ($CI->permission_model->adminAllow()): ?>
                         <md-menu-item>
                           <md-button ng-href="<?=base_url()?>auth">
-                            Manage Accounts
+                           <i class="fa fa-user mr-3 fa-fw"></i> Manage Accounts
                           </md-button>
                         </md-menu-item>
+                        <?php endif ?>
                         <md-menu-item>
                           <md-button class="md-primary" ng-href="<?=base_url()?>auth/change_password">
-                            Change Password
+                            <i class="fa fa-key mr-3 fa-fw"></i> Change Password
                           </md-button>
                         </md-menu-item>
                         <md-menu-item>
                           <md-button class="md-warn" ng-href="<?=base_url()?>auth/logout">
-                            Logout
+                            <i class="fa fa-sign-out mr-3 fa-fw"></i> Logout
                           </md-button>
                         </md-menu-item>
                       </md-menu-content>

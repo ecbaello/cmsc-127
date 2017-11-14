@@ -51,14 +51,24 @@ app.controller('importer', ['$scope', '$http', 'uploadURL', function($scope, $ht
 
 	$scope.headers = [];
 
+	$scope.processing = false;
+
 	$scope.loading = function() {
-		console.log('loading...');
+		$scope.message = '';
+		$scope.processing = true;
 	};
 	$scope.completed = function(content) {
+		$scope.processing = false;
+
 		csrf = content.csrf;
 		csrfHash = content.csrf_hash;
 
 		$scope.csrf = csrf;
 		$scope.csrfHash = csrfHash;
+
+		if (content.success)
+			$scope.message = 'Done: imported successfully.';
+		else 
+			$scope.message = 'Failed: '+content.success+', '+content.count+' out of '+content.size+' rows imported.';
 	};
 }]);

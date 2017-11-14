@@ -65,6 +65,11 @@ $CI =& get_instance();
 							ng-disabled="$isUploading">Submit</md-button>
 						</div>
 					</form>
+					<div>
+						{{ message }}
+					</div>
+					<md-progress-linear md-mode="indeterminate" ng-disabled="!processing"></md-progress-linear>
+
 				</div>
 			</md-card-content>
 		</md-card>

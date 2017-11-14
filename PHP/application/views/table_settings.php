@@ -16,21 +16,21 @@ $CI =& get_instance();
 							<div layout-padding>
 								<div>
 									<div class="row">
-										<div class="col-lg-8 col-sm-6">
+										<div class="col-lg-9 col-sm-7">
 											<md-input-container class="w-100">
 												<input placeholder="Title" type="text" ng-model="newColumn.title">
 											</md-input-container>
 										</div>
-										<div class="col-lg-4 col-sm-6">
-											<md-checkbox class="md-warn" ng-model="newColumn.required">
-												Required
-											</md-checkbox>
+										<div class="col-lg-3 col-sm-5">
 											<md-checkbox value="0" ng-model="newColumn.derived">
 												Derived
 											</md-checkbox>
 										</div>
 									</div>
 									<div ng-if="!newColumn.derived">
+										<md-checkbox class="md-warn" ng-model="newColumn.required">
+												Required
+										</md-checkbox>
 										<md-select placeholder="Field Type" ng-model="newColumn.kind">
 											<md-option ng-repeat="(key, item) in types" ng-value="key">
 												{{ item }}

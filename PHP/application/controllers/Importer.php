@@ -79,6 +79,7 @@ class Importer extends CI_Controller {
                 $error = $this->upload->display_errors();
             } else {
                 $success = true;
+                $count = 0;
 
                 $this->load->database();
 
@@ -88,20 +89,20 @@ class Importer extends CI_Controller {
                 
                 $parse = $this->csvreader->parse_file($file_path);
 
+                $size = count($parse);
+
                 if ($parse) {
 
-                    $customkeys = [];
-                    if (!empty($parse)) {
-                        $customkeys = array_keys($parse[0]);
-                    }
-
                     foreach ($parse as $row) {
-                        $this->db->insert($table, $row);
+                        $success = $success && $this->db->insert($table, $row);
+                        if ($success) $count++;
                     }
 
                     //echo "<pre>"; print_r($insert_data);
                 } else 
                     $error = "Error occured";
+
+
             }
 
         }
@@ -113,8 +114,9 @@ class Importer extends CI_Controller {
                     'csrf' => $token,
                     'csrf_hash' => $hash,
                     'success' => $success,
-                    'error' => $error
-
+                    'error' => $error,
+                    'imported' => $count,
+                    'size' => $size
                 ]
                 ,JSON_NUMERIC_CHECK);           
     }
