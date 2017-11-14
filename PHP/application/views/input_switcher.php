@@ -26,7 +26,7 @@ $label = isset($label)?'<label>'.$label.'</label>':'';
 <md-input-container <?= $container ?> >
 	<?= $label ?>
 	<span ng-switch-when="DATE">
-			<md-datepicker type="date" <?= $input ?> ng-required="true"></md-datepicker>
+		<md-datepicker type="date" <?= $input ?> ng-required="true"></md-datepicker>
 	</span>
 	<span ng-switch-when="FLOAT">
 		<input type="number" step="0.01" <?= $input.$required ?> >
@@ -36,6 +36,12 @@ $label = isset($label)?'<label>'.$label.'</label>':'';
 	</span>
 	<span ng-switch-when="TEXTAREA">
 		<textarea <?= $input.$required ?> ></textarea>
+	</span>
+	<span ng-switch-when="URL">
+		<input type="url" <?= $input.$required ?> >
+	</span>
+	<span ng-switch-when="EMAIL">
+		<input type="email" <?= $input.$required ?> >
 	</span>
 	<span ng-switch-default>
 		<input <?= $input.$required ?> >

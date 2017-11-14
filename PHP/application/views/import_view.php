@@ -18,7 +18,7 @@ $CI =& get_instance();
 					ng-upload="completed(content)" 
 					ng-upload-loading="loading()">
 						<input type="hidden" name="{{ csrf }}" value="{{ csrfHash }}">
-						<div>
+						<div style="position: relative;" >
 							<span>
 								Step 1. Add fields that are not existing in the table then come back here.
 							</span>
@@ -34,19 +34,19 @@ $CI =& get_instance();
 							</md-select>
 						</div>
 						<div>
-							<div>
-								Step 3. Set your header to the following keys
-							</div>
+							Step 3. Set your header to the following keys
+						</div>
+						<div style="overflow: scroll; max-width: 100%">
 							<table class="table table-striped p-4">
 								<tr>
 									<th>Set this</th>
-									<th ng-repeat="(key, item) in headers" ng-if="key!=tableselect.table_pk">
+									<th ng-repeat="(key, item) in headers" ng-if="key!=tableselect.table_pk&&!item.derived">
 										{{ item.title }}
 									</th>
 								</tr>
 								<tr>
 									<th>To this</th>
-									<td ng-repeat="(key, item) in headers" ng-if="key!=tableselect.table_pk">
+									<td ng-repeat="(key, item) in headers" ng-if="key!=tableselect.table_pk&&!item.derived">
 										{{ key }}
 									</td>
 								</tr>
@@ -61,8 +61,8 @@ $CI =& get_instance();
 							</div>
 							<input type="hidden" name="table" value="{{ tableselect.table_name }}"></input>
 							<input type="file" name="csv_db"></input>
-							<input type="submit" value="Upload" 
-							ng-disabled="$isUploading"></input>
+							<md-button class="md-raised md-primary" type="submit" value="Upload"
+							ng-disabled="$isUploading">Submit</md-button>
 						</div>
 					</form>
 				</div>

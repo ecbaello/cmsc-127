@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class archive_detailed_charges_model extends MY_DBmodel
 {
-	public $ModelTitle = 'Detailed Charges';
+	public $ModelTitle = 'Detailed Charges Archives';
 	public $TableName = 'detailed_charges_arch'; // Overideable
 	public $TablePrimaryKey = 'dc_charge_id'; // Overideable
 	public $FieldPrefix = 'dc';

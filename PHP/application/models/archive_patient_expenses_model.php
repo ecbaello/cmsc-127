@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class archive_patient_expenses_model extends MY_DBmodel
 {
-	public $ModelTitle = 'Patient Expenses';
+	public $ModelTitle = 'Patient Expenses Archives';
 	public $TableName = 'patient_expenses_arch'; // Overideable
 	public $TablePrimaryKey = 'pe_transaction_id'; // Overideable
 	public $FieldPrefix = 'pe';

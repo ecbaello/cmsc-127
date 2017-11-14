@@ -87,8 +87,11 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
             <md-list-item class="<?= $selectNav==3 ? 'active' : '' ?>" href="<?=base_url().'tablemanager' ?>">
               <i class="fa fa-suitcase fa-lg fa-fw"></i> Table Manager
             </md-list-item>
+            <md-list-item class="<?= $selectNav==4 ? 'active' : '' ?>" href="<?=base_url().'importer' ?>">
+              <i class="fa fa-cloud-upload fa-lg fa-fw"></i> CSV Import
+            </md-list-item>
             <?php endif ?>
-            <md-list-item class="<?= $selectNav==4 ? 'active' : '' ?>" href="<?=base_url().'archives' ?>">
+            <md-list-item class="<?= $selectNav==5 ? 'active' : '' ?>" href="<?=base_url().'archives' ?>">
               <i class="fa fa-archive fa-lg fa-fw"></i> Archive
             </md-list-item>
           </md-list>

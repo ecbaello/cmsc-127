@@ -148,7 +148,9 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		CHECKBOX: 'Checkbox',
 		FLOAT: 'Float',
 		NUMBER: 'Integer',
-		DATE: 'Date'
+		DATE: 'Date',
+		EMAIL: 'Email',
+		URL: 'URL'
 	};
 
 	return tables;

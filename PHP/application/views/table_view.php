@@ -170,6 +170,7 @@ if (!isset($permission)) $permission = 0;
 							</thead>
 							<tbody>
 								<tr ng-repeat="(index, value) in data" ng-class="{'row-update' : (index==editIndex && isEdit), 'row-edit' : (index==editIndex)}">
+									<form no-validate>
 										<td ng-repeat="(key, item) in headers">
 											<span ng-class="item.read_only?'':'cell-value'" class="{{ key==sortHeader ? 'font-weight-bold' : '' }}">
 												{{ item.prefix }} {{
@@ -190,6 +191,8 @@ if (!isset($permission)) $permission = 0;
 												]
 											, true); ?>
 											<?php endif ?>
+
+
 										</td>
 										<?php if ($permission >= PERMISSION_CHANGE): ?>
 										<td class="toolbox">
@@ -199,6 +202,7 @@ if (!isset($permission)) $permission = 0;
 											<md-button class="btn-confirm md-square md-raised md-warn" ng-click="cancel()"><i class="fa fa-times"></i></md-button>
 										</td>
 										<?php endif ?>
+									</form>
 								</tr>
 							</tbody>
 						</table>
