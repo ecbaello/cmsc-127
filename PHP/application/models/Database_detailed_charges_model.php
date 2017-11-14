@@ -19,6 +19,7 @@ class Database_detailed_charges_model extends MY_DBmodel
 	            )
        		);
 			$this->dbforge->add_field		($fields);
+			$this->dbforge->add_field		("dc_patient_id int not null");
 			$this->dbforge->add_field		("dc_date date not null");
 			$this->dbforge->add_field		("dc_description varchar(100) DEFAULT ''");
 			$this->dbforge->add_field		("dc_quantity int DEFAULT 0");
@@ -28,6 +29,7 @@ class Database_detailed_charges_model extends MY_DBmodel
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle( $this->TablePrimaryKey, '#');
+			$this->registerFieldTitle('dc_patient_id', 'Patient ID', 'NUMBER');
 			$this->registerFieldTitle('dc_date', 'Date', 'DATE');
 			$this->registerFieldTitle('dc_description', 'Description', 'TEXTAREA');
 			$this->registerFieldTitle('dc_quantity', 'Quantity', 'NUMBER');
