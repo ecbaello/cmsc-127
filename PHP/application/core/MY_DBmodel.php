@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBmodel extends CI_Model
 {
-	const searchTableName = 'fin_searches';
+	
 	const metaTableName = 'fin_db_meta';
 	const fieldInputTypeField = 'table_field_input_type';
 	const fieldTypes = ['TEXT', 'TEXTAREA', 'CHECKBOX', 'FLOAT', 'NUMBER', 'DATE'];
@@ -31,6 +31,7 @@ class MY_DBmodel extends CI_Model
 		$this->load->dbforge();
 
 		$this->load->model('registry_model');
+		$this->load->model('search_model');
 	}
 
 	public function init() {	
@@ -84,13 +85,6 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
 			$this->dbforge->add_field		("required TINYINT(1) DEFAULT 0");
 			$this->dbforge->create_table	( self::metaTableName);
-		}
-		if ( !($this->db->table_exists(self::searchTableName)) ) {
-			$this->dbforge->add_field		("id");
-			$this->dbforge->add_field		("table_name TEXT NOT NULL");
-			$this->dbforge->add_field 		("query_title VARCHAR(100) DEFAULT ''");
-			$this->dbforge->add_field 		("search_query TEXT DEFAULT ''");
-			$this->dbforge->create_table	( self::searchTableName );
 		}
 	}
 

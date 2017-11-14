@@ -76,7 +76,7 @@ class Registry_model extends CI_Model
 	}
 
 	public function models() {
-		$this->db->select('table_name, '.MDL_NAME);
+		$this->db->select('table_name, table_pk, '.MDL_NAME);
 		return $this->db->get(self::modelTableName);
 	}
 
