@@ -37,7 +37,7 @@ table md-input-container {
 	width: 100%;
 }
 
-table .md-errors-spacer {
+table .md-errors-spacer, .mini .md-errors-spacer {
 	min-height: 0;
 }
 

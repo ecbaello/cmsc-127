@@ -134,7 +134,13 @@ if (!isset($permission)) $permission = 0;
 				<div layout="row" class="p-0" layout-padding>
 					<div layout-fill class="align-middle">
 						<span class="">Page <strong>{{ page + 1 }}</strong> of <strong>{{ (fetchableCount / limit) | page }}</strong>, {{ fetchableCount }} item{{ fetchableCount>1?'s':'' }}</span>
-						<md-button class="md-icon-button">
+						<span class="ml-3" ng-hide="!onJump">
+							<strong> Jump to </strong>
+							<md-input-container class="m-0 mini" style="width: 3em">
+								<input type="number" ng-model="nextpage">
+							</md-input-container>
+						</span>
+						<md-button class="md-icon-button {{onJump?'md-raised md-primary':''}}" ng-click="jump()">
 							<i class="fa fa-bolt"></i>
 						</md-button>
 					</div>
@@ -223,7 +229,7 @@ if (!isset($permission)) $permission = 0;
 									</md-button>
 								</div>
 							</md-toolbar>
-							<form ng-cloak name="add" ng-submit="add()">
+							<form ng-cloak name="addform" ng-submit="add()">
 							<md-dialog-content>
 								
 									<div layout-padding>
@@ -242,7 +248,7 @@ if (!isset($permission)) $permission = 0;
 								
 							</md-dialog-content>
 							<md-dialog-actions layout="row">
-								<md-button ng-disabled="!add.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
+								<md-button ng-disabled="!addform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
 							</md-dialog-actions>
 							</form>
 						</md-dialog>

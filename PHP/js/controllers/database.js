@@ -73,20 +73,37 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 				//console.log(data);
 				$scope.serverRequesting = false;
 
+
 				$scope.$apply();
+
+
 			},
 			function() {
-				// ERROR
+				console.log('Error.');
 			},
 			gets
 		);
 	};
 
-	// table customize ui
-	$scope.tableView = {
-		compact: false,
-		bordered: true,
-		striped: true
+	$scope.nextpage = 0;
+	$scope.onJump = false;
+	$scope.jump = function() {
+		if ($scope.onJump) {
+			if ($scope.page != $scope.nextpage-1) {
+				$scope.page = $scope.nextpage-1;
+				var max = Math.ceil($scope.fetchableCount/$scope.limit);
+				if ($scope.page > max-1) $scope.page = max-1;
+				if ($scope.page <= 0) $scope.page = 0;
+				$scope.rebuild();
+			}
+			$scope.onJump = false;
+			
+		} else {
+			$scope.onJump = true;
+			console.log($scope.page);
+			$scope.nextpage = $scope.page+1;
+			console.log($scope.nextpage);
+		}
 	};
 
 	$scope.isAscending = true;
