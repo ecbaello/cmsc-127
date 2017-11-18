@@ -63,7 +63,7 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
     $scope.options = {
         title:{
         	display:true,
-			text: 'Petty Cash Fund Monthly Expenses'
+			text: 'Petty Cash Fund Expenses'
 		},
 		legend:{
         	display:true
@@ -88,10 +88,11 @@ app.controller('dateRangeSelector',['$scope',function($scope){
 		
 		var fromDate = $scope.fromDate.getFullYear()+'-'+($scope.fromDate.getMonth()+1)+'-'+$scope.fromDate.getDate();
 		var toDate = $scope.toDate.getFullYear()+'-'+($scope.toDate.getMonth()+1)+'-'+$scope.toDate.getDate();
-
+		
+		console.log($scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/'+fromDate+'/'+toDate);
 		$.ajax({
             method: "GET",
-            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/0/'+fromDate+'/'+toDate,
+            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/'+fromDate+'/'+toDate,
             dataType: "json",
             success: function (data) {
             	$scope.table = data;
@@ -122,31 +123,6 @@ app.controller('reportTable',['$scope',function($scope){
             }
         });
 	}
-
-
-}]);
-
-app.controller('pcfReport',['$scope',function($scope){
-
-    $scope.table = '';
-
-    $scope.setURL = function(url,subtable) {
-        $scope.selectorUrl = url;
-        makeTable(subtable);
-    };
-
-    function makeTable(subtable){
-
-        $.ajax({
-            method: "GET",
-            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/1/',
-            dataType: "json",
-            success: function (data) {
-                $scope.table = data;
-                $scope.$apply();
-            }
-        });
-    }
 
 
 }]);
