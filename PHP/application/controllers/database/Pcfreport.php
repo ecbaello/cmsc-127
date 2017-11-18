@@ -7,16 +7,17 @@ class Pcfreport extends MY_DBarraycontroller {
     {
         parent::__construct();
 		$this->filepath = __FILE__;
-        $this->load->model('database_pcf_model');
-        $this->model = $this->database_pcf_model;
-		$this->model->init();
+		$this->model = new MY_DBarraymodel();
+    }
+
+    public function makeHeader(){
+        $this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
+        $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
     }
 
     public function index(){
-
         $this->load->view('header');
-		$this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
-        $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
+        $this->makeHeader();
 
         $this->load->view('graph');
 		
@@ -29,13 +30,14 @@ class Pcfreport extends MY_DBarraycontroller {
     protected function makeHTML($subtable){
 
         $this->load->view('header');
-		$this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
-        $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
+		$this->makeHeader();
 
         $this->load->view('graph', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
 		$this->load->view('reports',array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
+
         $this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
-        $this->makeDateSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))));
+
+        $this->load->view('date_range_selector',array('subtable'=>$subtable, 'url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__)))));
 
         $this->load->view('footer');
 
@@ -43,7 +45,7 @@ class Pcfreport extends MY_DBarraycontroller {
     }
 	
 	public function getReports(){
-		
+
 		$categories = $this->model->getCategories();
 		$table = array();
 		
@@ -92,17 +94,6 @@ class Pcfreport extends MY_DBarraycontroller {
 		
 	}
 
-    protected function makeDateSelector($subtable,$url){
-
-        /*$this->load->view('html',array(
-            'html'=>'<div layout-padding>This Month: '.$this->getExpense($subtable,null,date('Y-m-01'),date('Y-m-t')).'<br/>
-                    This Year: '.$this->getExpense($subtable,null,date('Y'),date('Y-m-t',strtotime('Dec 31'))).'</div>'
-        ));*/
-
-        $this->load->view('date_range_selector',array('subtable'=>$subtable,'url'=>$url));
-
-    }
-
     public function getMonthlyExpenses(){
 
         $expenses = array();
@@ -121,9 +112,12 @@ class Pcfreport extends MY_DBarraycontroller {
         return $expenses;
     }
 
-    protected function getNumericalFields(){
+    public function getNumericalFields($subtable){
+
+        $this->model = $this->switchModel($subtable);
 
         $fields = $this->model->getFieldAssociations();
+        //print_r($this->model->TableName);die();
         $numerics = array();
 
         foreach($fields as $field => $attributes){
@@ -141,9 +135,10 @@ class Pcfreport extends MY_DBarraycontroller {
         $pcfDateName = 'pcf_date';
         $pcfIdName = 'pcf_type';
 
-        $subtable = $this->model->convertNameToCategory($subtable);
-        $numerics = $this->getNumericalFields();
+        $this->model = $this->switchModel($subtable);
 
+        $numerics = $this->getNumericalFields($subtable);
+        $subtable = $this->model->convertNameToCategory($subtable);
 
         $numericsQuery = array();
         foreach ($numerics as $field){
@@ -169,10 +164,14 @@ class Pcfreport extends MY_DBarraycontroller {
 		
         $pcfDateName = 'pcf_date';
         $pcfIdName = 'pcf_type';
-		
-		$subtable = urldecode($subtable);
+
+        $subtable = urldecode($subtable);
+
+        $this->model = $this->switchModel($subtable);
+
+        $numerics = $this->getNumericalFields($subtable);
         $subtable = $this->model->convertNameToCategory($subtable);
-        $numerics = $this->getNumericalFields();
+
         $table = array();
 
         $fields = $this->model->getFields();

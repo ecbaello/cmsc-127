@@ -2,9 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBarraymodel extends MY_DBmodel
 {
-	public $categoryTableName = '';
-	public $arrayFieldName = '';
-	public $categoryFieldName = '';
+    public $categoryTableName = 'pcf_type_table';
+    public $arrayFieldName = 'pcf_type';
+    public $categoryFieldName = 'pcf_name';
+    public $categoryModelName = 'model_name';
 
 	protected $isArrayModel = TRUE;
 
@@ -17,11 +18,42 @@ class MY_DBarraymodel extends MY_DBmodel
 		parent::__construct(); // do constructor for parent class
 
 		$this->createCategoryTable();
+
+        $this->registerCategoryTable('General','database_pcf_general_model');
+        $this->registerCategoryTable('Smile Train','database_pcf_smiletrain_model');
+        $this->registerCategoryTable('Cataract','database_pcf_cataract_model');
 	}
 
-	public function createCategoryTable() 
-	{
-	}
+    public function createCategoryTable()
+    {
+        if (!($this->db->table_exists($this->categoryTableName))) {
+            $fields = array(
+                'pcf_type' => array(
+                    'type' => 'INT',
+                    'auto_increment' => TRUE
+                )
+            );
+            $this->dbforge->add_field($fields);
+            $this->dbforge->add_field("pcf_name VARCHAR(100) NOT NULL");
+            $this->dbforge->add_field("model_name VARCHAR(100) NOT NULL");
+            $this->dbforge->add_field("pcf_allotted_fund FLOAT NOT NULL DEFAULT 5000.0");
+            $this->dbforge->add_field("pcf_expense_threshold FLOAT NOT NULL DEFAULT 3000.0");
+            $this->dbforge->add_key('pcf_type', TRUE);
+            $this->dbforge->create_table($this->categoryTableName);
+        }
+    }
+
+    public function getModel($name){
+
+	    $this->db->select($this->categoryModelName);
+	    $this->db->where($this->categoryFieldName,$name);
+	    $result = $this->db->get($this->categoryTableName);
+
+	    if(!empty($result->result_array()))
+	        return $result->result_array()[0][$this->categoryModelName];
+	    else
+	        return '';
+    }
 
 	public function getFieldAssociations() {
 		$fields = parent::getFieldAssociations();
@@ -37,10 +69,11 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $query;
 	}
 
-	public function registerCategoryTable($name) {
+	public function registerCategoryTable($name, $modelName = '') {
 		if ( !$this->checkCategoryExists($name) ) {
 			$data = array(
-			    $this->categoryFieldName => $name
+			    $this->categoryFieldName => $name,
+                $this->categoryModelName => $modelName
 			);
 			$this->db->insert($this->categoryTableName, $data);
 		}

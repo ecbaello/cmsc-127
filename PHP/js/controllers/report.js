@@ -63,7 +63,7 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
     $scope.options = {
         title:{
         	display:true,
-			text: 'Petty Cash Fund Expenses'
+			text: 'Petty Cash Fund Monthly Expenses'
 		},
 		legend:{
         	display:true
@@ -88,8 +88,7 @@ app.controller('dateRangeSelector',['$scope',function($scope){
 		
 		var fromDate = $scope.fromDate.getFullYear()+'-'+($scope.fromDate.getMonth()+1)+'-'+$scope.fromDate.getDate();
 		var toDate = $scope.toDate.getFullYear()+'-'+($scope.toDate.getMonth()+1)+'-'+$scope.toDate.getDate();
-		
-		console.log($scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/'+fromDate+'/'+toDate);
+
 		$.ajax({
             method: "GET",
             url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/'+fromDate+'/'+toDate,

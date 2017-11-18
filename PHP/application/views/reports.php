@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <md-content layout-padding>
     <md-card>
         <md-card-title>
-            <span class="md-headline">Expenses</span>
+            <span class="md-headline">Petty Cash Fund Expenses</span>
         </md-card-title>
         <md-card-content>
             <div ng-controller="reportTable" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">

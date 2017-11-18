@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBarraycontroller extends CI_Controller {
 
-	public $model = NULL;
+    protected $model = '';
 	protected $userPermission = null;
 	
 	protected $filepath = __FILE__; 
@@ -12,6 +12,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		parent::__construct(); // do constructor for parent class
 
 		$this->load->model('permission_model');
+        $this->model = new MY_DBarraymodel();
 
 		define('NAV_SELECT', 1);
 	}
@@ -23,6 +24,14 @@ class MY_DBarraycontroller extends CI_Controller {
 		
 		$this->load->view('footer');
 	}
+
+	protected function switchModel($subtable){
+
+        $modelName = $this->model->getModel($subtable);
+        $this->load->model($modelName);
+        return $this->$modelName;
+
+    }
 
 	protected function permissionError() {
 		show_error('The user doesn\'t have the permission to perform this action.', 403, 'Forbidden');
@@ -55,7 +64,10 @@ class MY_DBarraycontroller extends CI_Controller {
 	public function table($subtable = null, $action = null, $arg0 = null, $arg1 = 0) {
 		
 		if ($subtable !== null) {
-			$subtable = urldecode($subtable);
+            $subtable = urldecode($subtable);
+
+		    $this->model = $this->switchModel($subtable);
+
 			if ($action === null) $this->makeHTML($subtable);
 			else {
 				switch ($action) {
@@ -194,7 +206,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	{
 		$this->load->view('header');
 
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable, 'permission' => $this->getUserPermission()]);
+		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 
 		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
 
