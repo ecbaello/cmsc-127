@@ -91,7 +91,7 @@ app.controller('dateRangeSelector',['$scope',function($scope){
 
 		$.ajax({
             method: "GET",
-            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/'+fromDate+'/'+toDate,
+            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/0/'+fromDate+'/'+toDate,
             dataType: "json",
             success: function (data) {
             	$scope.table = data;
@@ -122,6 +122,31 @@ app.controller('reportTable',['$scope',function($scope){
             }
         });
 	}
+
+
+}]);
+
+app.controller('pcfReport',['$scope',function($scope){
+
+    $scope.table = '';
+
+    $scope.setURL = function(url,subtable) {
+        $scope.selectorUrl = url;
+        makeTable(subtable);
+    };
+
+    function makeTable(subtable){
+
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/1/',
+            dataType: "json",
+            success: function (data) {
+                $scope.table = data;
+                $scope.$apply();
+            }
+        });
+    }
 
 
 }]);

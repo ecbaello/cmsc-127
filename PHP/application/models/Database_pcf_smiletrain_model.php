@@ -43,6 +43,7 @@ class Database_pcf_smiletrain_model extends MY_DBarraymodel
             $this->dbforge->add_field		("pcf_water FLOAT DEFAULT 0.0");
             $this->dbforge->add_field		("pcf_medical_supplies FLOAT DEFAULT 0.0");
             $this->dbforge->add_field		("pcf_other_expenses FLOAT DEFAULT 0.0");
+            $this->dbforge->add_field		("replenished BOOLEAN DEFAULT 0");
             $this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
             $this->dbforge->create_table	($this->TableName);
 

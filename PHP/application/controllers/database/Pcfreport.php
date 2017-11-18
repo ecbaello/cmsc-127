@@ -3,6 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pcfreport extends MY_DBarraycontroller {
 
+    private $pcfDateName = 'pcf_date';
+    private $pcfIdName = 'pcf_type';
+
     public function __construct()
     {
         parent::__construct();
@@ -42,6 +45,15 @@ class Pcfreport extends MY_DBarraycontroller {
         $this->load->view('footer');
 
 
+    }
+
+    public function UnreplenishedPCF($subtable){
+        $this->load->view('header');
+        $this->makeHeader();
+
+        $this->load->view('pcf_report', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))),'subtable'=>$subtable ));
+
+        $this->load->view('footer');
     }
 	
 	public function getReports(){
@@ -130,10 +142,7 @@ class Pcfreport extends MY_DBarraycontroller {
     }
 
     //Get total from date 1 to date 2
-    public function getExpense($subtable,$action=null, $fromDate = null, $toDate=null){
-
-        $pcfDateName = 'pcf_date';
-        $pcfIdName = 'pcf_type';
+    protected function getExpense($subtable,$action=null, $fromDate = null, $toDate=null){
 
         $this->model = $this->switchModel($subtable);
 
@@ -146,8 +155,8 @@ class Pcfreport extends MY_DBarraycontroller {
         }
 
         $this->db->select(implode(" + ",$numericsQuery).' as total');
-        $this->db->where($pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
-        $this->db->where($pcfIdName,$subtable);
+        $this->db->where($this->pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
+        $this->db->where($this->pcfIdName,$subtable);
 
         $result= $this->db->get($this->model->TableName)->result_array();
 
@@ -160,17 +169,14 @@ class Pcfreport extends MY_DBarraycontroller {
 
     }
 
-    public function getExpenseTable($subtable,$fromDate,$toDate){
-		
-        $pcfDateName = 'pcf_date';
-        $pcfIdName = 'pcf_type';
+    public function getExpenseTable($subtable, $mode = 0,$fromDate = null,$toDate = null){
 
         $subtable = urldecode($subtable);
 
         $this->model = $this->switchModel($subtable);
 
         $numerics = $this->getNumericalFields($subtable);
-        $subtable = $this->model->convertNameToCategory($subtable);
+        $category = $this->model->convertNameToCategory($subtable);
 
         $table = array();
 
@@ -187,8 +193,14 @@ class Pcfreport extends MY_DBarraycontroller {
 
         $this->db->select(implode(' , ',$fields));
         $this->db->select('('.implode(" + ",$numerics).') as total');
-        $this->db->where($pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
-        $this->db->where($pcfIdName,$subtable);
+
+        if($mode == 0) {
+            $this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
+            $this->db->where($this->pcfIdName, $category);
+        }
+        if($mode == 1){
+            $this->db->where($this->model->booleanFieldName,0);
+        }
 
         $result = $this->db->get($this->model->TableName)->result_array();
 		
@@ -204,9 +216,15 @@ class Pcfreport extends MY_DBarraycontroller {
         }
 
         $this->db->select(implode(" , ",$summations));
-        $this->db->where($pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
-        $this->db->where($pcfIdName,$subtable);
-		//print_r($this->db->get_compiled_select($this->model->TableName));die();
+
+        if($mode == 0) {
+            $this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
+            $this->db->where($this->pcfIdName, $category);
+        }
+        if($mode == 1){
+            $this->db->where($this->model->booleanFieldName,0);
+        }
+
         $result = $this->db->get($this->model->TableName)->result_array();
 
         $subtotals = array();
@@ -229,7 +247,6 @@ class Pcfreport extends MY_DBarraycontroller {
         echo json_encode($table);
 		
 		return $table;
-        //print_r($table);die();
 
     }
 

@@ -6,6 +6,10 @@ class MY_DBarraymodel extends MY_DBmodel
     public $arrayFieldName = 'pcf_type';
     public $categoryFieldName = 'pcf_name';
     public $categoryModelName = 'model_name';
+    public $booleanFieldName = 'replenished';
+
+    public $afFieldName = 'pcf_allotted_fund';
+    public $etFieldName = 'pcf_expense_threshold';
 
 	protected $isArrayModel = TRUE;
 
@@ -41,6 +45,22 @@ class MY_DBarraymodel extends MY_DBmodel
             $this->dbforge->add_key('pcf_type', TRUE);
             $this->dbforge->create_table($this->categoryTableName);
         }
+    }
+
+    public function getTypeTable($category){
+	    $this->db->where($this->categoryFieldName,$category);
+	    $result =  $this->db->get($this->categoryTableName)->result_array();
+	    return isset($result[0]) ? $result[0]:$result;
+    }
+
+    public function changeAllottedFund($category,$desiredFund){
+        $this->db->where($this->categoryFieldName,$category);
+        return $this->db->update($this->categoryTableName,array($this->afFieldName=>$desiredFund));
+    }
+
+    public function changeExpenseThreshold($category,$desiredThreshold){
+        $this->db->where($this->categoryFieldName,$category);
+        return $this->db->update($this->categoryTableName,array($this->etFieldName=>$desiredThreshold));
     }
 
     public function getModel($name){

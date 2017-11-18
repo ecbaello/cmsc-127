@@ -206,18 +206,17 @@ class MY_DBarraycontroller extends CI_Controller {
 	{
 		$this->load->view('header');
 
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
+		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle, 'permission' => $this->getUserPermission(),'subtable'=>$subtable]);
 
 		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
 
 		if ($this->getUserPermission() >= PERMISSION_ALTER)
 			$this->load->view('table_settings');
-		
+
 		$this->load->view('footer');
 	}
 
 	protected function data($table) {
-
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
