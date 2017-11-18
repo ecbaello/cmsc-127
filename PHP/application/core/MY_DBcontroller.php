@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBcontroller extends CI_Controller
 {
 
-	protected $model = NULL;
+	protected $model = null;
 	protected $userPermission = null;
 
 	public function __construct($model = null)
@@ -28,6 +28,14 @@ class MY_DBcontroller extends CI_Controller
 
 	protected function getAccessURL($file_url) {
 		return preg_replace('/\\.[^.\\s]{2,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
+	}
+
+	protected function loggedIn() {
+		return $this->permission_model->ion_auth->logged_in();
+	}
+
+	protected function getUser() {
+		return $this->permission_model->ion_auth->user()->row()->id;
 	}
 
 	protected function getUserPermission() {
@@ -66,12 +74,36 @@ class MY_DBcontroller extends CI_Controller
 		], JSON_NUMERIC_CHECK);
 	}
 
-	public function filters ($action) {
-		if ($action == 'add') {
-			$this->model->saveSearch( $this->input->post('data') );
-		} else if ($action == 'remove') {
-			$this->model->saveSearch( $this->input->post('data') );
-		}
+	public function filters ($action = null, $id = null) {
+		if ($this->loggedIn()) {
+			$token = $this->security->get_csrf_token_name();
+			$hash = $this->security->get_csrf_hash();
+
+			$return = [
+				'csrf' => $token,
+				'csrf_hash' => $hash
+			];
+
+			if ($action == 'add') {
+				$title = $this->input->post('title');
+				$data = $this->input->post('data');
+				if ( !empty($title) && !empty($data) )
+					$this->model->saveSearch( $title, $data, $this->getUser());
+			} else if ($action == 'remove') {
+				if ( !empty($id) )
+					$this->model->removeSearch( $id, $this->getUser());
+			} else if ($action == 'update') {
+				$data = $this->input->post('data');
+				if ( !empty($id) && !empty($data) )
+					$this->model->updateSearch( $id, $this->getUser(), $data);
+			} else {
+				$return['data'] = $this->model->getSearches( $this->getUser() );
+			}
+			echo json_encode (
+				$return,
+				JSON_NUMERIC_CHECK
+			);
+		} else show_404();
 	}
 
 	public function update ($id) {

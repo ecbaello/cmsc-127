@@ -106,6 +106,53 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		}
 	};
 
+	$scope.loadFilters = function() {
+		tables.filters(
+			function(response) {
+				$scope.userFilters = response.data;
+			}
+			);
+	};
+	$scope.userFilters = {};
+	$scope.currentUserFilterId = -1;
+	$scope.filterChanged = function () {
+		console.log($scope.userFilters[$scope.currentUserFilterId]);
+		$scope.filter = $scope.userFilters[$scope.currentUserFilterId].search_query;
+		$scope.currentUserFilterId = -1;
+	};
+	$scope.saveFilter = function(title) {
+		var data = {};
+		data.data = angular.toJson($scope.filter);
+		data.title = title;
+		tables.saveFilter(
+			data,
+			function(resultData) {
+				$scope.loadFilters();
+				$scope.$apply();
+			}, 
+			function() {
+
+			}
+		);
+	};
+	$scope.deleteFilter = function(id) {
+		tables.deleteFilter(
+			id,
+			function(resultData) {
+			}
+		);
+	};
+	$scope.showFilterNameDialog = function(ev) {
+		$mdDialog.show({
+			contentElement: '#filterNameDialog',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose: true,
+			fullscreen: true
+		});
+	};
+
+
 	$scope.isAscending = true;
 	$scope.sortHeader = null;
 	$scope.sort = function(header) {
@@ -227,8 +274,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			});
 
 			data.data = angular.toJson(subdata);
-
-			console.log(data);
 
 			tables.update(
 				id,

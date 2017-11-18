@@ -120,6 +120,28 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		reqpost('add', null, data, fsuccess, ferror);
 	};
 
+	tables.saveFilter = function (data, fsuccess, ferror) {
+		reqpost('filters/add', null, data, fsuccess, ferror);
+	};
+
+	tables.deleteFilter = function (id, fresponse) {
+		$http.get(tableURL+'/filters/remove/'+id)
+			.then(function(response) {
+				csrf = response.data.csrf;
+				csrfHash = response.data.csrf_hash;
+				fresponse(response.data);
+			});
+	};
+
+	tables.filters = function (next) {
+		$http.get(tableURL+'/filters')
+			.then(function(response) {
+				csrf = response.data.csrf;
+				csrfHash = response.data.csrf_hash;
+				next(response.data);
+			});
+	};
+
 	tables.remove = function (id, data, fsuccess, ferror) {
 		reqpost('remove', id, data, fsuccess, ferror);
 	};

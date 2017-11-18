@@ -19,6 +19,8 @@ class MY_DBmodel extends CI_Model
 	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
 
+	protected $searchTable = '';
+
 	/**
 	* The constructor method
 	*
@@ -199,7 +201,6 @@ class MY_DBmodel extends CI_Model
 
 	public function getField( $table_field_title, $table = NULL) {
 		
-
 		$this->db->select('table_field');
 
 		$this->db->where('table_field_title', $table_field_title);
@@ -265,7 +266,7 @@ class MY_DBmodel extends CI_Model
 		$this->db->reset_query();
 
 		$defjoin = isset( $settings['limit_by'] );
-		$ordered = isset( $settings['order_by']);
+		$ordered = isset( $settings['order_by'] );
 
 		// Use deffered join for limit N offset X
 		// We search only for the Primary Keys of the rows we need
@@ -325,32 +326,57 @@ class MY_DBmodel extends CI_Model
 		return $result;
 	}
 
-	public function getSearches () {
+	public function searches ($user) {
+		$this->db->select('id, search_query, query_title');
+		$this->db->where('user_id', $user);
 		$this->db->where('table_name', $this->TableName);
-		return $this->db->get(self::searchTableName);
+		return $this->db->get( $this->search_model->tableName() );
 	}
 
-	public function saveSearch ($title, $search) {
-
-		return $this->db->insert( self::searchTableName, 
-			[
-				'table_name' => $this->TableName,
-				'query_title' => $title,
-				'search_query' => json_encode($search)
-			]
-		);
+	public function getSearches ($user) {
+		$array = [];
+		$searches = $this->searches($user)->result_array();
+		foreach ($searches as $searchArr) {
+			$search = $searchArr;
+			$id = $search['id'];
+			unset($search['id']);
+			$search['search_query'] = json_decode( $search['search_query'] );
+			$array[ $id ] = $search;
+		}
+		return $array;
 	}
 
-	public function removeSearch ($id) {
+	public function saveSearch ($title, $search, $user) {
+
+		$this->db->where('user_id', $user);
+		$this->db->where('table_name', $this->TableName);
+		$this->db->where('query_title', $title);
+		$qry = $this->db->get(  $this->search_model->tableName() );
+
+		if ($qry->num_rows() == 0)
+			return $this->db->insert(   $this->search_model->tableName()  , 
+				[
+					'user_id' => $user,
+					'table_name' => $this->TableName,
+					'query_title' => $title,
+					'search_query' => $search
+				]
+			);
+		else return false;
+	}
+
+	public function removeSearch ($id, $user) {
+		$this->db->where('user_id', $user);
 		$this->db->where('id', $id);
 		$this->db->where('table_name', $this->TableName);
-		return $this->db->delete( self::searchTableName);
+		return $this->db->delete(  $this->search_model->tableName() );
 	}
 
-	public function updateSearch ($id, $search) {
+	public function updateSearch ($id, $user, $search) {
 		$this->db->where('id', $id);
+		$this->db->where('user_id', $user);
 		$this->db->where('table_name', $this->TableName);
-		return $this->db->update( $this->TableName, ['search_query' => json_encode($search)]); 
+		return $this->db->update( $this->search_model->tableName() , ['search_query' => $search]); 
 	}
 
 	public function insertIntoTable($data) {

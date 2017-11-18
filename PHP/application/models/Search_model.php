@@ -2,7 +2,7 @@
 
 class Search_model extends CI_Model
 {
-	const searchTableName = 'fin_searches';
+	const TableName = 'fin_searches';
 
 	public function __construct()
 	{
@@ -15,14 +15,14 @@ class Search_model extends CI_Model
 	}
 
 	public function createTable() {
-		if ( !($this->db->table_exists(self::searchTableName)) ) {
+		if ( !($this->db->table_exists(self::TableName)) ) {
 			$this->dbforge->add_field		("id");
 			$this->dbforge->add_field 		("user_id int DEFAULT 0");
 			$this->dbforge->add_field		("table_name TEXT NOT NULL");
 			$this->dbforge->add_field 		("query_title VARCHAR(100) DEFAULT ''");
 
 			$this->dbforge->add_field 		("search_query TEXT DEFAULT ''");
-			$this->dbforge->create_table	( self::searchTableName );
+			$this->dbforge->create_table	( self::TableName );
 		}
 	}
 
@@ -35,7 +35,7 @@ class Search_model extends CI_Model
 	}
 
 	public function registerSearch($tablename, $title, $expression, $userid = null) {
-		if($userid == null) {
+		if ($userid == null) {
 			$userid = $this->getUserId();
 		}
 
@@ -49,6 +49,10 @@ class Search_model extends CI_Model
 		);
 	}
 
+	public function tableName () {
+		return self::TableName;
+	}
+
 	public function searches($tablename = '', $userid = null) {
 		if($userid == null) $userid = $this->getUserId();
 		$tbl = empty($tablename);
@@ -56,12 +60,12 @@ class Search_model extends CI_Model
 		$this->db->select('id, query_title, search_query'.($tbl?', table_name':''));
 		$this->db->where('user_id', $userid);
 		if (!$tbl) $this->db->where('table_name', $tbl);
-		return $this->db->get(self::searchTableName);
+		return $this->db->get(self::TableName);
 	}
 
 	public function delete($pk) {
 		$this->db->where('id', $pk);
-		$this->db->delete(self::searchTableName);
+		$this->db->delete(self::TableName);
 	}
 
 }

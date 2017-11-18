@@ -120,6 +120,16 @@ if (!isset($permission)) $permission = 0;
 							</div>
 						</div>
 					</form>
+					<div>
+						<div>
+							<md-select class="m-0" ng-model="currentUserFilterId" ng-change="filterChanged()" placeholder="Use saved filter" ng-init="loadFilters()">
+								<md-option ng-repeat="(id, filter) in userFilters" ng-value="id" ng-selected="currentUserFilterId==id">
+									<em>{{ filter.query_title }}</em>
+								</md-option>
+							</md-select>
+							<md-button class="md-raised md-primary" ng-click="showFilterNameDialog()">Save...</md-button>
+						</div>
+					</div>
 					<div class="row" layout-padding>
 						<div class="col-lg-11 col-md-10 col-sm-8 text-right">Limit items by</div>
 						<div class="col-lg-1 col-md-2 col-sm-4">
@@ -215,7 +225,36 @@ if (!isset($permission)) $permission = 0;
 							</div>
 						</div>
 				</div>
-				<?php /** Adding Items **/ ?>
+				<div style="visibility: hidden">
+					<div class="md-dialog-container" id="filterNameDialog">
+						<md-dialog>
+							<md-toolbar>
+								<div class="md-toolbar-tools">
+									<h2>Create Item</h2>
+									<span flex></span>
+									<md-button class="md-icon-button" ng-click="closeDialog()">
+										<i class="fa fa-times fa-lg"></i>
+									</md-button>
+								</div>
+							</md-toolbar>
+							<form ng-cloak name="nameform" ng-submit="saveFilter(filterName)">
+							<md-dialog-content>
+								
+									<div layout-padding>
+										<md-input-container>
+											<label>Name</label>
+											<input ng-model="filterName">
+										</md-input-container>
+									</div>
+								
+							</md-dialog-content>
+							<md-dialog-actions layout="row">
+								<md-button ng-disabled="!nameform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
+							</md-dialog-actions>
+							</form>
+						</md-dialog>
+					</div>
+				</div>
 				<?php if ($permission >= PERMISSION_ADD): ?>
 				<div style="visibility: hidden">
 					<div class="md-dialog-container" id="addDialog">

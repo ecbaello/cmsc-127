@@ -10,9 +10,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <md-card-content>
             <div ng-controller="reportTable" ng-init="setURL('<?= isset($url)?$url:current_url() ?>')">
                 
-				<a class="btn" title="Export Table" ng-click='csvReport.generate()' ng-href="{{ csvReport.link() }}" download="fin_report.csv">
+				<md-button class="md-icon-button md-raised" title="Export Table" ng-click='csvReport.generate()' ng-href="{{ csvReport.link() }}" download="fin_report.csv">
 					<i class="fa fa-download fa-lg"></i>
-				</a>
+				</md-button>
 				
 				<div id="container">
 				
