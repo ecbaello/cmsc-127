@@ -16,10 +16,15 @@ if (!isset($permission)) $permission = 0;
 				<span class="md-headline font-weight-bold" flex><?= $title ?></span>
 				<span class="table-tools">
 					<div>
+                        <?php if(isset($subtable)): ?>
+                            <md-button href="<?= base_url().'database/pcfreport/UnreplenishedPCF/'.urlencode($subtable) ?>" class="md-icon-button" >
+                                <i class="fa fa-calculator fa-lg"></i>
+                            </md-button>
+                        <?php endif ?>
 						<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-focused'" class="md-icon-button" ng-click="hideFilter=!hideFilter">
 							<i class="fa fa-filter fa-lg"></i>
 						</md-button>
-						<?php if ($permission >= PERMISSION_ADD): ?>
+                        <?php if ($permission >= PERMISSION_ADD): ?>
 						<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
 							<i class="fa fa-plus fa-lg"></i>
 						</md-button>
