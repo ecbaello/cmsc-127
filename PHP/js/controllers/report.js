@@ -129,10 +129,14 @@ app.controller('reportTable',['$scope',function($scope){
 app.controller('pcfReport',['$scope',function($scope){
 
     $scope.table = '';
+    $scope.details = '';
+    $scope.inFund = 5000;
+    $scope.inThreshold = 3000;
 
     $scope.setURL = function(url,subtable) {
         $scope.selectorUrl = url;
         makeTable(subtable);
+        makePCFDetails(subtable);
     };
 
     function makeTable(subtable){
@@ -143,6 +147,66 @@ app.controller('pcfReport',['$scope',function($scope){
             dataType: "json",
             success: function (data) {
                 $scope.table = data;
+                $scope.$apply();
+            }
+        });
+    }
+
+    function makePCFDetails(subtable){
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable),
+            dataType: "json",
+            success: function (data) {
+                $scope.details = data;
+                $scope.inFund=data['Allotted Fund'].data;
+                $scope.inThreshold = data['Expense Threshold'].data;
+                $scope.$apply();
+            }
+        });
+    }
+
+    $scope.changeFund = function(subtable){
+        if(isNaN($scope.inFund)){
+            alert('Invalid Input');
+            return;
+        }
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable)+'/fund/'+$scope.inFund+'/',
+            dataType: "json",
+            success: function (data) {
+                makePCFDetails(subtable);
+                $scope.$apply();
+            }
+        });
+    }
+
+    $scope.changeThreshold = function(subtable,threshold){
+        if(isNaN($scope.inThreshold)){
+            alert('Invalid Input');
+            return;
+        }
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable)+'/threshold/'+$scope.inThreshold+'/',
+            dataType: "json",
+            success: function (data) {
+                makePCFDetails(subtable);
+                $scope.$apply();
+            }
+        });
+
+    }
+
+    $scope.replenish = function(subtable){
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable)+'/replenish',
+            dataType: "json",
+            success: function () {
+                makePCFDetails(subtable);
+                location.reload();
                 $scope.$apply();
             }
         });

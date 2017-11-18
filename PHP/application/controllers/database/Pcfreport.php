@@ -47,9 +47,61 @@ class Pcfreport extends MY_DBarraycontroller {
 
     }
 
+    public function administrate($subtable,$action = null,$data = null){
+
+        $subtable = urldecode($subtable);
+
+        $this->model = $this->switchModel($subtable);
+
+        if(!$this->permission_model->adminAllow()) {
+            $this->permissionError();
+            return null;
+        }
+
+        if($action != null){
+            switch($action){
+                case 'fund':
+                    echo $this->model->changeAllottedFund($subtable,$data);
+                    break;
+                case 'threshold':
+                    echo $this->model->changeExpenseThreshold($subtable,$data);
+                    break;
+                case 'replenish':
+                    echo $this->model->replenish($this->model->TableName);
+                    break;
+
+                default:
+                    show_404();
+                    break;
+            }
+        }else{
+            $data = $this->model->getFieldsFromTypeTable($subtable,array($this->model->afFieldName,$this->model->etFieldName));
+            $table = array();
+
+            $table['Allotted Fund'] = array('data'=>$data[$this->model->afFieldName],'editable'=>1);
+            $table['Expense Threshold'] = array('data'=>$data[$this->model->etFieldName],'editable'=>1);
+
+            $grandtotal = $this->getExpenseTable($subtable,1);
+            try {
+                $grandtotal = end($grandtotal);
+                $grandtotal = array_pop($grandtotal);
+            }catch(Exception $e){
+                return null;
+            }
+
+            $table['Expense Total'] = array('data'=>$grandtotal,'editable'=>0);
+            $table['Cash On Hand'] = array('data'=>($data[$this->model->afFieldName]-$grandtotal),'editable'=>0);
+
+            ob_end_clean();
+
+            echo json_encode($table);
+        }
+
+    }
+
     public function UnreplenishedPCF($subtable){
         $this->load->view('header');
-        $this->makeHeader();
+        $this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
 
         $this->load->view('pcf_report', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))),'subtable'=>$subtable ));
 

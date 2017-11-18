@@ -47,10 +47,16 @@ class MY_DBarraymodel extends MY_DBmodel
         }
     }
 
-    public function getTypeTable($category){
+    public function getFieldsFromTypeTable($category,$fields=array()){
+	    $this->db->select(implode(',',$fields));
 	    $this->db->where($this->categoryFieldName,$category);
 	    $result =  $this->db->get($this->categoryTableName)->result_array();
 	    return isset($result[0]) ? $result[0]:$result;
+    }
+
+    public function replenish($tableName){
+        $this->db->where($this->booleanFieldName,0);
+        return $this->db->update($tableName,array($this->booleanFieldName=>1));
     }
 
     public function changeAllottedFund($category,$desiredFund){
