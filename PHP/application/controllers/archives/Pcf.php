@@ -6,9 +6,7 @@ class Pcf extends MY_Archarraycontroller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('archive_pcf_model');
-		$this->model = $this->archive_pcf_model;
-		$this->model->init();
+		$this->filepath = __FILE__;
 	}
 
 }
