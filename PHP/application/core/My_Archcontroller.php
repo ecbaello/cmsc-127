@@ -19,7 +19,7 @@ class My_Archcontroller extends CI_Controller
 			$this->model = $model;
 		}
 
-		defined('NAV_SELECT') or define('NAV_SELECT', 4);
+		defined('NAV_SELECT') or define('NAV_SELECT', 5);
 	}
 
 	public function index() {
@@ -39,9 +39,6 @@ class My_Archcontroller extends CI_Controller
 
 		$this->makeTableHTML();
 
-		if ($this->getUserPermission() >= PERMISSION_ALTER)
-			$this->load->view('table_settings');
-
 		$this->load->view('footer');
 	}
 
@@ -51,7 +48,7 @@ class My_Archcontroller extends CI_Controller
 
 	public function makeTableHTML()
 	{
-		$this->load->view('table_view', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
+		$this->load->view('Arch_table', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 	}
 
 
