@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Archarraymodel extends MY_Archmodel
 {
-    public $categoryTableName = 'pcfarch_type_table';
+    public $categoryTableName = 'pcf_type_table_arch';
     public $arrayFieldName = 'pcf_type';
     public $categoryFieldName = 'pcf_name';
     public $categoryModelName = 'model_name';
