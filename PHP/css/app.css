@@ -271,7 +271,15 @@ form md-input-container {
     transition: 0.3s;
 }
 
-.buttonGroup .md-focused {
+.buttonGroup .group-focused {
     background-color: rgba(173, 173, 173, 0.96) !important;
     transition: 0.3s;
+}
+
+.link-grid-tile {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
 }

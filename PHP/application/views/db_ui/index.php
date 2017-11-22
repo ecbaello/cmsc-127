@@ -9,23 +9,34 @@
 			<span class="md-headline">Database</span>
 		</md-card-title>
 		<md-card-content>
-			<md-grid-list md-cols-sm="2" md-cols-md="4" md-cols-lg="8" md-cols-gt-lg="12" md-row-height="1:1">
+			<md-grid-list class="text-center" md-cols="1" md-cols-sm="2" md-cols-md="4" md-cols-lg="8" md-cols-gt-lg="12" md-row-height="1:1">
 				<md-grid-tile>
-					Patient Charges Detail
+					<a class="link-grid-tile" href="<?=base_url().'database/detchar'?>">
+						Patient Charges Detail
+					</a>
 				</md-grid-tile>
-				<md-grid-tile href="<?=base_url().'database/pcf'?>">
-					Petty Cash Fund
+				<md-grid-tile>
+					<a class="link-grid-tile" href="<?=base_url().'database/pcf'?>">
+						Petty Cash Fund
+					</a>
 				</md-grid-tile>
-				<md-grid-tile href="<?=base_url().'database/pcfreport'?>">
-					Petty Cash Fund Report
+				<md-grid-tile>
+					<a class="link-grid-tile" href="<?=base_url().'database/pcfreport'?>">
+						Petty Cash Fund Report
+					</a>
 				</md-grid-tile>
-				<md-grid-tile href="<?=base_url().'database/patientexp'?>">
-					Patient Expenses
+				<md-grid-tile>
+					<a class="link-grid-tile" href="<?=base_url().'database/patientexp'?>">
+						Patient Expenses
+					</a>
 				</md-grid-tile>
 				<?php if (isset($extratables)): ?>
 				<?php 	foreach($extratables as $value): ?>
-				<md-grid-tile href="<?=base_url().'database/custom/load/'.urlencode($value->table_name)?>">
-					<?= $value->mdl_name ?>
+				<md-grid-tile>
+					<a class="link-grid-tile" href="<?=base_url().'database/custom/load/'.urlencode($value->table_name)?>">
+						<?= $value->mdl_name ?>
+					</a>
+					
 				</md-grid-tile>
 				<?php 	endforeach; ?>
 				<?php endif ?>

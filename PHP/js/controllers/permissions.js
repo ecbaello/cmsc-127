@@ -14,9 +14,13 @@ app.controller("permissions", ['$scope', '$http', 'permissionsURL', function ($s
 	};
 	$scope.groups = [];
 	$scope.models = [];
-	$scope.permissionTable = [];
+	$scope.permissionTable = {};
 
 	$scope.changed = function(table, gid, permission) {
+		if ($scope.permissionTable[table] == undefined) {
+			$scope.permissionTable[table] = {};
+		}
+
 		console.log('@table['+table+']@group['+gid+'] = '+$scope.permissionTable[table][gid]);
 		console.log($scope.permissionTable);
 
