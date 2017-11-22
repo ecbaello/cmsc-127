@@ -282,4 +282,23 @@ form md-input-container {
 	justify-content: center;
 	height: 100%;
 	width: 100%;
+
+	border-radius: 10%;
+
+	padding: 5%;
+	background-color: rgba(224, 224, 224, 0.96);
+
+	transition: 0.2s;
+
+	color: black;
+}
+
+.link-grid-tile:hover {
+	text-decoration: none;
+	background-color: rgba(173, 173, 173, 0.96) !important;
+	color: black;
+}
+
+.link-grid-tile .fa {
+	font-size: 2em;
 }

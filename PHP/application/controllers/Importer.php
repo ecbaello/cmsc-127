@@ -8,6 +8,7 @@ class Importer extends CI_Controller {
     }
 
     function index() {
+        define('NAV_SELECT', 4);
         $this->load->view('header');
         $this->load->view('import_view');
         $this->load->view('footer');

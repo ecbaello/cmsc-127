@@ -9,7 +9,7 @@
 			<span class="md-headline">Database</span>
 		</md-card-title>
 		<md-card-content>
-			<md-grid-list class="text-center" md-cols="1" md-cols-sm="2" md-cols-md="4" md-cols-lg="8" md-cols-gt-lg="12" md-row-height="1:1">
+			<md-grid-list class="text-center" md-cols="2" md-cols-sm="4" md-cols-md="6" md-cols-lg="8" md-cols-gt-lg="12" md-row-height="1:1" md-gutter="8px" md-gutter-gt-sm="4px">
 				<md-grid-tile>
 					<a class="link-grid-tile" href="<?=base_url().'database/detchar'?>">
 						Patient Charges Detail

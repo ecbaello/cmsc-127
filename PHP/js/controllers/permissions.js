@@ -21,9 +21,9 @@ app.controller("permissions", ['$scope', '$http', 'permissionsURL', function ($s
 			$scope.permissionTable[table] = {};
 		}
 
-		console.log('@table['+table+']@group['+gid+'] = '+$scope.permissionTable[table][gid]);
-		console.log($scope.permissionTable);
-
+		// console.log('@table['+table+']@group['+gid+'] = '+$scope.permissionTable[table][gid]);
+		// console.log($scope.permissionTable);
+		
 		$scope.permissionTable[table][gid] = permission;
 
 		var data = {};
