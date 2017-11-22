@@ -28,7 +28,7 @@ app.controller("tablemanager", ['$scope', '$http', 'tablemanagerURL', function (
 
 		var send = {
 			type: 'POST',
-			url: tablemanagerURL+'/new',
+			url: tablemanagerURL+'/news',
 			data: data,
 			success: function(resultData) {
 				var object = JSON.parse(resultData);

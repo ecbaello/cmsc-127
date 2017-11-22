@@ -23,7 +23,7 @@ class Tablemanager extends CI_Controller {
 		} else show_404();
 	}
 
-	public function new()
+	public function news()
 	{
 		if ( $this->permission_model->adminAllow() ) {
 
