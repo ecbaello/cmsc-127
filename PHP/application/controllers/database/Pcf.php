@@ -21,6 +21,11 @@ class Pcf extends MY_DBarraycontroller {
 
 		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 
+		$html = '<md-button href="'.base_url().'database/pcfreport/UnreplenishedPCF/'.urlencode($subtable).'" class="md-primary md-raised" >
+					View Unreplenished Funds >>>>
+                </md-button>';
+		$this->load->view('html',array('html'=>$html));
+		
 		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
 		
 		if ($this->getUserPermission() >= PERMISSION_ALTER)
