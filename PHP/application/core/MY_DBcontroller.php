@@ -75,46 +75,50 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function filters ($action = null, $id = null) {
-		if ($this->loggedIn()) {
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		if (!$this->loggedIn()) {
+			show_404();
+			return;
+		}
 
-			$return = [
-				'csrf' => $token,
-				'csrf_hash' => $hash
-			];
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 
-			if ($action == 'add') {
-				$title = $this->input->post('title');
-				$data = $this->input->post('data');
-				if ( !empty($title) && !empty($data) )
-					$this->model->saveSearch( $title, $data, $this->getUser());
-			} else if ($action == 'remove') {
-				if ( !empty($id) )
-					$this->model->removeSearch( $id, $this->getUser());
-			} else if ($action == 'update') {
-				$data = $this->input->post('data');
-				if ( !empty($id) && !empty($data) )
-					$this->model->updateSearch( $id, $this->getUser(), $data);
-			} else {
-				$return['data'] = $this->model->getSearches( $this->getUser() );
-			}
-			echo json_encode (
-				$return,
-				JSON_NUMERIC_CHECK
-			);
-		} else show_404();
+		$return = [
+			'csrf' => $token,
+			'csrf_hash' => $hash
+		];
+
+		if ($action == 'add') {
+			$title = $this->input->post('title');
+			$data = $this->input->post('data');
+			if ( !empty($title) && !empty($data) )
+				$this->model->saveSearch( $title, $data, $this->getUser());
+		} else if ($action == 'remove') {
+			if ( !empty($id) )
+				$this->model->removeSearch( $id, $this->getUser());
+		} else if ($action == 'update') {
+			$data = $this->input->post('data');
+			if ( !empty($id) && !empty($data) )
+				$this->model->updateSearch( $id, $this->getUser(), $data);
+		} else {
+			$return['data'] = $this->model->getSearches( $this->getUser() );
+		}
+		echo json_encode (
+			$return,
+			JSON_NUMERIC_CHECK
+		);
 	}
 
 	public function update ($id) {
 
-		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
-			$insert = json_decode($this->input->post('data'), true);
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
 
-	    	$this->model->updateWithPK($id, $insert);
-	   
-	    	$this->get($id);
-		} else $this->permissionError();
+		$insert = json_decode($this->input->post('data'), true);
+    	$this->model->updateWithPK($id, $insert);
+    	$this->get($id);
 	}
 
 	public function remove ($id) {
@@ -133,89 +137,99 @@ class MY_DBcontroller extends CI_Controller
 
 	public function add () {
 
-		if ($this->getUserPermission() >= PERMISSION_ADD) {
-			$insert = json_decode($this->input->post('data'), true);
+		if ($this->getUserPermission() < PERMISSION_ADD) {
+			show_404();
+			return;
+		}
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		$insert = json_decode($this->input->post('data'), true);
 
-			$inputs = $this->model->getFields();
-			$arr = array();
-			foreach ($inputs as $input) {
-				if (isset($insert[$input])) {
-					$arr[$input] = $insert[$input]; 
-				}
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$inputs = $this->model->getFields();
+		$arr = array();
+		foreach ($inputs as $input) {
+			if (isset($insert[$input])) {
+				$arr[$input] = $insert[$input]; 
 			}
-			
-			$success = $this->model->insertIntoTable($arr);
+		}
+		
+		$success = $this->model->insertIntoTable($arr);
 
-			echo json_encode( 
-				array(
-					'csrf' => $token,
-					'csrf_hash' => $hash,
-					'success' => $success
-				)
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
 
-			, JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		, JSON_NUMERIC_CHECK);
+		
 		
 	}
 
 	public function addfield () {
 
-		if ($this->getUserPermission() >= PERMISSION_ALTER) {
-			$data = json_decode($this->input->post('data'), true);
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		$data = json_decode($this->input->post('data'), true);
 
-			$prefix = null;
-			$suffix = null;
-			$required = false;
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 
-			if (isset($data['prefix'])) $prefix = $data['prefix'];
-			if (isset($data['suffix'])) $suffix = $data['suffix'];
-			if (isset($data['required'])) $required = $data['required'];
+		$prefix = null;
+		$suffix = null;
+		$required = false;
 
-			$success = false;
-			if ($data['derived']) {
-				$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix, $required);
-			} else {
-				$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
-			}
+		if (isset($data['prefix'])) $prefix = $data['prefix'];
+		if (isset($data['suffix'])) $suffix = $data['suffix'];
+		if (isset($data['required'])) $required = $data['required'];
 
-			echo json_encode( 
-				array(
-					'csrf' => $token,
-					'csrf_hash' => $hash,
-					'success' => $success
-				)
+		$success = false;
+		if ($data['derived']) {
+			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix, $required);
+		} else {
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
+		}
 
-			, JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 
 		
 	}
 
 	public function removefield () {
 
-		if ($this->getUserPermission() >= PERMISSION_ALTER) {
-			$key = $this->input->post('header');
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;	
+		}
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		$key = $this->input->post('header');
 
-			$success = $this->model->removeField($key);
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 
-			echo json_encode( 
-				array(
-					'csrf' => $token,
-					'csrf_hash' => $hash,
-					'success' => $success
-				)
+		$success = $this->model->removeField($key);
 
-			, JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 
 		
 	}

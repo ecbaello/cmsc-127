@@ -27,12 +27,14 @@ $CI =& get_instance();
 							<md-list flex>
 								<md-list-item ng-repeat="group in groups">
 									<h5 flex>{{ group.description }}</h5>
-									<md-select ng-model="permissionTable[model.table_name][group.id]" ng-change="changed(model.table_name, group.id)">
-										<md-option value="0">View</md-option>
-										<md-option value="1">Add</md-option>
-										<md-option value="2">Change</md-option>
-										<md-option value="3">Alter</md-option>
-									</md-select>
+									<div>
+										<div layout="row" layout-align="center center" class="buttonGroup">
+											<md-button class="left {{permissionTable[model.table_name][group.id]==undefined||permissionTable[model.table_name][group.id]==0?'md-focused':''}}" ng-click="changed(model.table_name, group.id, 0)" value="0">View</md-button>
+											<md-button class="middle {{permissionTable[model.table_name][group.id]==1?'md-focused':''}}" ng-click="changed(model.table_name, group.id, 1)" value="1">Add</md-button>
+											<md-button class="middle {{permissionTable[model.table_name][group.id]==2?'md-focused':''}}" ng-click="changed(model.table_name, group.id, 2)" value="2">Change</md-button>
+											<md-button class="right {{permissionTable[model.table_name][group.id]==3?'md-focused':''}}" ng-click="changed(model.table_name, group.id, 3)" value="3">Alter</md-button>
+										</div>
+									</div>
 								</md-list-item>
 							</md-list>
 						</div>

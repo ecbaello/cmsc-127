@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 $CI =& get_instance();
 $CI->load->model('permission_model');
-if (!isset($permission)) $permission = 0;
+if (!isset($permission)) $permission = -1;
 // $cont_attr?, $swtch, $model, $inp_attr?, $placeholder, $title
 ?>
 <script type="text/javascript">
@@ -120,6 +120,7 @@ if (!isset($permission)) $permission = 0;
 							</div>
 						</div>
 					</form>
+					<?php if ($permission >= PERMISSION_LOGIN): ?>
 					<div>
 						<div>
 							<md-select class="m-0" ng-model="currentUserFilterId" ng-change="filterChanged()" placeholder="Use saved filter" ng-init="loadFilters()">
@@ -130,6 +131,7 @@ if (!isset($permission)) $permission = 0;
 							<md-button class="md-raised md-primary" ng-click="showFilterNameDialog()">Save...</md-button>
 						</div>
 					</div>
+					<?php endif ?>
 					<div class="row" layout-padding>
 						<div class="col-lg-11 col-md-10 col-sm-8 text-right">Limit items by</div>
 						<div class="col-lg-1 col-md-2 col-sm-4">
@@ -225,6 +227,7 @@ if (!isset($permission)) $permission = 0;
 							</div>
 						</div>
 				</div>
+				<?php if ($permission >= PERMISSION_LOGIN): ?>
 				<div style="visibility: hidden">
 					<div class="md-dialog-container" id="filterNameDialog">
 						<md-dialog>
@@ -255,6 +258,7 @@ if (!isset($permission)) $permission = 0;
 						</md-dialog>
 					</div>
 				</div>
+				<?php endif ?>
 				<?php if ($permission >= PERMISSION_ADD): ?>
 				<div style="visibility: hidden">
 					<div class="md-dialog-container" id="addDialog">

@@ -19,7 +19,8 @@ class Permission_model extends CI_Model {
 
 		$this->createTable();
 
-		defined('PERMISSION_VIEW') OR define('PERMISSION_VIEW', 0);
+		defined('PERMISSION_NONE') OR define('PERMISSION_NONE', -1);
+		defined('PERMISSION_VIEW') OR define('PERMISSION_LOGIN', 0);
 		defined('PERMISSION_ADD') OR define('PERMISSION_ADD', 1);
 		defined('PERMISSION_CHANGE') OR define('PERMISSION_CHANGE', 2);
 		defined('PERMISSION_ALTER') OR define('PERMISSION_ALTER', 3);
@@ -50,7 +51,6 @@ class Permission_model extends CI_Model {
 			$grpid = $group->id;
 			$permission = $this->groupPermission($table, $grpid);
 			$maxPermission = max( $permission, $maxPermission );
-			log_message('debug', 'user: '.$maxPermission);
 		}
 
 		

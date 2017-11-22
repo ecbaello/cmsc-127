@@ -239,3 +239,39 @@ form md-input-container {
 .mini-select {
 	width: 3em;
 }
+
+.buttonGroup .md-button {
+    font-size: 16px;
+    margin: 20px 0;
+    padding: 3px 15px 3px 15px;
+    color: rgb(49, 46, 46);
+    background-color: rgba(224, 224, 224, 0.96);
+    text-transform: none;
+    font-weight: 400;
+    min-width:100px;
+}
+
+.buttonGroup .md-button.left {
+    border-radius: 10px 0 0 10px;
+}
+
+.buttonGroup .md-button.middle {
+    border-radius: 0;
+    border-left: 1px solid rgba(230, 230, 230, 0.96);
+    border-right: 1px solid rgba(230, 230, 230, 0.96);
+}
+
+.buttonGroup .md-button.right {
+    border-radius: 0 10px 10px 0;
+}
+
+.buttonGroup .md-button:not([disabled]):hover {
+    background-color: rgba(193, 193, 193, 0.96);
+    color: rgba(44, 65, 164, 0.96);
+    transition: 0.3s;
+}
+
+.buttonGroup .md-focused {
+    background-color: rgba(173, 173, 173, 0.96) !important;
+    transition: 0.3s;
+}
