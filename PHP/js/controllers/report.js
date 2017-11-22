@@ -1,6 +1,6 @@
 
 
-app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
+app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) {
 
     $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August","September","October","November","December"];
 
@@ -32,6 +32,7 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
             	$scope.series=log;
 
                 loadData();
+				$scope.$apply();
             }
         });
 
@@ -69,9 +70,13 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
         	display:true
 		}
     };
-    // Simulate async data update
-    $timeout(function () {
+     //Simulate async data update
+    var interval = $interval(function () {
+		if($scope.series.length > 0){
+			$interval.cancel(interval);
+		}
     }, 1000);
+	
 }]);
 
 app.controller('dateRangeSelector',['$scope',function($scope){
@@ -159,8 +164,8 @@ app.controller('pcfReport',['$scope',function($scope){
             dataType: "json",
             success: function (data) {
                 $scope.details = data;
-                $scope.inFund=data['Allotted Fund'].data;
-                $scope.inThreshold = data['Expense Threshold'].data;
+                $scope.inFund=data['Allotted Fund'];
+                $scope.inThreshold = data['Expense Threshold'];
                 $scope.$apply();
             }
         });

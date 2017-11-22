@@ -13,7 +13,7 @@ class Pcfreport extends MY_DBarraycontroller {
 		$this->model = new MY_DBarraymodel();
     }
 
-    public function makeHeader(){
+    protected function makeHeader(){
         $this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
         $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
     }
@@ -53,12 +53,11 @@ class Pcfreport extends MY_DBarraycontroller {
 
         $this->model = $this->switchModel($subtable);
 
-        if(!$this->permission_model->adminAllow()) {
-            $this->permissionError();
-            return null;
-        }
-
         if($action != null){
+			if(!$this->permission_model->adminAllow()) {
+				$this->permissionError();
+				return null;
+			}
             switch($action){
                 case 'fund':
                     echo $this->model->changeAllottedFund($subtable,$data);
@@ -78,8 +77,8 @@ class Pcfreport extends MY_DBarraycontroller {
             $data = $this->model->getFieldsFromTypeTable($subtable,array($this->model->afFieldName,$this->model->etFieldName));
             $table = array();
 
-            $table['Allotted Fund'] = array('data'=>$data[$this->model->afFieldName],'editable'=>1);
-            $table['Expense Threshold'] = array('data'=>$data[$this->model->etFieldName],'editable'=>1);
+            $table['Allotted Fund'] = $data[$this->model->afFieldName];
+            $table['Expense Threshold'] = $data[$this->model->etFieldName];
 
             $grandtotal = $this->getExpenseTable($subtable,1);
             try {
@@ -89,8 +88,8 @@ class Pcfreport extends MY_DBarraycontroller {
                 return null;
             }
 
-            $table['Expense Total'] = array('data'=>$grandtotal,'editable'=>0);
-            $table['Cash On Hand'] = array('data'=>($data[$this->model->afFieldName]-$grandtotal),'editable'=>0);
+            $table['Expense Total'] = $grandtotal;
+            $table['Cash On Hand'] = $data[$this->model->afFieldName]-$grandtotal;
 
             ob_end_clean();
 
@@ -176,7 +175,7 @@ class Pcfreport extends MY_DBarraycontroller {
         return $expenses;
     }
 
-    public function getNumericalFields($subtable){
+    protected function getNumericalFields($subtable){
 
         $this->model = $this->switchModel($subtable);
 
