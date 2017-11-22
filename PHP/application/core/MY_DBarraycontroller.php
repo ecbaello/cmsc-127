@@ -90,8 +90,8 @@ class MY_DBarraycontroller extends CI_Controller {
 					case 'data':
 						$this->data($subtable, $arg0, $arg1);
 						break;
-					case 'filter':
-						$this->filter($subtable);
+					case 'filters':
+						$this->filters($subtable);
 						break;
 					case 'addfield';
 						if ($this->getUserPermission() >= PERMISSION_ALTER)

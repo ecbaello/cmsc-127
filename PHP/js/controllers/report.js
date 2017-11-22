@@ -1,6 +1,6 @@
 
 
-app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
+app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) {
 
     $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August","September","October","November","December"];
 
@@ -32,6 +32,7 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
             	$scope.series=log;
 
                 loadData();
+				$scope.$apply();
             }
         });
 
@@ -69,9 +70,13 @@ app.controller("LineCtrl", ['$scope', '$timeout', function ($scope, $timeout) {
         	display:true
 		}
     };
-    // Simulate async data update
-    $timeout(function () {
+     //Simulate async data update
+    var interval = $interval(function () {
+		if($scope.series.length > 0){
+			$interval.cancel(interval);
+		}
     }, 1000);
+	
 }]);
 
 app.controller('dateRangeSelector',['$scope',function($scope){
@@ -124,5 +129,93 @@ app.controller('reportTable',['$scope',function($scope){
         });
 	}
 
+
+}]);
+
+app.controller('pcfReport',['$scope',function($scope){
+
+    $scope.table = '';
+    $scope.details = '';
+    $scope.inFund = 5000;
+    $scope.inThreshold = 3000;
+
+    $scope.setURL = function(url,subtable) {
+        $scope.selectorUrl = url;
+        makeTable(subtable);
+        makePCFDetails(subtable);
+    };
+
+    function makeTable(subtable){
+
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/getExpenseTable/'+encodeURI(subtable)+'/1/',
+            dataType: "json",
+            success: function (data) {
+                $scope.table = data;
+                $scope.$apply();
+            }
+        });
+    }
+
+    function makePCFDetails(subtable){
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable),
+            dataType: "json",
+            success: function (data) {
+                $scope.details = data;
+                $scope.inFund=data['Allotted Fund'];
+                $scope.inThreshold = data['Expense Threshold'];
+                $scope.$apply();
+            }
+        });
+    }
+
+    $scope.changeFund = function(subtable){
+        if(isNaN($scope.inFund)){
+            alert('Invalid Input');
+            return;
+        }
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable)+'/fund/'+$scope.inFund+'/',
+            dataType: "json",
+            success: function (data) {
+                makePCFDetails(subtable);
+                $scope.$apply();
+            }
+        });
+    }
+
+    $scope.changeThreshold = function(subtable,threshold){
+        if(isNaN($scope.inThreshold)){
+            alert('Invalid Input');
+            return;
+        }
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable)+'/threshold/'+$scope.inThreshold+'/',
+            dataType: "json",
+            success: function (data) {
+                makePCFDetails(subtable);
+                $scope.$apply();
+            }
+        });
+
+    }
+
+    $scope.replenish = function(subtable){
+        $.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/administrate/'+encodeURI(subtable)+'/replenish',
+            dataType: "json",
+            success: function () {
+                makePCFDetails(subtable);
+                location.reload();
+                $scope.$apply();
+            }
+        });
+    }
 
 }]);

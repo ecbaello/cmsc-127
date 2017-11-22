@@ -2,16 +2,19 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Archarraycontroller extends CI_Controller {
 
-	public $model = NULL;
+    protected $model = '';
 	protected $userPermission = null;
-
+	
+	protected $filepath = __FILE__; 
+	
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
 
 		$this->load->model('permission_model');
+        $this->model = new MY_Archarraymodel();
 
-		define('NAV_SELECT', 4);
+		define('NAV_SELECT', 5);
 	}
 
 	public function index() {
@@ -21,6 +24,14 @@ class MY_Archarraycontroller extends CI_Controller {
 		
 		$this->load->view('footer');
 	}
+
+	protected function switchModel($subtable){
+
+        $modelName = $this->model->getModel($subtable);
+        $this->load->model($modelName);
+        return $this->$modelName;
+
+    }
 
 	protected function permissionError() {
 		show_error('The user doesn\'t have the permission to perform this action.', 403, 'Forbidden');
@@ -53,7 +64,10 @@ class MY_Archarraycontroller extends CI_Controller {
 	public function table($subtable = null, $action = null, $arg0 = null, $arg1 = 0) {
 		
 		if ($subtable !== null) {
-			$subtable = urldecode($subtable);
+            $subtable = urldecode($subtable);
+
+		    $this->model = $this->switchModel($subtable);
+
 			if ($action === null) $this->makeHTML($subtable);
 			else {
 				switch ($action) {
@@ -145,13 +159,19 @@ class MY_Archarraycontroller extends CI_Controller {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
+		$prefix = null;
+		$suffix = null;
+		$required = false;
 
+		if (isset($data['prefix'])) $prefix = $data['prefix'];
+		if (isset($data['suffix'])) $suffix = $data['suffix'];
+		if (isset($data['required'])) $required = $data['required'];
 
 		$success = false;
 		if ($data['derived']) {
-			$success = $this->model->insertDerivedField($data['title'], $data['expression']);
+			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix, $required);
 		} else {
-			$success = $this->model->insertField($data['title'], $data['kind'], $data['default']);
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
 		}
 
 		echo json_encode( 
@@ -186,18 +206,17 @@ class MY_Archarraycontroller extends CI_Controller {
 	{
 		$this->load->view('header');
 
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable, 'permission' => $this->getUserPermission()]);
+		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle, 'permission' => $this->getUserPermission(),'subtable'=>$subtable]);
 
-		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) );
+		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
 
 		if ($this->getUserPermission() >= PERMISSION_ALTER)
 			$this->load->view('table_settings');
-		
+
 		$this->load->view('footer');
 	}
 
 	protected function data($table) {
-
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 

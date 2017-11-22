@@ -7,9 +7,17 @@ class Pcfreport extends MY_DBarraycontroller {
     {
         parent::__construct();
 		$this->filepath = __FILE__;
+
         $this->load->model('database_pcf_model');
         $this->model = $this->database_pcf_model;
 		$this->model->init();
+
+		$this->model = new MY_DBarraymodel();
+    }
+
+    protected function makeHeader(){
+        $this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
+        $this->load->view('html',array('html'=>"<md-content layout-padding><h2>Petty Cash Fund Report</h2></md-content>"));
     }
 
     public function index(){
@@ -40,6 +48,66 @@ class Pcfreport extends MY_DBarraycontroller {
         $this->load->view('footer');
 
 
+    }
+
+    public function administrate($subtable,$action = null,$data = null){
+
+        $subtable = urldecode($subtable);
+
+        $this->model = $this->switchModel($subtable);
+
+        if($action != null){
+			if(!$this->permission_model->adminAllow()) {
+				$this->permissionError();
+				return null;
+			}
+            switch($action){
+                case 'fund':
+                    echo $this->model->changeAllottedFund($subtable,$data);
+                    break;
+                case 'threshold':
+                    echo $this->model->changeExpenseThreshold($subtable,$data);
+                    break;
+                case 'replenish':
+                    echo $this->model->replenish($this->model->TableName);
+                    break;
+
+                default:
+                    show_404();
+                    break;
+            }
+        }else{
+            $data = $this->model->getFieldsFromTypeTable($subtable,array($this->model->afFieldName,$this->model->etFieldName));
+            $table = array();
+
+            $table['Allotted Fund'] = $data[$this->model->afFieldName];
+            $table['Expense Threshold'] = $data[$this->model->etFieldName];
+
+            $grandtotal = $this->getExpenseTable($subtable,1);
+            try {
+                $grandtotal = end($grandtotal);
+                $grandtotal = array_pop($grandtotal);
+            }catch(Exception $e){
+                return null;
+            }
+
+            $table['Expense Total'] = $grandtotal;
+            $table['Cash On Hand'] = $data[$this->model->afFieldName]-$grandtotal;
+
+            ob_end_clean();
+
+            echo json_encode($table);
+        }
+
+    }
+
+    public function UnreplenishedPCF($subtable){
+        $this->load->view('header');
+        $this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
+
+        $this->load->view('pcf_report', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))),'subtable'=>$subtable ));
+
+        $this->load->view('footer');
     }
 	
 	public function getReports(){
@@ -121,7 +189,9 @@ class Pcfreport extends MY_DBarraycontroller {
         return $expenses;
     }
 
-    protected function getNumericalFields(){
+    protected function getNumericalFields($subtable){
+
+        $this->model = $this->switchModel($subtable);
 
         $fields = $this->model->getFieldAssociations();
         $numerics = array();
