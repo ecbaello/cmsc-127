@@ -160,16 +160,15 @@ class Pcfreport extends MY_DBarraycontroller {
 		
 	}
 
-    public function getMonthlyExpenses(){
+    public function getMonthlyExpenses($year){
 
         $expenses = array();
 		
         $categories = $this->model->getCategories();
-
         foreach($categories as $subtable) {
             for ($i = 1; $i <= 12; $i++) {
 
-                $expenses[$subtable][date("F", mktime(0, 0, 0, $i, 10))] = $this->getExpense($subtable, null, date('Y-' . $i . '-01'), date('Y-' . $i . '-t'));
+                $expenses[$subtable][date("F", mktime(0, 0, 0, $i, 10))] = $this->getExpense($subtable, null, date($year .'-'. $i . '-01'), date($year . '-'.$i . '-t'));
 
             }
         }
@@ -208,7 +207,7 @@ class Pcfreport extends MY_DBarraycontroller {
         $this->db->select(implode(" + ",$numericsQuery).' as total');
         $this->db->where($this->pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
         $this->db->where($this->pcfIdName,$subtable);
-
+		
         $result= $this->db->get($this->model->TableName)->result_array();
 
         $total = $result[0]['total'];

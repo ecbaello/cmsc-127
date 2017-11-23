@@ -4,7 +4,7 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
 
     $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August","September","October","November","December"];
 
-
+	$scope.year = (new Date()).getFullYear();
     $scope.series = [];
     $scope.colors = [{borderColor:'#f00'},{borderColor:'#0f0'},{borderColor:'#00f'}];
 
@@ -14,6 +14,11 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
         console.log(points, evt);
     };
 
+	$scope.setYear = function(){
+		if(!isNaN($scope.year))
+			loadData();
+	}
+	
     $scope.setURL = function(url) {
         $scope.selectorUrl = url;
         loadSeries();
@@ -41,7 +46,7 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
     function loadData(){
         $.ajax({
             method: "GET",
-            url: $scope.selectorUrl+'/getMonthlyExpenses',
+            url: $scope.selectorUrl+'/getMonthlyExpenses/'+$scope.year,
             dataType: "json",
             success: function (data) {
                 var log=[];
@@ -56,6 +61,7 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
                 },log);
 
                	$scope.data = log;
+				$scope.$apply();
             }
         });
 
@@ -74,6 +80,7 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
     var interval = $interval(function () {
 		if($scope.series.length > 0){
 			$interval.cancel(interval);
+			$scope.$apply();
 		}
     }, 1000);
 	
