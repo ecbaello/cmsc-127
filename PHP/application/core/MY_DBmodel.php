@@ -294,13 +294,6 @@ class MY_DBmodel extends CI_Model
 		if ( $defjoin )
 			$this->db->stop_cache();
 
-		if ( $ordered ) {
-			$this->db->order_by(
-				$settings['order_by'],
-				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
-			);
-		}
-
 		if ($defjoin) {
 
 			$this->db->limit(
@@ -310,6 +303,8 @@ class MY_DBmodel extends CI_Model
 
 			$select = $this->db->get_compiled_select($this->TableName);
 
+			log_message('debug', $select);
+
 			$this->lastFindCount = $this->db->count_all_results($this->TableName);
 
 			$this->db->flush_cache();
@@ -318,7 +313,16 @@ class MY_DBmodel extends CI_Model
 			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
 		}
 
+		if ( $ordered ) {
+			$this->db->order_by(
+				$settings['order_by'],
+				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
+			);
+		}
+
 		$result = $this->db->get($this->TableName);
+
+		log_message('debug', $select);
 
 		if (!$defjoin)
 			$this->lastFindCount = $result->num_rows();
