@@ -34,6 +34,9 @@ class MY_DBmodel extends CI_Model
 
 		$this->load->model('registry_model');
 		$this->load->model('search_model');
+
+		if ($this->willRegister)
+			$this->init();
 	}
 
 	public function init() {	

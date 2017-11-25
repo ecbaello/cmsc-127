@@ -15,26 +15,6 @@ var app = angular.module('app', ['ngMaterial', 'ngMessages','chart.js', 'ngUploa
 var csrf = '';
 var csrfHash = '';
 
-function convertData(input) {
-	var data = input;
-	
-	//data = alignTypes(data);
-
-	return data;
-}
-
-function alignTypes(input) {
-	var data = input;
-	$.each(data.headers, function(key) {
-		if ( data.headers[key].type == "DATE" ) {
-			$.each(data.data, function(index) {
-				data.data[index][key] = new Date(data.data[index][key]);
-			});
-		}
-	});
-	return data;
-}
-
 app.filter('page', function() {
   return function(input) {
     return input === 0 ? 1 : Math.ceil(input);

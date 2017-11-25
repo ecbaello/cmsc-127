@@ -6,6 +6,14 @@ app.controller('navi', ['$scope', '$mdSidenav', function($scope,  $mdSidenav){
 		$mdSidenav('navigation')
 	      .toggle();
 	};
+
+	$scope.back = function() {
+		window.history.back();
+	};
+
+	$scope.forward = function() {
+		window.history.forward();
+	};
 }]);
 
 app.controller('user', ['$scope', 'UserService', function($scope,  UserService){

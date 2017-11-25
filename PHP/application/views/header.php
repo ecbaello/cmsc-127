@@ -108,6 +108,16 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
                     <span class="fa fa-navicon fa-2x"></span>
                 </md-button>
 
+                <md-button class="md-icon-button" ng-click="back()">
+                    <span class="sr-only">Back</span>
+                    <span class="fa fa-chevron-left fa-lg"></span>
+                </md-button>
+
+                <md-button class="md-icon-button" ng-click="forward()">
+                    <span class="sr-only">Forward</span>
+                    <span class="fa fa-chevron-right fa-lg"></span>
+                </md-button>
+
                 <span flex class="d-inline">
                 </span>
                 

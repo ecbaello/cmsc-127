@@ -7,6 +7,8 @@ class Custom_model extends MY_DBmodel
 	public $TablePrimaryKey = 'id'; // Overideable
 	public $FieldPrefix = '';
 
+	protected $willRegister = FALSE;
+
 	public function loadCustom($ModelTitle, $TableName, $FieldPrefix)
 	{
 		$this->ModelTitle = $ModelTitle;

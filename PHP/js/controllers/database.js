@@ -62,7 +62,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		tables.get(
 			data,
 			function(resultData) {
-				var response = convertData(resultData);
+				var response = resultData;
 				$scope.data = response.data;
 
 				if (withHeaders) {
@@ -287,7 +287,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 					dataObj.data = {};
 					dataObj.data[0] = response.data;
 
-					$scope.data[index]= alignTypes(dataObj).data[0];
 					$scope.serverRequesting = false;
 					$scope.$apply();
 				},

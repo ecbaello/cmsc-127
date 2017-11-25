@@ -8,17 +8,6 @@ class Database_pcf_cataract_model extends MY_DBpcfmodel
     public $TablePrimaryKey = 'pcf_expense_id';
 
     /**
-     * The constructor method
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct(); // do constructor for parent class
-        $this->init();
-    }
-
-
-    /**
      * Make PCF table if does not exists
      *
      */
