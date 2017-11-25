@@ -23,23 +23,5 @@ class Main extends CI_Controller {
 		$this->load->view('footer');
 		
 	}
-
-	public function custom($table_name) {
-		$custom = $this->registry_model->customtable($table_name);
-		var_dump($table_name);
-
-		if (!empty($custom)) {
-			$custom = $custom->row();
-			$model = new MY_DBmodel;
-			$model->ModelTitle = $custom->name;
-			$model->TableName = $custom->title;
-			$model->FieldPrefix = $custom->prefix; // validate not empty
-			$model->init();
-			$model->createTableWithID();
-		} else show_404();
-
-		
-	}
-
 	
 }

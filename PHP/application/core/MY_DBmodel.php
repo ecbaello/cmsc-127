@@ -54,6 +54,7 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle( $this->TablePrimaryKey, '#');
+			$this->registerModel();
 		}
 	}
 

@@ -34,13 +34,10 @@ class Tablemanager extends CI_Controller {
 			$prefix = $this->input->post('prefix');
 
 			$title = self::prefix.str_replace(' ', '_', $name);
-
-			$model = new MY_DBmodel;
-			$model->ModelTitle = $name;
-			$model->TableName = $title;
-			$model->FieldPrefix = $prefix; // validate not empty
-			$model->init();
-			$model->createTableWithID();
+			
+			$this->load->model('custom_model');
+            $this->custom_model->loadCustom($custom->mdl_name, $table, $custom->table_prefix);
+			$this->custom_model->createTableWithID();
 
 			echo json_encode(
 				[

@@ -25,13 +25,15 @@ class Importer extends CI_Controller {
         if ($custom->num_rows() > 0) {
             $custom = $custom->row();
 
-            $model = new MY_DBmodel;
-            $model->ModelTitle = $custom->mdl_name;
-            $model->TableName = $table;
-            $model->FieldPrefix = $custom->table_prefix; // validate not empty
-            $model->init();
-
-            $fields = $model->getFieldAssociations();
+            if (!empty($custom->mdl_class)) {
+                $class = $custom->mdl_class;
+                $this->load->model($class);
+                $fields = $this->$class->getFieldAssociations();
+            } else {
+                $this->load->model('custom_model');
+                $this->custom_model->loadCustom($custom->mdl_name, $table, $custom->table_prefix);
+                $fields = $this->custom_model->getFieldAssociations();
+            }
 
             echo json_encode(
                 [
@@ -107,9 +109,7 @@ class Importer extends CI_Controller {
             }
 
         }
-
         
-    
         echo json_encode(
                 [
                     'csrf' => $token,

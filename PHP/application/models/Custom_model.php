@@ -14,8 +14,6 @@ class Custom_model extends MY_DBmodel
 		$this->ModelTitle = $ModelTitle;
 		$this->TableName = $TableName;
 		$this->FieldPrefix = $FieldPrefix;
-
-		$this->init();
 	}
 }
 
