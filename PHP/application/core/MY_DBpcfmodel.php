@@ -10,7 +10,7 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 
     public $afFieldName = 'pcf_allotted_fund';
     public $etFieldName = 'pcf_expense_threshold';
-
+	public $pcfDateName = 'pcf_date';
 
 	/**
 	* The constructor method
@@ -88,7 +88,117 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 			$this->db->insert($this->categoryTableName, $data);
 		}
 	}
+	
+	public function getNumericalFields(){
 
+        $fields = $this->getFieldAssociations();
+        $numerics = array();
+
+        foreach($fields as $field => $attributes){
+            if($attributes['type'] == 'FLOAT'){
+                array_push($numerics,$field);
+            }
+        }
+
+        return $numerics;
+    }
+	
+	public function getExpense($fromDate = null, $toDate=null){
+		
+        $numerics = $this->getNumericalFields();
+		
+        $numericsQuery = array();
+        foreach ($numerics as $field){
+            array_push($numericsQuery ,'SUM('.$field.')');
+        }
+
+        $this->db->select(implode(" + ",$numericsQuery).' as total');
+        $this->db->where($this->pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
+		
+        $result= $this->db->get($this->TableName)->result_array();
+
+        $total = $result[0]['total'];
+		
+        return $total === null ? 0:$total;
+
+    }
+	
+	public function getExpenses($mode,$fromDate=null,$toDate=null){
+		
+		//mode 0 = all expenses
+		//mode 1 = unreplenished expenses
+		
+		$result = array();
+		
+		$fields = $this->getFields();
+		$numerics = $this->getNumericalFields();
+		
+		$this->db->select(implode(' , ',$fields));
+        $this->db->select('('.implode(" + ",$numerics).') as total');
+		if($mode = 0)
+			$this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
+		if($mode = 1)
+			$this->db->where($this->booleanFieldName,0);
+		
+        $result = $this->db->get($this->TableName)->result_array();
+		
+		/** Sub-Totals **/
+		$summations = array();
+        foreach ($numerics as $field){
+            array_push($summations, 'SUM(' . $field . ') as "'.$field.'"');
+        }
+
+        $this->db->select(implode(" , ",$summations));
+		
+        if($mode = 0)
+			$this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
+		if($mode = 1)
+			$this->db->where($this->booleanFieldName,0);
+			
+        $data = $this->db->get($this->TableName)->result_array();
+
+        $subtotals = array();
+		
+        $grandtotal = 0;
+        if(sizeof($data) > 0) {
+            foreach ($fields as $field) {
+                if(in_array($field,$numerics)) {
+                    $subtotals[$field] = round($data[0][$field],2);
+                    $grandtotal +=  $data[0][$field];
+                }else{
+                    $subtotals[$field] = '';
+                }
+            }
+			$subtotals['total'] = $grandtotal;
+			$subtotals[reset($fields)]='Sub-Totals';
+        }
+		
+		array_push($result,$subtotals);
+		
+		return $result;
+		
+	}
+	
+	public function checkValidExpense($category,$data){
+		
+		$grandtotal = $this->getExpenses(1);
+		try {
+			$grandtotal = end($grandtotal);
+			$grandtotal = array_pop($grandtotal);
+		}catch(Exception $e){
+			return null;
+		}
+		
+		$numerics = $this->getNumericalFields();
+		$total = 0;
+		
+		foreach($data as $key=>$value){
+			if(in_array($key,$numerics)){
+				$total += $data[$key];
+			}
+		}
+		return $this->getFieldsFromTypeTable($category,array($this->afFieldName))[$this->afFieldName] >= $grandtotal+$total;
+	}
 
 }
 

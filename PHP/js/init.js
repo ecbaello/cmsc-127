@@ -96,9 +96,15 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 				var data = JSON.parse(resultData);
 				csrf = data.csrf;
 				csrfHash = data.csrf_hash;
+
+				if(data.success === false){
+					alert('Error: '+(typeof data['error_message']!=='undefined' ? data['error_message']:''));
+				}
+				
 				fsuccess(data);
 			},
-			error: function() {
+			error: function(error) {
+				alert('Something went wrong.');
 				ferror();
 			}
 		};
