@@ -60,7 +60,7 @@ class Importer extends CI_Controller {
     function importcsv() {
         $error = '';    //initialize image upload error array to empty
 
-        $config['upload_path'] = 'uploads/';
+        $config['upload_path'] = 'uploads/cache/';
         $config['allowed_types'] = 'csv';
         $config['max_size'] = '1000';
 
@@ -88,7 +88,7 @@ class Importer extends CI_Controller {
 
                 $file_data = $this->upload->data();
 
-                $file_path =  'uploads/'.$file_data['file_name'];
+                $file_path =  $config['upload_path'].$file_data['file_name'];
                 
                 $parse = $this->csvreader->parse_file($file_path);
 
@@ -105,11 +105,13 @@ class Importer extends CI_Controller {
                 } else 
                     $error = "Error occured";
 
+                $this->load->helper("file");
+                delete_files($config['upload_path']); 
 
             }
 
         }
-        
+
         echo json_encode(
                 [
                     'csrf' => $token,
@@ -119,7 +121,9 @@ class Importer extends CI_Controller {
                     'imported' => $count,
                     'size' => $size
                 ]
-                ,JSON_NUMERIC_CHECK);           
+                ,JSON_NUMERIC_CHECK);
+
+              
     }
 
 }
