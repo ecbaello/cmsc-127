@@ -10,8 +10,6 @@ class Patientexp extends MY_DBcontroller {
 		$this->load->model('database_patient_expenses_model');
 
 		$this->model = $this->database_patient_expenses_model;
-
-		$this->model->init();
 	}
 	
 }

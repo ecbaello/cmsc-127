@@ -87,6 +87,7 @@ class Database_pcfrr_model extends MY_DBarraymodel
 			$this->registerFieldTitle( 'pcf_rr_medical_supplies', 'Medical Supplies', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_rr_other_expenses', 'Other Expenses', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_rr_other_desc', 'Other Description', 'TEXTAREA');
+			$this->registerModel();
 		}
 	}
 

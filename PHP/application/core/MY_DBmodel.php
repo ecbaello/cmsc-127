@@ -32,16 +32,10 @@ class MY_DBmodel extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
-		$this->load->model('registry_model');
+		
 		$this->load->model('search_model');
 
-		if ($this->willRegister)
-			$this->init();
-	}
-
-	public function init() {	
 		$this->createMetaTable();
-		$this->registerModel();
 		$this->createTable();
 	}
 
@@ -63,19 +57,20 @@ class MY_DBmodel extends CI_Model
 		}
 	}
 
-	private function registerModel() {
+	protected function registerModel() {
+
+		$this->load->model('registry_model');
 
 		$class = get_class($this);
 
-		if (!($this->db->table_exists($this->TableName)))
-			$this->registry_model->registerModel(
-				$this->ModelTitle,
-				($class == 'MY_DBmodel')?null:strtolower($class),
-				$this->isArrayModel?1:0,
-				$this->TableName,
-				$this->TablePrimaryKey,
-				$this->FieldPrefix
-			);
+		$this->registry_model->registerModel(
+			$this->ModelTitle,
+			($class == 'MY_DBmodel')?null:strtolower($class),
+			$this->isArrayModel?1:0,
+			$this->TableName,
+			$this->TablePrimaryKey,
+			$this->FieldPrefix
+		);
 	}
 
 

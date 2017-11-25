@@ -34,6 +34,7 @@ class Database_detailed_charges_model extends MY_DBmodel
 			$this->registerFieldTitle('dc_description', 'Description', 'TEXTAREA');
 			$this->registerFieldTitle('dc_quantity', 'Quantity', 'NUMBER');
 			$this->registerFieldTitle('dc_amount', 'Amount', 'FLOAT');
+			$this->registerModel();
 		}
 	}
 }

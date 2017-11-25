@@ -9,8 +9,6 @@ class Detchar extends MY_DBcontroller {
 		$this->load->model('database_detailed_charges_model');
 
 		$this->model = $this->database_detailed_charges_model;
-
-		$this->model->init();
 	}
 	
 	

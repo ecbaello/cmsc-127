@@ -42,6 +42,7 @@ class Database_patient_expenses_model extends MY_DBmodel
 			$this->registerFieldTitle('pe_other_expenses', 'Other Expenses', 'FLOAT');
 			$this->registerFieldTitle('pe_patients_counterpart', 'Patient\'s Counterpart', 'FLOAT');
 			$this->registerFieldTitle('pe_op_desc', 'Optional Description', 'TEXTAREA');
+			$this->registerModel();
 		}
 	}
 
