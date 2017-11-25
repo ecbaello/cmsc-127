@@ -167,10 +167,11 @@ if (!isset($permission)) $permission = -1;
 			</div>
 			<?php /** Table **/ ?>
 			<div id="container">
+				
 					<table class="table table-striped table-bordered table-hover" ng-class="{'table-sm':(!$mdMedia('gt-sm'))}" id="db-table">
 						<thead>
 							<tr>
-								<th ng-repeat="(key, item) in headers" class="{{key==idName?'id-header':''}} cell-value">
+								<th ng-repeat="(key, item) in headers" class="{{key==idName?'id-header':''}}">
 									<a class="no-decor" href="" ng-click="sort(key)">
 										{{ item['title'] }}
 										<i class="fa {{ key==sortHeader ? ( isAscending ? 'fa-sort-asc' : 'fa-sort-desc' ) : 'fa-sort' }}"></i>
@@ -185,7 +186,7 @@ if (!isset($permission)) $permission = -1;
 							<tr ng-repeat="(index, value) in data" ng-class="{'row-update' : (index==editIndex && isEdit), 'row-edit' : (index==editIndex)}">
 								<form no-validate>
 									<td ng-repeat="(key, item) in headers">
-										<span class="{{item.read_only?'':'cell-value '}}{{ key==sortHeader ? 'font-weight-bold ' : '' }}cell-{{item.type}}">
+										<span ng-class="" class="{{item.read_only?'':'cell-value '}}{{ key==sortHeader ? 'font-weight-bold' : '' }} cell-{{item.type}}">
 											{{ item.prefix }}{{
 											<?= $CI->load->view('item_formatter', 
 											[ 

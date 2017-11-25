@@ -282,10 +282,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 				function(resultData) {
 					var response = resultData;
 
-					var dataObj = {};
-					dataObj.headers = $scope.headers;
-					dataObj.data = {};
-					dataObj.data[0] = response.data;
+					$scope.data[index] = resultData.data;
 
 					$scope.serverRequesting = false;
 					$scope.$apply();
