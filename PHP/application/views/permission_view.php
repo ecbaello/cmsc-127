@@ -26,7 +26,14 @@ $CI =& get_instance();
 						<div id="collapse-{{ model.table_name }}" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
 							<md-list flex>
 								<md-list-item ng-repeat="group in groups">
-									<h5 flex>{{ group.description }}</h5>
+									<div flex>
+										<h5>
+											{{ group.name }}
+										</h5>
+										<p>
+											{{ group.description }}
+										</p>
+									</div>
 									<div>
 										<div layout="row" layout-align="center center" class="buttonGroup">
 											<md-button class="left {{permissionTable[model.table_name][group.id]==undefined||permissionTable[model.table_name][group.id]==0?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 0)" value="0">View</md-button>

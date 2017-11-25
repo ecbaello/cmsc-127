@@ -35,7 +35,10 @@
 						else echo 'You';
 						?>
 					</td>
-					<td><?php echo anchor("auth/edit_user/".$user->id, 'Edit') ;?></td>
+					<td>
+						<?php echo anchor("auth/edit_user/".$user->id, 'Edit') ;?>
+						| <?php if ($userID != $user->id) echo anchor("auth/delete/".$user->id, 'Delete'); else echo 'Delete';?>
+					</td>
 				</tr>
 				<?php endforeach;?>
 			</table>

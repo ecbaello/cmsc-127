@@ -48,8 +48,10 @@
 			<?php foreach ($groups as $group):?>
 				<?php
 					$gID=$group['id'];
+					if ($gID==2) continue;
 					$checked = null;
 					$item = null;
+
 					foreach($currentGroups as $grp) {
 						if ($gID == $grp->id) {
 						$checked= ' ng-checked="true"';

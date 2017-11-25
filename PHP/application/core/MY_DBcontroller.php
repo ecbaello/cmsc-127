@@ -109,6 +109,17 @@ class MY_DBcontroller extends CI_Controller
 		);
 	}
 
+	public function export() {
+		if (!$this->permission_model->adminAllow()) return;
+
+		$this->load->helper('download');
+
+		$name = $this->model->ModelTitle.' - '.date("D M d, Y").'(exported).csv';
+		$data = $this->model->getAsCSV();
+
+		force_download($name, $data, true);
+	}
+
 	public function update ($id) {
 
 		if ($this->getUserPermission() < PERMISSION_CHANGE) {

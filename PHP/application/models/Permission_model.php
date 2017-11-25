@@ -70,6 +70,8 @@ class Permission_model extends CI_Model {
 	}
 
 	public function setPermission($table, $groupid, $permission) {
+		if ($groupid == 1) return;
+
 		$res = false;
 
 		if ( $this->groupPermission($table, $groupid, true) == null ) {
@@ -111,6 +113,13 @@ class Permission_model extends CI_Model {
 		}
 
 		return $array;
+	}
+
+	public function deletePermission($gid) {
+		if ($gid == 1) return;
+
+		$this->db->where('group_id', $gid); // admin
+		return $this->db->delete(self::tableName);
 	}
 
 	public function groups() {

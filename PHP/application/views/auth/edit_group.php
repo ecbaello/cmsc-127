@@ -30,6 +30,13 @@
 
 			<?php echo form_close();?>
 
+			<?php if ($group->id > 2): ?>
+				<div class="mt-4">
+					<md-button class="md-raised md-warn" href="<?php echo base_url().'auth/delete_group/'.$group->id ?>">
+						<?= lang('delete_group_link_btn') ?>
+					</md-button>
+				</div>
+			<?php endif ?>
 		</md-card-content>
 	</md-card>
 </md-content>

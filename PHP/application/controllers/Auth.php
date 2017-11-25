@@ -262,11 +262,13 @@ class Auth extends CI_Controller {
 	// reset password - final step for forgotten password
 	public function reset_password($code = NULL)
 	{
-		$this->load->view('header');
+		
 		if (!$code)
 		{
 			show_404();
 		}
+
+		$this->load->view('header');
 
 		$user = $this->ion_auth->forgotten_password_check($code);
 
@@ -381,12 +383,14 @@ class Auth extends CI_Controller {
 	// deactivate the user
 	public function deactivate($id = NULL)
 	{
-		$this->load->view('header');
+		
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
 		{
 			// redirect them to the home page because they must be an administrator to view this
 			return show_error('You must be an administrator to view this page.');
 		}
+
+		$this->load->view('header');
 
 		$id = (int) $id;
 
@@ -400,7 +404,9 @@ class Auth extends CI_Controller {
 			$this->data['csrf'] = $this->_get_csrf_nonce();
 			$this->data['user'] = $this->ion_auth->user($id)->row();
 
-			$this->_render_page('auth/deactivate_user', $this->data);
+			if (!empty($this->data['user']))
+				$this->_render_page('auth/deactivate_user', $this->data);
+			else show_404();
 		}
 		else
 		{
@@ -416,13 +422,130 @@ class Auth extends CI_Controller {
 				// do we have the right userlevel?
 				if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
 				{
-					$this->ion_auth->deactivate($id);
+					if ($this->ion_auth->user()->row()->id != $id)
+						$this->ion_auth->deactivate($id);
+					else show_error($this->lang->line('error_self_action'));
+
 				}
 			}
 
 			// redirect them back to the auth page
 			redirect('auth', 'refresh');
 		}
+		$this->load->view('footer');
+	}
+
+	// delete the user
+	public function delete($id = NULL)
+	{
+		
+		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
+		{
+			// redirect them to the home page because they must be an administrator to view this
+			redirect('auth', 'refresh');
+		}
+
+		$this->load->view('header');
+
+		$id = (int) $id;
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('confirm', $this->lang->line('delete_validation_confirm_label'), 'required');
+		$this->form_validation->set_rules('id', $this->lang->line('delete_validation_user_id_label'), 'required|alpha_numeric');
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			// insert csrf check
+			$this->data['csrf'] = $this->_get_csrf_nonce();
+			$this->data['user'] = $this->ion_auth->user($id)->row();
+
+			if (!empty($this->data['user']))
+				$this->_render_page('auth/delete_user', $this->data);
+			else show_404();
+		}
+		else
+		{
+			// do we really want to delete?
+			if ($this->input->post('confirm') == 'yes')
+			{
+				// do we have a valid request?
+				if ($this->_valid_csrf_nonce() === FALSE || $id != $this->input->post('id'))
+				{
+					show_error($this->lang->line('error_csrf'));
+				}
+
+				// do we have the right userlevel?
+				if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+				{
+					if ($this->ion_auth->user()->row()->id != $id)
+						$this->ion_auth->delete_user($id);
+					else show_error($this->lang->line('error_self_action'));
+				}
+			}
+
+			// redirect them back to the auth page
+			redirect('auth', 'refresh');
+		}
+
+		$this->load->view('footer');
+	}
+
+	// delete the user
+	public function delete_group($id = NULL)
+	{
+		
+		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
+		{
+			// redirect them to the home page because they must be an administrator to view this
+			redirect('auth', 'refresh');
+		}
+
+		$this->load->view('header');
+
+		$id = (int) $id;
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('confirm', $this->lang->line('delete_group_validation_confirm_label'), 'required');
+		$this->form_validation->set_rules('id', $this->lang->line('delete_group_validation_user_id_label'), 'required|alpha_numeric');
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			// insert csrf check
+			$this->data['csrf'] = $this->_get_csrf_nonce();
+			$this->data['group'] = $this->ion_auth->group($id)->row();
+
+			if (!empty($this->data['group']))
+				$this->_render_page('auth/delete_group', $this->data);
+			else show_404();
+		}
+		else
+		{
+			// do we really want to delete?
+			if ($this->input->post('confirm') == 'yes')
+			{
+				// do we have a valid request?
+				if ($this->_valid_csrf_nonce() === FALSE || $id != $this->input->post('id'))
+				{
+					show_error($this->lang->line('error_csrf'));
+				}
+
+				// do we have the right userlevel?
+				if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+				{
+					if ($id > 2) {
+						$this->ion_auth->delete_group($id);
+
+						$this->load->model('permission_model');
+						$this->permission_model->deletePermission($id);
+					}
+					else show_error($this->lang->line('error_master_group_action'));
+				}
+			}
+
+			// redirect them back to the auth page
+			redirect('auth', 'refresh');
+		}
+
 		$this->load->view('footer');
 	}
 

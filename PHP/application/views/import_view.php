@@ -39,13 +39,13 @@ $CI =& get_instance();
 						<div style="overflow: scroll; max-width: 100%">
 							<table class="table table-striped p-4">
 								<tr>
-									<th>Set this</th>
-									<th ng-repeat="(key, item) in headers" ng-if="key!=tableselect.table_pk&&!item.derived">
+									<th>Set this:</th>
+									<td ng-repeat="(key, item) in headers" ng-if="key!=tableselect.table_pk&&!item.derived">
 										{{ item.title }}
-									</th>
+									</td>
 								</tr>
 								<tr>
-									<th>To this</th>
+									<th>To this:</th>
 									<td ng-repeat="(key, item) in headers" ng-if="key!=tableselect.table_pk&&!item.derived">
 										{{ key }}
 									</td>

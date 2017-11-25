@@ -19,6 +19,8 @@
 
 // Errors
 $lang['error_csrf'] = 'This form post did not pass our security checks.';
+$lang['error_self_action'] = 'You cannot perform this upon yourself.';
+$lang['error_master_group_action'] = 'You cannot perform this action upon the master groups.';
 
 // Login
 $lang['login_heading']         = 'Login';
@@ -51,6 +53,25 @@ $lang['deactivate_confirm_n_label']          = 'No';
 $lang['deactivate_submit_btn']               = 'Submit';
 $lang['deactivate_validation_confirm_label'] = 'confirmation';
 $lang['deactivate_validation_user_id_label'] = 'user ID';
+
+// Deactivate User
+$lang['delete_heading']                  = 'Delete User';
+$lang['delete_subheading']               = 'Are you sure you want to delete the user \'%s\'';
+$lang['delete_confirm_y_label']          = 'Yes';
+$lang['delete_confirm_n_label']          = 'No';
+$lang['delete_submit_btn']               = 'Submit';
+$lang['delete_validation_confirm_label'] = 'confirmation';
+$lang['delete_validation_user_id_label'] = 'user ID';
+
+// Deactivate User
+$lang['delete_group_heading']                  = 'Delete Group';
+$lang['delete_group_subheading']               = 'Are you sure you want to delete the group \'%s\'';
+$lang['delete_group_confirm_y_label']          = 'Yes';
+$lang['delete_group_confirm_n_label']          = 'No';
+$lang['delete_group_submit_btn']               = 'Submit';
+$lang['delete_group_validation_confirm_label'] = 'confirmation';
+$lang['delete_group_validation_user_id_label'] = 'user ID';
+$lang['delete_group_link_btn']                  = 'Delete Group';
 
 // Create User
 $lang['create_user_heading']                           = 'Create User';

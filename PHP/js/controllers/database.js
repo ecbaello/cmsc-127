@@ -1,9 +1,11 @@
-app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChanged', function($scope, $http, $mdDialog, tables, tableChanged){
+app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChanged', '$mdMedia', function($scope, $http, $mdDialog, tables, tableChanged, $mdMedia){
 
 	// Table Information
 	$scope.data = [];
 	$scope.idName = '';
 	$scope.headers = [];
+
+	$scope.$mdMedia = $mdMedia;
 
 	$scope.fetchableCount = 0;
 

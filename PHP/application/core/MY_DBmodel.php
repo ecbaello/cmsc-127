@@ -219,7 +219,7 @@ class MY_DBmodel extends CI_Model
 		return $query[0]['table_field'];
 	}
 
-	public function select($fields = null) {
+	public function select($fields = null, $readheader = false) {
 		$select = '';
 		if ($fields == null) $fields = $this->getFieldAssociations();
 
@@ -228,20 +228,21 @@ class MY_DBmodel extends CI_Model
 			
 			if (!$first) $select .= ', ';
 			$first = false;
-			$select .= $this->selectHeader($field, $info);
+			$select .= $this->selectHeader($field, $info, $readheader);
 		}
 
 		$this->db->select($select, false);
 	}
 
-	public function selectHeader($field, $info) {
+	public function selectHeader($field, $info, $usetitle = false) {
 		$select = '';
 		if ($info[FLD_DERIVED]) {
 			$select .= $info[FLD_DERIVATION];
-			$select .= ' AS ';
-			$select .= $field;
+			$select .= ' AS "';
+			$select .= ($usetitle?$info[TBL_TITLE]:$field).'"';
 		} else {
 			$select .= '`'.$this->TableName.'`.`'.$field.'`';
+			if($usetitle) $select .= ' AS "'.$info[TBL_TITLE].'"';
 		}
 		return $select;
 	}
@@ -254,6 +255,17 @@ class MY_DBmodel extends CI_Model
 			array_push( $arr,  $item);
 		}
 		return $arr;
+	}
+
+	public function getAsCSV() {
+		$this->load->dbutil();
+
+		$fields = $this->getFieldAssociations();
+
+		$this->select($fields, true);
+		$query = $this->db->get($this->TableName);
+
+		return $this->dbutil->csv_from_result($query);
 	}
 
 	
@@ -283,10 +295,19 @@ class MY_DBmodel extends CI_Model
 				);
 			}
 
+			if ( $ordered ) {
+				$this->db->order_by(
+					$settings['order_by'],
+					isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
+				);
+			}
+
 			$this->db->start_cache();
 		}
 		else
 			$this->select($fields);
+
+		
 
 		if ( !empty($search) )
 			qry_evaluate($search, $this->db);
@@ -303,8 +324,6 @@ class MY_DBmodel extends CI_Model
 
 			$select = $this->db->get_compiled_select($this->TableName);
 
-			log_message('debug', $select);
-
 			$this->lastFindCount = $this->db->count_all_results($this->TableName);
 
 			$this->db->flush_cache();
@@ -320,9 +339,12 @@ class MY_DBmodel extends CI_Model
 			);
 		}
 
-		$result = $this->db->get($this->TableName);
 
-		log_message('debug', $select);
+
+		$this->db->from($this->TableName);
+		log_message('debug', $this->db->get_compiled_select(null, false));
+
+		$result = $this->db->get();
 
 		if (!$defjoin)
 			$this->lastFindCount = $result->num_rows();

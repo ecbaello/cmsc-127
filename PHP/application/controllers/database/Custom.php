@@ -10,9 +10,16 @@ class Custom extends CI_Controller {
 		$this->load->model('registry_model');
 	}
 
-	public function load($table_name = null, $method = null, $arg = null)
-	{
+	public function load() {
+		$arguments = func_get_args();
+
+		$table_name = isset($arguments[0])?$arguments[0]:null;
+
 		if ($table_name != null) {
+			if (isset($arguments[1])) $method = $arguments[1];
+			else $method = 'index';
+			unset($arguments[1]);
+
 			defined('NAV_SELECT') or define('NAV_SELECT', 1);
 			$custom = $this->registry_model->customtable($table_name);
 
@@ -25,19 +32,9 @@ class Custom extends CI_Controller {
 				$model->init();
 
 				$controller = new MY_DBcontroller($model);
-				if (empty($method)) {
-					$controller->index();
-				} else {
-					if (empty($arg)) {
-						$controller->{$method}();
-					} else {
-						$controller->{$method}($arg);
-					}
-				}
+
+				return call_user_func_array( array($controller, $method), $arguments);
 			} else show_404();
 		}
-		
 	}
-
-	
 }
