@@ -107,7 +107,6 @@ class Importer extends CI_Controller {
 
                 $this->load->helper("file");
                 delete_files($config['upload_path']); 
-
             }
 
         }

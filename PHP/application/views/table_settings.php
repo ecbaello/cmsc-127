@@ -7,9 +7,21 @@ $CI =& get_instance();
 	<md-content layout-padding>
 			<md-card class="p-0">
 				<md-toolbar>
-					<h5 class="md-toolbar-tools">Settings</h5>
+					<h5 class="md-toolbar-tools">Tools</h5>
 				</md-toolbar>
 				<md-tabs md-dynamic-height md-selected="0" md-align-tabs="top">
+					<md-tab id="ts-tab1">
+						<md-tab-label>General</md-tab-label>
+						<md-tab-body>
+							<div layout-padding>
+								<div>
+									<md-button class="md-primary md-raised" ng-click="download()">
+										Download
+									</md-button>
+								</div>
+							</div>
+						</md-tab-body>
+					</md-tab>
 					<md-tab id="ts-tab2">
 						<md-tab-label>Add Field</md-tab-label>
 						<md-tab-body>

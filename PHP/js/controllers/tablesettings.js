@@ -42,6 +42,10 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 		return null;
 	};
 
+	$scope.download = function() {
+		window.location.href = tables.downloadUrl();
+	};
+
 	$scope.addDToken = function() {
 		var data = angular.extend({}, $scope.newDToken);
 

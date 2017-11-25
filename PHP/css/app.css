@@ -302,3 +302,12 @@ form md-input-container {
 .link-grid-tile .fa {
 	font-size: 2em;
 }
+
+.cell-value {
+	white-space: nowrap;
+	word-break: normal;
+}
+
+.cell-TEXTAREA {
+	white-space: unset;
+}

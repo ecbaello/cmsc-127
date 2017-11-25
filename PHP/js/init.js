@@ -149,6 +149,10 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		reqpost('removefield', null, data, fsuccess, ferror);
 	};
 
+	tables.downloadUrl = function() {
+		return tableURL+'/export';
+	};
+
 	tables.types = 
 	{
 		TEXT: 'Text',
