@@ -33,7 +33,7 @@
 				<?php if (isset($extratables)): ?>
 				<?php 	foreach($extratables as $value): ?>
 				<md-grid-tile>
-					<a class="link-grid-tile" href="<?=base_url().'database/custom/'.urlencode($value->table_name)?>">
+					<a class="link-grid-tile" href="<?=base_url().'database/custom/load/'.urlencode($value->table_name)?>">
 						<?= $value->mdl_name ?>
 					</a>
 					
