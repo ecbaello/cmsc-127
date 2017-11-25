@@ -16,6 +16,8 @@ class Custom extends CI_Controller {
 		$table_name = isset($arguments[0])?$arguments[0]:null;
 
 		if ($table_name != null) {
+			unset($arguments[0]);
+
 			if (isset($arguments[1])) $method = $arguments[1];
 			else $method = 'index';
 			unset($arguments[1]);
