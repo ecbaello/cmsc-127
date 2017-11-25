@@ -4,32 +4,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <md-content ng-controller="pcfReport" ng-init="setURL('<?= isset($url)?$url:current_url() ?>','<?= isset($subtable) ? $subtable:' ' ?>')" layout-padding>
 	
-    <md-card>
-        <md-card-content>
-            <div>
-                <span class="md-headline font-weight-bold">Unreplenished Petty Cash <?= isset($subtable) ? 'For '.urldecode($subtable).' Fund':'' ?> </span>
-                <md-button class="md-icon-button md-raised" title="Export Table" ng-click='csvqr.generate()' ng-href="{{ csvqr.link() }}" download="pcf_report.csv">
-                    <i class="fa fa-download fa-lg"></i>
-                </md-button>
-                <div id="container">
+	<md-content>
+		<md-card>
+			<md-toolbar style="background-color:green">
+				<h5 class="md-toolbar-tools">Unreplenished Petty Cash <?= isset($subtable) ? 'For '.urldecode($subtable).' Fund':'' ?> </h5>
+				
+			</md-toolbar>
+			<md-card-content>
+				<md-button class="md-icon-button md-raised" title="Export Table" ng-click='csvqr.generate()' ng-href="{{ csvqr.link() }}" download="pcf_report.csv">
+					<i class="fa fa-download fa-lg"></i>
+				</md-button>
+				<div id="container">
 
-                    <table class="table table-striped table-bordered table-hover" export-csv="csvqr">
-                        <thead>
+					<table class="table table-striped table-bordered table-hover" export-csv="csvqr">
+						<thead>
 							<tr>
 								<th ng-repeat="(key, value) in table[0]">{{value}}</th>
 							</tr>
-                        </thead>
-                        <tbody>
+						</thead>
+						<tbody>
 							<tr ng-repeat="data in table" ng-if="!$first">
 								<td ng-repeat="(key,value) in data">{{value}}</td>
 							</tr>
-                        </tbody>
-                    </table>
+						</tbody>
+					</table>
 
-                </div>
-            </div>
-        </md-card-content>
-    </md-card>
+					</div>
+			</md-card-content>
+		</md-card>
+	</md-content>
 	
 	<md-content>
 		<md-card>

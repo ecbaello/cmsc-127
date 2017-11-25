@@ -3,9 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pcfreport extends MY_DBarraycontroller {
 
-	private $pcfDateName = 'pcf_date';
-    private $pcfIdName = 'pcf_type';
-
     public function __construct()
     {
         parent::__construct();
@@ -85,7 +82,7 @@ class Pcfreport extends MY_DBarraycontroller {
             $table['Allotted Fund'] = $data[$this->model->afFieldName];
             $table['Expense Threshold'] = $data[$this->model->etFieldName];
 
-            $grandtotal = $this->getExpenseTable($subtable,1);
+            $grandtotal = $this->model->getExpenses(1);
             try {
                 $grandtotal = end($grandtotal);
                 $grandtotal = array_pop($grandtotal);
@@ -105,7 +102,7 @@ class Pcfreport extends MY_DBarraycontroller {
 
     public function UnreplenishedPCF($subtable){
         $this->load->view('header');
-        $this->load->view('html',array("html"=>'<script src="'.base_url().'js/controllers/report.js"></script>'));
+        $this->makeHeader();
 
         $this->load->view('pcf_report', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))),'subtable'=>$subtable ));
 
@@ -145,12 +142,13 @@ class Pcfreport extends MY_DBarraycontroller {
 
 		
 		foreach($categories as $category){
+			$this->model = $this->switchModel($category);
 			$body = array();
 			array_push($body,$category);
 			
-			array_push($body,round($this->getExpense($category,null,date('Y'),date('Y-m-t',strtotime('Dec 31'))),2)); //Anual
-			array_push($body,round($this->getExpense($category,null,date('Y-m-d',$start_date),date('Y-m-d',$end_date)),2)); //Quarterly
-			array_push($body,round($this->getExpense($category,null,date('Y-m-01'),date('Y-m-t')),2)); //Monthly
+			array_push($body,round($this->model->getExpense(date('Y'),date('Y-m-t',strtotime('Dec 31'))),2)); //Anual
+			array_push($body,round($this->model->getExpense(date('Y-m-d',$start_date),date('Y-m-d',$end_date)),2)); //Quarterly
+			array_push($body,round($this->model->getExpense(date('Y-m-01'),date('Y-m-t')),2)); //Monthly
 			array_push($table,$body);
 		}
 		
@@ -166,9 +164,10 @@ class Pcfreport extends MY_DBarraycontroller {
 		
         $categories = $this->model->getCategories();
         foreach($categories as $subtable) {
+			$this->model = $this->switchModel($subtable);
             for ($i = 1; $i <= 12; $i++) {
 
-                $expenses[$subtable][date("F", mktime(0, 0, 0, $i, 10))] = $this->getExpense($subtable, null, date($year .'-'. $i . '-01'), date($year . '-'.$i . '-t'));
+                $expenses[$subtable][date("F", mktime(0, 0, 0, $i, 10))] = $this->model->getExpense(date($year .'-'. $i . '-01'), date($year . '-'.$i . '-t'));
 
             }
         }
@@ -177,57 +176,14 @@ class Pcfreport extends MY_DBarraycontroller {
         return $expenses;
     }
 
-    protected function getNumericalFields(){
-
-        $fields = $this->model->getFieldAssociations();
-        $numerics = array();
-
-        foreach($fields as $field => $attributes){
-            if($attributes['type'] == 'FLOAT'){
-                array_push($numerics,$field);
-            }
-        }
-
-        return $numerics;
-    }
-
-    //Get total from date 1 to date 2
-    public function getExpense($subtable,$action=null, $fromDate = null, $toDate=null){
-
-		$this->model = $this->switchModel($subtable);
-		
-        $subtable = $this->model->convertNameToCategory($subtable);
-        $numerics = $this->getNumericalFields();
-		
-        $numericsQuery = array();
-        foreach ($numerics as $field){
-            array_push($numericsQuery ,'SUM('.$field.')');
-        }
-
-        $this->db->select(implode(" + ",$numericsQuery).' as total');
-        $this->db->where($this->pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
-        $this->db->where($this->pcfIdName,$subtable);
-		
-        $result= $this->db->get($this->model->TableName)->result_array();
-
-        $total = $result[0]['total'];
-
-        if($action !==null)
-            echo json_encode(array('total'=>$total));
-
-        return $total === null ? 0:$total;
-
-    }
-
     public function getExpenseTable($subtable,$mode=0,$fromDate=null,$toDate=null){
-		
+		// mode 0 - all expenses
+		// mode 1 - unreplenished expenses
 		$subtable = urldecode($subtable);
 		$this->model = $this->switchModel($subtable);
-		
-        $category= $this->model->convertNameToCategory($subtable);
-        $numerics = $this->getNumericalFields();
         $table = array();
 
+		/** Header Names **/
         $fields = $this->model->getFields();
 		$firstField = reset($fields);
 
@@ -237,57 +193,19 @@ class Pcfreport extends MY_DBarraycontroller {
         }
         $headers['total']='Total';
         array_push($table,$headers);
-
-
-        $this->db->select(implode(' , ',$fields));
-        $this->db->select('('.implode(" + ",$numerics).') as total');
-        if($mode == 0) {
-            $this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
-            $this->db->where($this->pcfIdName, $category);
-        }
-        if($mode == 1){
-            $this->db->where($this->model->booleanFieldName,0);
-        }
-
-        $result = $this->db->get($this->model->TableName)->result_array();
+		/** **/
 		
-        foreach($result as $k=>$r){
+		
+		/** Table Body **/
+		$result = $this->model->getExpenses($mode,$fromDate,$toDate);
+		
+		foreach($result as $r){
 			if(isset($r['total']))
 				$r['total'] = round($r['total'],2);
             array_push($table,$r);
         }
-
-        $summations = array();
-        foreach ($numerics as $field){
-            array_push($summations, 'SUM(' . $field . ') as "'.$field.'"');
-        }
-
-        $this->db->select(implode(" , ",$summations));
-        if($mode == 0) {
-            $this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
-            $this->db->where($this->pcfIdName, $category);
-        }
-        if($mode == 1){
-            $this->db->where($this->model->booleanFieldName,0);
-        }
-        $result = $this->db->get($this->model->TableName)->result_array();
-
-        $subtotals = array();
-        $grandtotal = 0;
-        if(sizeof($result) > 0) {
-            foreach ($fields as $field) {
-                if(in_array($field,$numerics)) {
-                    $subtotals[$field] = round($result[0][$field],2);
-                    $grandtotal +=  $result[0][$field];
-                }else{
-                    $subtotals[$field] = '';
-                }
-            }
-            $subtotals['total'] = round($grandtotal,2);
-			$subtotals[$firstField]='Sub-Totals';
-        }
-
-        array_push($table,$subtotals);
+		
+		/** **/
 
         echo json_encode($table);
 		

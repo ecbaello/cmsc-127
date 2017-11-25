@@ -80,7 +80,6 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
     var interval = $interval(function () {
 		if($scope.series.length > 0){
 			$interval.cancel(interval);
-			$scope.$apply();
 		}
     }, 1000);
 	
