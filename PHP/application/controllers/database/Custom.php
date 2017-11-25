@@ -27,13 +27,9 @@ class Custom extends CI_Controller {
 
 			if (!empty($custom)) {
 				$custom = $custom->row();
-				$model = new MY_DBmodel;
-				$model->ModelTitle = $custom->mdl_name;
-				$model->TableName = $table_name;
-				$model->FieldPrefix = $custom->table_prefix; // validate not empty
-				$model->init();
 
-				$controller = new MY_DBcontroller($model);
+				$controller = new MY_DBcontroller();
+				$controller->loadCustom($custom->mdl_name, $table_name, $custom->table_prefix);
 
 				return call_user_func_array( array($controller, $method), $arguments);
 			} else show_404();

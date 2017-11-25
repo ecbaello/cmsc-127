@@ -64,14 +64,15 @@ class MY_DBmodel extends CI_Model
 
 		$class = get_class($this);
 
-		$this->registry_model->registerModel(
-			$this->ModelTitle,
-			($class == 'MY_DBmodel')?null:strtolower($class),
-			$this->isArrayModel?1:0,
-			$this->TableName,
-			$this->TablePrimaryKey,
-			$this->FieldPrefix
-		);
+		if (!($this->db->table_exists($this->TableName)))
+			$this->registry_model->registerModel(
+				$this->ModelTitle,
+				($class == 'MY_DBmodel')?null:strtolower($class),
+				$this->isArrayModel?1:0,
+				$this->TableName,
+				$this->TablePrimaryKey,
+				$this->FieldPrefix
+			);
 	}
 
 
@@ -353,6 +354,7 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function searches ($user) {
+		$this->load->model('search_model');
 		$this->db->select('id, search_query, query_title');
 		$this->db->where('user_id', $user);
 		$this->db->where('table_name', $this->TableName);

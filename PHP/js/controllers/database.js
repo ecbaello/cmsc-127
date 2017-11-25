@@ -118,8 +118,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	$scope.userFilters = {};
 	$scope.currentUserFilterId = -1;
 	$scope.filterChanged = function () {
-		console.log($scope.userFilters[$scope.currentUserFilterId]);
-		$scope.filter = $scope.userFilters[$scope.currentUserFilterId].search_query;
+		$scope.filter = angular.extend({},$scope.userFilters[$scope.currentUserFilterId].search_query);
 		$scope.currentUserFilterId = -1;
 	};
 	$scope.saveFilter = function(title) {
@@ -250,7 +249,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 	$scope.edit = function (index) {
 		$scope.cancel();
-		$scope.rowClone = $.extend({}, $scope.data[index]);
+		$scope.rowClone = angular.extend({}, $scope.data[index]);
 		$scope.isEdit = true;
 		$scope.editIndex = index;
 	};

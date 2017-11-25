@@ -43,7 +43,7 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 	};
 
 	$scope.addDToken = function() {
-		var data = $.extend({}, $scope.newDToken);
+		var data = angular.extend({}, $scope.newDToken);
 
 		data.type = 'field';
 
