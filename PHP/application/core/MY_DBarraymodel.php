@@ -21,20 +21,6 @@ class MY_DBarraymodel extends MY_DBmodel
 
     public function createCategoryTable()
     {
-        if (!($this->db->table_exists($this->categoryTableName))) {
-            $fields = array(
-                'pcf_type' => array(
-                    'type' => 'INT',
-                    'auto_increment' => TRUE
-                )
-            );
-            $this->dbforge->add_field($fields);
-            $this->dbforge->add_field("pcf_name VARCHAR(100) NOT NULL");
-            $this->dbforge->add_field("pcf_allotted_fund FLOAT NOT NULL DEFAULT 5000.0");
-            $this->dbforge->add_field("pcf_expense_threshold FLOAT NOT NULL DEFAULT 3000.0");
-            $this->dbforge->add_key('pcf_type', TRUE);
-            $this->dbforge->create_table($this->categoryTableName);
-        }
     }
 
 	public function getFieldAssociations() {
