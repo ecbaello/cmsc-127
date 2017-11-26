@@ -50,6 +50,7 @@ class Database_pcf_general_model extends MY_DBpcfmodel
 			$this->registerFieldTitle( 'pcf_water', 'Water', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_communications', 'Communications', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_other_expenses', 'Other Expenses', 'FLOAT');
+			$this->registerModel();
 		}
 	}
 
