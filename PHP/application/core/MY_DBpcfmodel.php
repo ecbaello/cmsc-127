@@ -135,9 +135,9 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 		
 		$this->db->select(implode(' , ',$fields));
         $this->db->select('('.implode(" + ",$numerics).') as total');
-		if($mode = 0)
+		if($mode == 0)
 			$this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
-		if($mode = 1)
+		if($mode == 1)
 			$this->db->where($this->booleanFieldName,0);
 		
         $result = $this->db->get($this->TableName)->result_array();
@@ -150,9 +150,9 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 
         $this->db->select(implode(" , ",$summations));
 		
-        if($mode = 0)
+        if($mode == 0)
 			$this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
-		if($mode = 1)
+		if($mode == 1)
 			$this->db->where($this->booleanFieldName,0);
 			
         $data = $this->db->get($this->TableName)->result_array();
