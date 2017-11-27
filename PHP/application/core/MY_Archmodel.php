@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Archmodel extends CI_Model
 {
 	
-	const metaTableName = 'fin_arch_meta';
+	const metaTableName = 'fin_db_meta_arch';
 	const fieldInputTypeField = 'table_field_input_type';
 	const fieldTypes = ['TEXT', 'TEXTAREA', 'CHECKBOX', 'FLOAT', 'NUMBER', 'DATE'];
 
@@ -32,13 +32,10 @@ class MY_Archmodel extends CI_Model
 		$this->load->database();
 		$this->load->dbforge();
 
-		$this->load->model('registry_model');
+		
 		$this->load->model('search_model');
-	}
 
-	public function init() {	
 		$this->createMetaTable();
-		$this->registerModel();
 		$this->createTable();
 	}
 
@@ -57,10 +54,13 @@ class MY_Archmodel extends CI_Model
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle( $this->TablePrimaryKey, '#');
+			$this->registerModel();
 		}
 	}
 
-	private function registerModel() {
+	protected function registerModel() {
+
+		$this->load->model('registry_model');
 
 		$class = get_class($this);
 
@@ -219,7 +219,7 @@ class MY_Archmodel extends CI_Model
 		return $query[0]['table_field'];
 	}
 
-	public function select($fields = null) {
+	public function select($fields = null, $readheader = false) {
 		$select = '';
 		if ($fields == null) $fields = $this->getFieldAssociations();
 
@@ -228,20 +228,21 @@ class MY_Archmodel extends CI_Model
 			
 			if (!$first) $select .= ', ';
 			$first = false;
-			$select .= $this->selectHeader($field, $info);
+			$select .= $this->selectHeader($field, $info, $readheader);
 		}
 
 		$this->db->select($select, false);
 	}
 
-	public function selectHeader($field, $info) {
+	public function selectHeader($field, $info, $usetitle = false) {
 		$select = '';
 		if ($info[FLD_DERIVED]) {
 			$select .= $info[FLD_DERIVATION];
-			$select .= ' AS ';
-			$select .= $field;
+			$select .= ' AS "';
+			$select .= ($usetitle?$info[TBL_TITLE]:$field).'"';
 		} else {
 			$select .= '`'.$this->TableName.'`.`'.$field.'`';
+			if($usetitle) $select .= ' AS "'.$info[TBL_TITLE].'"';
 		}
 		return $select;
 	}
@@ -254,6 +255,17 @@ class MY_Archmodel extends CI_Model
 			array_push( $arr,  $item);
 		}
 		return $arr;
+	}
+
+	public function getAsCSV() {
+		$this->load->dbutil();
+
+		$fields = $this->getFieldAssociations();
+
+		$this->select($fields, true);
+		$query = $this->db->get($this->TableName);
+
+		return $this->dbutil->csv_from_result($query);
 	}
 
 	
@@ -283,23 +295,25 @@ class MY_Archmodel extends CI_Model
 				);
 			}
 
+			if ( $ordered ) {
+				$this->db->order_by(
+					$settings['order_by'],
+					isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
+				);
+			}
+
 			$this->db->start_cache();
 		}
 		else
 			$this->select($fields);
+
+		
 
 		if ( !empty($search) )
 			qry_evaluate($search, $this->db);
 
 		if ( $defjoin )
 			$this->db->stop_cache();
-
-		if ( $ordered ) {
-			$this->db->order_by(
-				$settings['order_by'],
-				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
-			);
-		}
 
 		if ($defjoin) {
 
@@ -318,7 +332,19 @@ class MY_Archmodel extends CI_Model
 			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
 		}
 
-		$result = $this->db->get($this->TableName);
+		if ( $ordered ) {
+			$this->db->order_by(
+				$settings['order_by'],
+				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
+			);
+		}
+
+
+
+		$this->db->from($this->TableName);
+		log_message('debug', $this->db->get_compiled_select(null, false));
+
+		$result = $this->db->get();
 
 		if (!$defjoin)
 			$this->lastFindCount = $result->num_rows();
@@ -327,6 +353,7 @@ class MY_Archmodel extends CI_Model
 	}
 
 	public function searches ($user) {
+		$this->load->model('search_model');
 		$this->db->select('id, search_query, query_title');
 		$this->db->where('user_id', $user);
 		$this->db->where('table_name', $this->TableName);
@@ -391,8 +418,11 @@ class MY_Archmodel extends CI_Model
 	}
 
 	public function deleteWithPK($id) {
-		$this->db->where( $this->TablePrimaryKey, $id);
-	    return $this->db->delete( $this->TableName); 
+		if (is_array($id))
+			$this->db->where_in($this->TablePrimaryKey, $id);	
+		else
+			$this->db->where( $this->TablePrimaryKey, $id);
+		return $this->db->delete( $this->TableName); 
 	}
 
 	public function getByPK($id, $fields = null) {
@@ -471,8 +501,6 @@ class MY_Archmodel extends CI_Model
 			$this->db->where( "table_name", $this->TableName );
 
 			$done = $this->db->delete( self::metaTableName );
-
-
 
 			$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
 		}

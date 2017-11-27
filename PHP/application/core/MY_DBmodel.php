@@ -418,10 +418,23 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function deleteWithPK($id) {
-		if (is_array($id))
-			$this->db->where_in($this->TablePrimaryKey, $id);	
-		else
+		$fromtable = $this->TableName;
+		$totable = $fromtable."_arch";
+		if (is_array($id)){
+			$this->db->where_in($this->TablePrimaryKey, $id);
+			foreach($id as $id){
+				$condition = (string) $this->TablePrimaryKey;
+				$condition = $condition."=$id";
+				$tempsql = "INSERT INTO $totable SELECT * FROM $fromtable WHERE $condition";
+				$this->db->query($tempsql);
+			}
+		}else{
+			$condition = (string) $this->TablePrimaryKey;
+			$condition = $condition."=$id";
+			$tempsql = "INSERT INTO $totable SELECT * FROM $fromtable WHERE $condition";
+			$this->db->query($tempsql);
 			$this->db->where( $this->TablePrimaryKey, $id);
+		}
 		return $this->db->delete( $this->TableName); 
 	}
 
