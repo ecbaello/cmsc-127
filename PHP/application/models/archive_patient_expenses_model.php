@@ -15,12 +15,14 @@ class archive_patient_expenses_model extends MY_Archmodel
         		$this->TablePrimaryKey => array(
 	                'type' => 'INT',
 	                'constraint' => 9,
-	                'auto_increment' => TRUE
+	                'auto_increment' => FALSE
 	            )
        		);
 			$this->dbforge->add_field		($fields);
+			$this->dbforge->add_field		("pe_patient_name INT NOT NULL");
+			$this->dbforge->add_field		("pe_date_of_operation DATE NOT NULL");
+			$this->dbforge->add_field		("pe_date_discharged DATE NOT NULL");
 			$this->dbforge->add_field		("pe_hospital_bill numeric(12,2) DEFAULT 0.0");
-			$this->dbforge->add_field		("pe_laboratory numeric(12,2) DEFAULT 0.0");
 			$this->dbforge->add_field		("pe_medical_supplies numeric(12,2) DEFAULT 0.0");
 			$this->dbforge->add_field		("pe_travel numeric(12,2) DEFAULT 0.0");
 			$this->dbforge->add_field		("pe_meals numeric(12,2) DEFAULT 0.0");
@@ -32,14 +34,17 @@ class archive_patient_expenses_model extends MY_Archmodel
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle($this->TablePrimaryKey, '#');
+			$this->registerFieldTitle('pe_patient_name', 'Patient Name', 'NUMBER');
+			$this->registerFieldTitle('pe_date_of_operation', 'Date of Operation', 'DATE');
+			$this->registerFieldTitle('pe_date_discharged', 'Date Discharged', 'DATE');
 			$this->registerFieldTitle('pe_hospital_bill', 'Hospital Bill', 'FLOAT');
-			$this->registerFieldTitle('pe_laboratory', 'Laboratory', 'FLOAT');
 			$this->registerFieldTitle('pe_medical_supplies', 'Medical Supplies', 'FLOAT');
 			$this->registerFieldTitle('pe_travel', 'Travel', 'FLOAT');
 			$this->registerFieldTitle('pe_meals', 'Meals', 'FLOAT');
 			$this->registerFieldTitle('pe_other_expenses', 'Other Expenses', 'FLOAT');
 			$this->registerFieldTitle('pe_patients_counterpart', 'Patient\'s Counterpart', 'FLOAT');
 			$this->registerFieldTitle('pe_op_desc', 'Optional Description', 'TEXTAREA');
+			$this->registerModel();
 		}
 	}
 

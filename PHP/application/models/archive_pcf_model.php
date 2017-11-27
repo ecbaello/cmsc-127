@@ -4,10 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Archive_pcf_model extends MY_Archarraymodel
 {
 	public $ModelTitle = 'Petty Cash Fund Archives';
-	public $TableName = 'pcf_arch_type';
+	public $TableName = 'pcf';
 	public $TablePrimaryKey = 'pcf_expense_id';
 
-	public $categoryTableName = 'pcf_arch_type';
+	public $categoryTableName = 'pcf_type_table_arch';
 	public $arrayFieldName = 'pcf_type';
 	public $categoryFieldName = 'pcf_name';
 
@@ -60,7 +60,7 @@ class Archive_pcf_model extends MY_Archarraymodel
 			$fields = array(
         		$this->TablePrimaryKey => array(
 	                'type' => 'INT',
-	                'auto_increment' => TRUE
+	                'auto_increment' => FALSE
 	            )
        		);
 			$this->dbforge->add_field		($fields);
