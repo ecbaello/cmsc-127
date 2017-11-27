@@ -9,7 +9,6 @@ class Detchar extends MY_Archcontroller {
 		
 		$this->load->model('archive_detailed_charges_model');
 		$this->model = $this->archive_detailed_charges_model;
-		$this->model->init();
 	}
 	
 	
