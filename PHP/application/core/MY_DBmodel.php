@@ -418,8 +418,11 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function deleteWithPK($id) {
-		$this->db->where( $this->TablePrimaryKey, $id);
-	    return $this->db->delete( $this->TableName); 
+		if (is_array($id))
+			$this->db->where_in($this->TablePrimaryKey, $id);	
+		else
+			$this->db->where( $this->TablePrimaryKey, $id);
+		return $this->db->delete( $this->TableName); 
 	}
 
 	public function getByPK($id, $fields = null) {
@@ -498,8 +501,6 @@ class MY_DBmodel extends CI_Model
 			$this->db->where( "table_name", $this->TableName );
 
 			$done = $this->db->delete( self::metaTableName );
-
-
 
 			$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
 		}

@@ -285,7 +285,7 @@ form md-input-container {
 
 	border-radius: 10%;
 
-	padding: 5%;
+	padding: 1.5em;
 	background-color: rgba(224, 224, 224, 0.96);
 
 	transition: 0.2s;
@@ -295,12 +295,7 @@ form md-input-container {
 
 .link-grid-tile:hover {
 	text-decoration: none;
-	background-color: rgba(173, 173, 173, 0.96) !important;
 	color: black;
-}
-
-.link-grid-tile .fa {
-	font-size: 2em;
 }
 
 .cell-value {

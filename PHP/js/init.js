@@ -10,6 +10,8 @@ var app = angular.module('app', ['ngMaterial', 'ngMessages','chart.js', 'ngUploa
 	    .primaryPalette('green'); // specify primary color, all
 	                            // other color intentions will be inherited
 	                            // from default
+	}).run(function($rootScope, $mdColors) {
+    	$rootScope.$mdColors = $mdColors;
 	});
 
 var csrf = '';
@@ -151,6 +153,12 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 
 	tables.downloadUrl = function() {
 		return tableURL+'/export';
+	};
+
+	tables.rowsAction = function (perform, data, fsuccess, ferror) {
+		var link = '/rows';
+		link += encodeObject({action: perform});
+		reqpost(link, null, data, fsuccess, ferror);
 	};
 
 	tables.types = 

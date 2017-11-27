@@ -112,7 +112,11 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function export() {
-		if (!$this->permission_model->adminAllow()) return;
+
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
 
 		$this->load->helper('download');
 
@@ -136,15 +140,20 @@ class MY_DBcontroller extends CI_Controller
 
 	public function remove ($id) {
 
-		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
 
-			$this->model->deleteWithPK($id);
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 
-			echo json_encode(['success'=>true,'csrf' => $token,
-					'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		$success = $this->model->deleteWithPK($id);
+
+		echo json_encode(
+			[	'success' => $success,
+				'csrf' => $token,
+				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
 		
 	}
 
@@ -178,8 +187,41 @@ class MY_DBcontroller extends CI_Controller
 			)
 
 		, JSON_NUMERIC_CHECK);
-		
-		
+	}
+
+	public function rows() {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$action = $this->input->get('action');
+		$rows = json_decode($this->input->post('rows'), true);
+
+		$success = false;
+
+		switch ($action) {
+			case 'remove':
+
+				if ($this->getUserPermission() < PERMISSION_CHANGE) {
+					show_404();
+					return;
+				}
+
+				$success = $this->model->deleteWithPK($rows);
+				break;
+			
+			default:
+				show_404();
+				return;
+				break;
+		}
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	public function addfield () {

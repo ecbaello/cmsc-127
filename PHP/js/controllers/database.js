@@ -22,6 +22,36 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		lesser: 'is less than',
 	};
 
+	$scope.multiEdit = false;
+	$scope.selection = {};
+	$scope.toggleSelectAll = function(value) {
+		if (value) {
+			for (var i = 0; i < $scope.data.length; i++) {
+				$scope.selection[i] = true;
+			}
+		} else {
+			$scope.selection = {};
+		}
+	};
+	$scope.performSelectAction = function(action, refresh) {
+		// compile selection
+		var ids = [];
+		angular.forEach($scope.selection, function(value, key) {
+			if (value) 
+				this.push($scope.data[key][$scope.idName]);
+		}, ids);
+
+		tables.rowsAction(
+			'remove',
+			{rows: angular.toJson(ids)},
+			function (resultData) {
+				$scope.rebuild(false);
+			}, function () {
+				$scope.rebuild(true);
+			}
+			);
+	};
+
 	tableChanged.subscribe($scope, function() {
 		$scope.filter.rules = [];
 		$scope.rebuild(true);
@@ -34,6 +64,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	// Loading tables
 	$scope.rebuild = function(withHeaders) {
 		var data = {};
+
+		$scope.cancel();
 
 		if ($scope.filter.rules.length > 0) {
 			var filterQry = angular.toJson($scope.filter);
@@ -57,8 +89,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		gets.page = $scope.page;
 		gets.limit = $scope.limit;
 
-		$scope.editIndex = -1;
-
 		tables.get(
 			data,
 			function(resultData) {
@@ -72,12 +102,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 				$scope.fetchableCount = response.count;
 
-				//console.log(data);
 				$scope.serverRequesting = false;
-
-
 				$scope.$apply();
-
 
 			},
 			function() {
@@ -268,7 +294,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		if ($scope.isEdit) {
 			var subdata = {};
 
-			$.each($scope.headers, function(key, value) {
+			angular.forEach($scope.headers, function(value, key) {
 				if (!value.read_only) {
 					subdata[key] = $scope.data[index][key];
 				}
@@ -313,6 +339,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			if ($scope.isEdit) $scope.data[$scope.editIndex] = $scope.rowClone;
 			$scope.editIndex = -1;
 		}
+		$scope.selection = {};
 	};
 
 

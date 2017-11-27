@@ -15,7 +15,12 @@ if (!isset($permission)) $permission = -1;
 			<span class="md-headline font-weight-bold" flex><?= $title ?></span>
 			<span class="table-tools">
 				<div>
-					<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-focused'" class="md-icon-button" ng-click="hideFilter=!hideFilter">
+					<?php if ($permission >= PERMISSION_CHANGE): ?>
+					<md-button ng-class="!multiEdit?'':' md-focused'" class="md-icon-button" ng-click="multiEdit=!multiEdit; cancel()">
+						<i class="fa fa-check-square-o fa-lg"></i>
+					</md-button>
+					<?php endif ?>
+					<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-focused'" class="md-icon-button" ng-click="hideFilter=!hideFilter; cancel()">
 						<i class="fa fa-filter fa-lg"></i>
 					</md-button>
 					<?php if ($permission >= PERMISSION_ADD): ?>
@@ -165,12 +170,31 @@ if (!isset($permission)) $permission = -1;
 					</md-button>
 				</div>
 			</div>
+			<?php if ($permission >= PERMISSION_CHANGE): ?>
+			<div ng-hide="!multiEdit">
+				<div class="pl-2">Perform action on selected rows</div>
+				<md-button class="md-raised md-primary" ng-click="performSelectAction('ARCHIVE', false)">
+					Archive
+				</md-button>
+				<md-button class="md-raised md-primary" ng-click="performSelectAction('DOWNLOAD', false)">
+					Download
+				</md-button>
+				<md-button class="md-raised md-warn" ng-click="performSelectAction('DELETE', true)">
+					Delete
+				</md-button>
+				
+			</div>
+			<?php endif ?>
 			<?php /** Table **/ ?>
 			<div id="container">
 				
 					<table class="table table-striped table-bordered table-hover" ng-class="{'table-sm':(!$mdMedia('gt-sm'))}" id="db-table">
 						<thead>
 							<tr>
+								<th class="id-header" ng-if="multiEdit">
+									<md-checkbox class="mb-0" ng-model="selectAll" ng-init="selectAll=false" ng-change="toggleSelectAll(selectAll)">
+									</md-checkbox>
+								</th>
 								<th ng-repeat="(key, item) in headers" class="{{key==idName?'id-header':''}}">
 									<a class="no-decor" href="" ng-click="sort(key)">
 										{{ item['title'] }}
@@ -178,15 +202,19 @@ if (!isset($permission)) $permission = -1;
 									</a>
 								</th>
 								<?php if ($permission >= PERMISSION_CHANGE): ?>
-								<th></th>
+								<th ng-if="!multiEdit"></th>
 								<?php endif ?>
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="(index, value) in data" ng-class="{'row-update' : (index==editIndex && isEdit), 'row-edit' : (index==editIndex)}">
+								<td ng-if="multiEdit">
+									<md-checkbox class="mb-0" ng-model="selection[index]">
+									</md-checkbox>
+								</td>
 								<form no-validate>
 									<td ng-repeat="(key, item) in headers">
-										<span ng-class="" class="{{item.read_only?'':'cell-value '}}{{ key==sortHeader ? 'font-weight-bold' : '' }} cell-{{item.type}}">
+										<span class="{{item.read_only?'':'cell-value '}}{{ key==sortHeader ? 'font-weight-bold' : '' }} cell-{{item.type}}">
 											{{ item.prefix }}{{
 											<?= $CI->load->view('item_formatter', 
 											[ 
@@ -209,7 +237,7 @@ if (!isset($permission)) $permission = -1;
 
 									</td>
 									<?php if ($permission >= PERMISSION_CHANGE): ?>
-									<td class="toolbox">
+									<td ng-if="!multiEdit" class="toolbox">
 										<md-button class="btn-edit md-square md-primary" ng-click="edit(index)"><i class="fa fa-pencil"></i></md-button>
 										<md-button class="btn-edit md-square md-warn" ng-click="delete(index)"><i class="fa fa-trash"></i></md-button>
 										<md-button class="btn-confirm md-square md-raised md-accent" ng-click="send()"><i class="fa fa-check"></i></md-button>
@@ -273,7 +301,6 @@ if (!isset($permission)) $permission = -1;
 						</md-toolbar>
 						<form ng-cloak name="addform" ng-submit="add()">
 						<md-dialog-content>
-							
 								<div layout-padding>
 									<div ng-repeat="(key, item) in headers" ng-if="!item.read_only" class="md-block">
 										<?php echo $CI->load->view('input_switcher', 
@@ -287,7 +314,6 @@ if (!isset($permission)) $permission = -1;
 										
 									</div>
 								</div>
-							
 						</md-dialog-content>
 						<md-dialog-actions layout="row">
 							<md-button ng-disabled="!addform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
