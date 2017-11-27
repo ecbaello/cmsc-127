@@ -171,8 +171,12 @@ class MY_DBarraymodel extends MY_DBmodel
 	}
 
 	public function deleteFromCategoryTable($name, $pk) {
+		$fromtable = $this->TableName;
+		$totable = $fromtable."_arch";
+		$condition = $this->TablePrimaryKey."=$pk";
+		$tempsql = "INSERT INTO $totable SELECT * FROM $fromtable WHERE $condition";
+		$this->db->query($tempsql);
 		$table = $this->convertNameToCategory($name);
-
 		$this->db->where( $this->TablePrimaryKey, $pk);
 		$this->db->where( $this->arrayFieldName, $table);
 	    return $this->db->delete( $this->TableName ); 
