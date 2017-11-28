@@ -1,21 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Arch_pcf_general_model extends MY_Archarraymodel
+class Arch_pcf_general_model extends MY_Archpcfmodel
 {
-	public $ModelTitle = 'Petty Cash Fund: General';
+	public $ModelTitle = 'Petty Cash Fund Archive: General';
 	public $TableName = 'pcf_general_arch';
 	public $TablePrimaryKey = 'pcf_expense_id';
-
-	/**
-	* The constructor method
-	*
-	*/
-	public function __construct()
-	{
-		parent::__construct(); // do constructor for parent class
-		$this->init();
-	}
 
 
 	/**
@@ -31,7 +21,7 @@ class Arch_pcf_general_model extends MY_Archarraymodel
 			$fields = array(
         		$this->TablePrimaryKey => array(
 	                'type' => 'INT',
-	                'auto_increment' => TRUE
+	                'auto_increment' => FALSE
 	            )
        		);
 			$this->dbforge->add_field		($fields);
@@ -45,7 +35,7 @@ class Arch_pcf_general_model extends MY_Archarraymodel
 			$this->dbforge->add_field		("pcf_water FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_communications FLOAT DEFAULT 0.0");
 			$this->dbforge->add_field		("pcf_other_expenses FLOAT DEFAULT 0.0");
-            $this->dbforge->add_field		("replenished BOOLEAN DEFAULT 0");
+			$this->dbforge->add_field		($this->booleanFieldName." BOOLEAN DEFAULT 0");
 			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
@@ -60,6 +50,7 @@ class Arch_pcf_general_model extends MY_Archarraymodel
 			$this->registerFieldTitle( 'pcf_water', 'Water', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_communications', 'Communications', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_other_expenses', 'Other Expenses', 'FLOAT');
+			$this->registerModel();
 		}
 	}
 

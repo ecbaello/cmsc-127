@@ -2,14 +2,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Archarraymodel extends MY_Archmodel
 {
-    public $categoryTableName = 'pcf_type_table_arch';
-    public $arrayFieldName = 'pcf_type';
-    public $categoryFieldName = 'pcf_name';
-    public $categoryModelName = 'model_name';
-    public $booleanFieldName = 'replenished';
-
-    public $afFieldName = 'pcf_allotted_fund';
-    public $etFieldName = 'pcf_expense_threshold';
+	public $categoryTableName = '';
+	public $arrayFieldName = '';
+	public $categoryFieldName = '';
 
 	protected $isArrayModel = TRUE;
 
@@ -22,61 +17,10 @@ class MY_Archarraymodel extends MY_Archmodel
 		parent::__construct(); // do constructor for parent class
 
 		$this->createCategoryTable();
-
-        $this->registerCategoryTable('General','Arch_pcf_general_model');
-        $this->registerCategoryTable('Smile Train','Arch_pcf_smiletrain_model');
-        $this->registerCategoryTable('Cataract','Arch_pcf_cataract_model');
 	}
 
     public function createCategoryTable()
     {
-        if (!($this->db->table_exists($this->categoryTableName))) {
-            $fields = array(
-                'pcf_type' => array(
-                    'type' => 'INT',
-                    'auto_increment' => TRUE
-                )
-            );
-            $this->dbforge->add_field($fields);
-            $this->dbforge->add_field("pcf_name VARCHAR(100) NOT NULL");
-            $this->dbforge->add_field("model_name VARCHAR(100) NOT NULL");
-            $this->dbforge->add_key('pcf_type', TRUE);
-            $this->dbforge->create_table($this->categoryTableName);
-        }
-    }
-
-    public function getFieldsFromTypeTable($category,$fields=array()){
-	    $this->db->select(implode(',',$fields));
-	    $this->db->where($this->categoryFieldName,$category);
-	    $result =  $this->db->get($this->categoryTableName)->result_array();
-	    return isset($result[0]) ? $result[0]:$result;
-    }
-
-    public function replenish($tableName){
-        $this->db->where($this->booleanFieldName,0);
-        return $this->db->update($tableName,array($this->booleanFieldName=>1));
-    }
-
-    public function changeAllottedFund($category,$desiredFund){
-        $this->db->where($this->categoryFieldName,$category);
-        return $this->db->update($this->categoryTableName,array($this->afFieldName=>$desiredFund));
-    }
-
-    public function changeExpenseThreshold($category,$desiredThreshold){
-        $this->db->where($this->categoryFieldName,$category);
-        return $this->db->update($this->categoryTableName,array($this->etFieldName=>$desiredThreshold));
-    }
-
-    public function getModel($name){
-
-	    $this->db->select($this->categoryModelName);
-	    $this->db->where($this->categoryFieldName,$name);
-	    $result = $this->db->get($this->categoryTableName);
-
-	    if(!empty($result->result_array()))
-	        return $result->result_array()[0][$this->categoryModelName];
-	    else
-	        return '';
     }
 
 	public function getFieldAssociations() {
@@ -93,11 +37,10 @@ class MY_Archarraymodel extends MY_Archmodel
 		return $query;
 	}
 
-	public function registerCategoryTable($name, $modelName = '') {
+	public function registerCategoryTable($name) {
 		if ( !$this->checkCategoryExists($name) ) {
 			$data = array(
-			    $this->categoryFieldName => $name,
-                $this->categoryModelName => $modelName
+			    $this->categoryFieldName => $name
 			);
 			$this->db->insert($this->categoryTableName, $data);
 		}
@@ -229,7 +172,6 @@ class MY_Archarraymodel extends MY_Archmodel
 
 	public function deleteFromCategoryTable($name, $pk) {
 		$table = $this->convertNameToCategory($name);
-
 		$this->db->where( $this->TablePrimaryKey, $pk);
 		$this->db->where( $this->arrayFieldName, $table);
 	    return $this->db->delete( $this->TableName ); 

@@ -9,7 +9,6 @@ class Patientexp extends MY_Archcontroller {
 		
 		$this->load->model('archive_patient_expenses_model');
 		$this->model = $this->archive_patient_expenses_model;
-		$this->model->init();
 	}
 	
 }

@@ -1,12 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class My_Archcontroller extends CI_Controller
+class MY_Archcontroller extends CI_Controller
 {
 
-	protected $model = NULL;
+	protected $model = null;
 	protected $userPermission = null;
 
-	public function __construct($model = null)
+	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
 
@@ -15,11 +15,13 @@ class My_Archcontroller extends CI_Controller
 
 		$this->load->model('permission_model');
 
-		if (!empty($model)) {
-			$this->model = $model;
-		}
-
 		defined('NAV_SELECT') or define('NAV_SELECT', 5);
+	}
+
+	public function loadCustom ($ModelTitle, $TableName, $FieldPrefix) {
+		$this->load->model('custom_model');
+		$this->model = $this->custom_model;
+		$this->model->loadCustom($ModelTitle, $TableName, $FieldPrefix);
 	}
 
 	public function index() {
@@ -28,6 +30,14 @@ class My_Archcontroller extends CI_Controller
 
 	protected function getAccessURL($file_url) {
 		return preg_replace('/\\.[^.\\s]{2,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
+	}
+
+	protected function loggedIn() {
+		return $this->permission_model->ion_auth->logged_in();
+	}
+
+	protected function getUser() {
+		return $this->permission_model->ion_auth->user()->row()->id;
 	}
 
 	protected function getUserPermission() {
@@ -39,6 +49,9 @@ class My_Archcontroller extends CI_Controller
 
 		$this->makeTableHTML();
 
+		if ($this->getUserPermission() >= PERMISSION_ALTER)
+			$this->load->view('table_settings');
+
 		$this->load->view('footer');
 	}
 
@@ -48,7 +61,7 @@ class My_Archcontroller extends CI_Controller
 
 	public function makeTableHTML()
 	{
-		$this->load->view('Arch_table', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
+		$this->load->view('arch_table', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 	}
 
 
@@ -63,122 +76,215 @@ class My_Archcontroller extends CI_Controller
 		], JSON_NUMERIC_CHECK);
 	}
 
-	public function filters ($action) {
-		if ($action == 'add') {
-			$this->model->saveSearch( $this->input->post('data') );
-		} else if ($action == 'remove') {
-			$this->model->saveSearch( $this->input->post('data') );
+	public function filters ($action = null, $id = null) {
+		if (!$this->loggedIn()) {
+			show_404();
+			return;
 		}
+
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$return = [
+			'csrf' => $token,
+			'csrf_hash' => $hash
+		];
+
+		if ($action == 'add') {
+			$title = $this->input->post('title');
+			$data = $this->input->post('data');
+			if ( !empty($title) && !empty($data) )
+				$this->model->saveSearch( $title, $data, $this->getUser());
+		} else if ($action == 'remove') {
+			if ( !empty($id) )
+				$this->model->removeSearch( $id, $this->getUser());
+		} else if ($action == 'update') {
+			$data = $this->input->post('data');
+			if ( !empty($id) && !empty($data) )
+				$this->model->updateSearch( $id, $this->getUser(), $data);
+		} else {
+			$return['data'] = $this->model->getSearches( $this->getUser() );
+		}
+		echo json_encode (
+			$return,
+			JSON_NUMERIC_CHECK
+		);
+	}
+
+	public function export() {
+
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$this->load->helper('download');
+
+		$name = $this->model->ModelTitle.' - '.date("D M d, Y").'(exported).csv';
+		$data = $this->model->getAsCSV();
+
+		force_download($name, $data, true);
 	}
 
 	public function update ($id) {
 
-		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
-			$insert = json_decode($this->input->post('data'), true);
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
 
-	    	$this->model->updateWithPK($id, $insert);
-	   
-	    	$this->get($id);
-		} else $this->permissionError();
+		$insert = json_decode($this->input->post('data'), true);
+    	$this->model->updateWithPK($id, $insert);
+    	$this->get($id);
 	}
 
 	public function remove ($id) {
 
-		if ($this->getUserPermission() >= PERMISSION_CHANGE) {
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
 
-			$this->model->deleteWithPK($id);
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 
-			echo json_encode(['success'=>true,'csrf' => $token,
-					'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		$success = $this->model->deleteWithPK($id);
+
+		echo json_encode(
+			[	'success' => $success,
+				'csrf' => $token,
+				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
 		
 	}
 
 	public function add () {
 
-		if ($this->getUserPermission() >= PERMISSION_ADD) {
-			$insert = json_decode($this->input->post('data'), true);
+		if ($this->getUserPermission() < PERMISSION_ADD) {
+			show_404();
+			return;
+		}
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		$insert = json_decode($this->input->post('data'), true);
 
-			$inputs = $this->model->getFields();
-			$arr = array();
-			foreach ($inputs as $input) {
-				if (isset($insert[$input])) {
-					$arr[$input] = $insert[$input]; 
-				}
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$inputs = $this->model->getFields();
+		$arr = array();
+		foreach ($inputs as $input) {
+			if (isset($insert[$input])) {
+				$arr[$input] = $insert[$input]; 
 			}
-			
-			$success = $this->model->insertIntoTable($arr);
-
-			echo json_encode( 
-				array(
-					'csrf' => $token,
-					'csrf_hash' => $hash,
-					'success' => $success
-				)
-
-			, JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		}
 		
+		$success = $this->model->insertIntoTable($arr);
+
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
+	}
+
+	public function rows() {
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$action = $this->input->get('action');
+		$rows = json_decode($this->input->post('rows'), true);
+
+		$success = false;
+
+		switch ($action) {
+			case 'remove':
+
+				if ($this->getUserPermission() < PERMISSION_CHANGE) {
+					show_404();
+					return;
+				}
+
+				$success = $this->model->deleteWithPK($rows);
+				break;
+			
+			default:
+				show_404();
+				return;
+				break;
+		}
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	public function addfield () {
 
-		if ($this->getUserPermission() >= PERMISSION_ALTER) {
-			$data = json_decode($this->input->post('data'), true);
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		$data = json_decode($this->input->post('data'), true);
 
-			$prefix = null;
-			$suffix = null;
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 
-			if (isset($data['prefix'])) $prefix = $data['prefix'];
-			if (isset($data['suffix'])) $suffix = $data['suffix'];
+		$prefix = null;
+		$suffix = null;
+		$required = false;
 
-			$success = false;
-			if ($data['derived']) {
-				$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix);
-			} else {
-				$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
-			}
+		if (isset($data['prefix'])) $prefix = $data['prefix'];
+		if (isset($data['suffix'])) $suffix = $data['suffix'];
+		if (isset($data['required'])) $required = $data['required'];
 
-			echo json_encode( 
-				array(
-					'csrf' => $token,
-					'csrf_hash' => $hash,
-					'success' => $success
-				)
+		$success = false;
+		if ($data['derived']) {
+			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix, $required);
+		} else {
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
+		}
 
-			, JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 
 		
 	}
 
 	public function removefield () {
 
-		if ($this->getUserPermission() >= PERMISSION_ALTER) {
-			$key = $this->input->post('header');
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;	
+		}
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
+		$key = $this->input->post('header');
 
-			$success = $this->model->removeField($key);
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
 
-			echo json_encode( 
-				array(
-					'csrf' => $token,
-					'csrf_hash' => $hash,
-					'success' => $success
-				)
+		$success = $this->model->removeField($key);
 
-			, JSON_NUMERIC_CHECK);
-		} else $this->permissionError();
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 
 		
 	}
