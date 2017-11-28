@@ -173,13 +173,13 @@ if (!isset($permission)) $permission = -1;
 			<?php if ($permission >= PERMISSION_CHANGE): ?>
 			<div ng-hide="!multiEdit">
 				<div class="pl-2">Perform action on selected rows</div>
-				<md-button class="md-raised md-primary" ng-click="performSelectAction('ARCHIVE', false)">
+				<md-button class="md-raised md-primary" ng-click="performSelectAction('archive', false)">
 					Archive
 				</md-button>
-				<md-button class="md-raised md-primary" ng-click="performSelectAction('DOWNLOAD', false)">
+				<md-button class="md-raised md-primary" ng-click="downloadSelected()">
 					Download
 				</md-button>
-				<md-button class="md-raised md-warn" ng-click="performSelectAction('DELETE', true)">
+				<md-button class="md-raised md-warn" ng-click="performSelectAction('remove', true)">
 					Delete
 				</md-button>
 				

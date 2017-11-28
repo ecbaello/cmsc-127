@@ -257,12 +257,13 @@ class MY_DBmodel extends CI_Model
 		return $arr;
 	}
 
-	public function getAsCSV() {
+	public function getAsCSV($ids = null) {
 		$this->load->dbutil();
 
 		$fields = $this->getFieldAssociations();
 
 		$this->select($fields, true);
+		if ( is_array($ids) ) $this->db->where_in($this->TablePrimaryKey, $ids);
 		$query = $this->db->get($this->TableName);
 
 		return $this->dbutil->csv_from_result($query);

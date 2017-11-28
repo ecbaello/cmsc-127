@@ -18,10 +18,14 @@ class MY_DBcontroller extends CI_Controller
 		defined('NAV_SELECT') or define('NAV_SELECT', 1);
 	}
 
-	public function loadCustom ($ModelTitle, $TableName, $FieldPrefix) {
+	public function _loadCustom ($ModelTitle, $TableName, $FieldPrefix) {
 		$this->load->model('custom_model');
 		$this->model = $this->custom_model;
 		$this->model->loadCustom($ModelTitle, $TableName, $FieldPrefix);
+	}
+
+	public function _useModel ($model) {
+		$this->model = $model;
 	}
 
 	public function index() {
@@ -113,15 +117,25 @@ class MY_DBcontroller extends CI_Controller
 
 	public function export() {
 
-		if ($this->getUserPermission() < PERMISSION_ALTER) {
+		$permission = $this->getUserPermission();
+
+		if ($permission < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$rows = $this->input->get('rows');
+
+		if (!empty($rows)) $rows = json_decode($rows);
+		else if ($permission < PERMISSION_ALTER) {
 			show_404();
 			return;
 		}
 
 		$this->load->helper('download');
 
-		$name = $this->model->ModelTitle.' - '.date("D M d, Y").'(exported).csv';
-		$data = $this->model->getAsCSV();
+		$name = $this->model->ModelTitle.' - '.date("D M d, Y").'('.(empty($rows)?'':'partial, ').'exported).csv';
+		$data = $this->model->getAsCSV($rows);
 
 		force_download($name, $data, true);
 	}
@@ -190,6 +204,12 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 	public function rows() {
+
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
 
@@ -198,14 +218,10 @@ class MY_DBcontroller extends CI_Controller
 
 		$success = false;
 
+		$this->load->helper('download');
+
 		switch ($action) {
 			case 'remove':
-
-				if ($this->getUserPermission() < PERMISSION_CHANGE) {
-					show_404();
-					return;
-				}
-
 				$success = $this->model->deleteWithPK($rows);
 				break;
 			

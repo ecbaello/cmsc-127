@@ -6,6 +6,8 @@ class MY_DBarraymodel extends MY_DBmodel
 	public $arrayFieldName = '';
 	public $categoryFieldName = '';
 
+	private $selectedSubtable = '';
+
 	protected $isArrayModel = TRUE;
 
 	/**
@@ -53,76 +55,26 @@ class MY_DBarraymodel extends MY_DBmodel
 
 	public function find ($subtable, $search = null, $settings = [], $fields = null)
 	{	
-		// Separate querying name
-		$name = $this->convertNameToCategory($subtable);
+		if ($search == null)
+			$search = [];
 
-		$this->load->helper("query_helper");
+		$tableIndex = $this->convertNameToCategory($subtable);
 
-		if ($fields == null) $fields = $this->getFieldAssociations();
+		$condition = [	'condition'	=> null,
+						'header'	=>
+							[	'key'		=> $this->arrayFieldName,
+								'derived'	=> false,
+								'derivation'=> null
+							],
+						'operation'	=> 'equals',
+						'values'	=> [$tableIndex]
+					];
 
-		$this->db->reset_query();
+		array_push($search, $condition);
 
-		$defjoin = isset( $settings['limit_by'] );
-		$ordered = isset( $settings['order_by']);
+		$search = ['condition'=>'AND', 'rules'=>$search, 'not'=>false];
 
-		// Use deffered join for limit N offset X
-		// We search only for the Primary Keys of the rows we need
-		// Then we use join for SQL to only fetch those rows.
-		// More efficient because Primary Keys are stored differently on disk
- 
-		if ($defjoin) {
-			$this->db->select( $this->TablePrimaryKey );
-
-			if ($ordered && $this->TablePrimaryKey != $settings['order_by']) {
-				$this->db->select(
-					$this->selectHeader($settings['order_by'], $fields[ $settings['order_by'] ]), 
-					false
-				);
-			}
-
-			$this->db->start_cache();
-		}
-		else
-			$this->select($fields);
-
-		if ( !empty($search) )
-			qry_evaluate($search, $this->db);
-
-		$this->db->where($this->arrayFieldName, $name);
-
-		if ( $defjoin )
-			$this->db->stop_cache();
-
-		if ( $ordered ) {
-			$this->db->order_by(
-				$settings['order_by'],
-				isset( $settings['order_dir'] ) ? $settings['order_dir'] : ''
-			);
-		}
-
-		if ($defjoin) {
-
-			$this->db->limit(
-				$settings['limit_by'],
-				isset( $settings['limit_offset'] ) ? $settings['limit_offset'] : 0
-			);
-
-			$select = $this->db->get_compiled_select($this->TableName);
-
-			$this->lastFindCount = $this->db->count_all_results($this->TableName);
-
-			$this->db->flush_cache();
-
-			$this->select($fields);
-			$this->db->join('('.$select.') as t', 't.'.$this->TablePrimaryKey.' = '.$this->TableName.'.'.$this->TablePrimaryKey, '', FALSE );
-		}
-
-		$result = $this->db->get($this->TableName);
-
-		if (!$defjoin)
-			$this->lastFindCount = $result->num_rows();
-
-		return $result;
+		return parent::find($search, $settings, $fields);
 	}
 
 	public function checkCategoryExists($name) {
@@ -156,18 +108,13 @@ class MY_DBarraymodel extends MY_DBmodel
 
 	public function insertIntoCategoryTable($name, $values) {
 		$values[$this->arrayFieldName] = $this->convertNameToCategory($name);
-		return $this->insertIntoTable($values);
+		return parent::insertIntoTable($values);
 	}
 
 	public function updateOnCategoryTable($name, $pk, $values) {
-		$mvalues = $values;
-		unset($mvalues[$this->TablePrimaryKey]);
-		
-		$mvalues[$this->arrayFieldName] = $this-> convertNameToCategory($name);
-
-		$this->db->where( $this->TablePrimaryKey, $pk);
-
-	    return $this->db->update( $this->TableName, $mvalues); 
+		unset($values[$this->arrayFieldName]);
+		$this->db->where( $this->arrayFieldName, $this-> convertNameToCategory($name));
+	    return $this->updateWithPK($pk, $values); 
 	}
 
 	public function deleteFromCategoryTable($name, $pk) {
@@ -175,7 +122,7 @@ class MY_DBarraymodel extends MY_DBmodel
 
 		$this->db->where( $this->TablePrimaryKey, $pk);
 		$this->db->where( $this->arrayFieldName, $table);
-	    return $this->db->delete( $this->TableName ); 
+	    return parent::deleteWithPK( $pk ); 
 	}
 
 	public function convertNameToCategory($name) {

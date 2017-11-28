@@ -155,11 +155,19 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		return tableURL+'/export';
 	};
 
+	tables.downloadRowsUrl = function (ids) {
+		var link = tableURL+'/export';
+		link += encodeObject({rows: angular.toJson(ids)});
+		return link;
+	};
+
 	tables.rowsAction = function (perform, data, fsuccess, ferror) {
 		var link = '/rows';
 		link += encodeObject({action: perform});
 		reqpost(link, null, data, fsuccess, ferror);
 	};
+
+	
 
 	tables.types = 
 	{

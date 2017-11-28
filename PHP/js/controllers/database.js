@@ -22,6 +22,16 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		lesser: 'is less than',
 	};
 
+
+	function getSelectedRows() {
+		// compile selection
+		var ids = [];
+		angular.forEach($scope.selection, function(value, key) {
+			if (value) 
+				this.push($scope.data[key][$scope.idName]);
+		}, ids);
+		return ids;
+	}
 	$scope.multiEdit = false;
 	$scope.selection = {};
 	$scope.toggleSelectAll = function(value) {
@@ -34,22 +44,21 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		}
 	};
 	$scope.performSelectAction = function(action, refresh) {
-		// compile selection
-		var ids = [];
-		angular.forEach($scope.selection, function(value, key) {
-			if (value) 
-				this.push($scope.data[key][$scope.idName]);
-		}, ids);
+		var ids = getSelectedRows();
 
 		tables.rowsAction(
-			'remove',
+			action,
 			{rows: angular.toJson(ids)},
 			function (resultData) {
-				$scope.rebuild(false);
+				if (refresh) $scope.rebuild(false);
 			}, function () {
 				$scope.rebuild(true);
 			}
 			);
+	};
+	$scope.downloadSelected = function() {
+		var ids = getSelectedRows();
+		window.location.href = tables.downloadRowsUrl(ids);
 	};
 
 	tableChanged.subscribe($scope, function() {

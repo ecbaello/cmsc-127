@@ -29,7 +29,7 @@ class Custom extends CI_Controller {
 				$custom = $custom->row();
 
 				$controller = new MY_DBcontroller();
-				$controller->loadCustom($custom->mdl_name, $table_name, $custom->table_prefix);
+				$controller->_loadCustom($custom->mdl_name, $table_name, $custom->table_prefix);
 
 				return call_user_func_array( array($controller, $method), $arguments);
 			} else show_404();
