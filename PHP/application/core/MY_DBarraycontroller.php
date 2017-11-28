@@ -5,11 +5,12 @@ class MY_DBarraycontroller extends CI_Controller {
 	public $model = NULL;
 	protected $userPermission = null;
 	
-	protected $filepath = __FILE__; 
+	protected $filepath = ''; 
 	
-	public function __construct()
+	public function __construct($file = __FILE__)
 	{
 		parent::__construct(); // do constructor for parent class
+		$this->filepath = $file;
 
 		$this->load->model('permission_model');
 
@@ -51,8 +52,17 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->view('model_selector', $settings);
 	}
 
-	// next up: use id variable for pagination
-	public function table($subtable = null, $action = null, $arg0 = null, $arg1 = 0) {
+	public function table() {
+		$arguments = func_get_args();
+
+		$subtable = isset($arguments[0])?$arguments[0]:null;
+		$action = isset($arguments[1])?$arguments[1]:null;
+
+		unset($arguments[0]);
+		unset($arguments[1]);
+
+		$arg0 = isset($arguments[2])?$arguments[2]:null;
+		$arg1 = isset($arguments[3])?$arguments[3]:null;
 		
 		if ($subtable !== null) {
 			$subtable = urldecode($subtable);
@@ -110,7 +120,12 @@ class MY_DBarraycontroller extends CI_Controller {
 						break;
 					
 					default:
-						show_404();
+						if (!method_exists($this, $action) )
+						{
+							show_404();
+							return;
+						}
+						return call_user_func_array( array($this, $action), $arguments);
 						break;
 				}
 
@@ -139,6 +154,68 @@ class MY_DBarraycontroller extends CI_Controller {
 				'csrf_hash' => $hash
 			]
 		);
+	}
+
+	protected function export() {
+
+		$permission = $this->getUserPermission();
+
+		if ($permission < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$rows = $this->input->get('rows');
+
+		if (!empty($rows)) $rows = json_decode($rows);
+		else if ($permission < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$this->load->helper('download');
+
+		$name = $this->model->ModelTitle.' - '.date("D M d, Y").'('.(empty($rows)?'':'partial, ').'exported).csv';
+		$data = $this->model->getAsCSV($rows);
+
+		force_download($name, $data, true);
+	}
+
+	protected function rows() {
+
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$token = $this->security->get_csrf_token_name();
+		$hash = $this->security->get_csrf_hash();
+
+		$action = $this->input->get('action');
+		$rows = json_decode($this->input->post('rows'), true);
+
+		$success = false;
+
+		$this->load->helper('download');
+
+		switch ($action) {
+			case 'remove':
+				$success = $this->model->deleteWithPK($rows);
+				break;
+			
+			default:
+				show_404();
+				return;
+				break;
+		}
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
 	}
 
 	protected function addfield () {
@@ -180,6 +257,23 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		$success = $this->model->removeField($key);
 
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
+
+		, JSON_NUMERIC_CHECK);
+	}
+
+	public function addCategory()
+	{
+		$success = false;
+		$name = $this->input->post('title');
+
+		if (!empty($name))
+			$success = $this->registerCategoryTable($name);
 		echo json_encode( 
 			array(
 				'csrf' => $token,

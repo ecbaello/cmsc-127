@@ -62,16 +62,19 @@ class MY_DBmodel extends CI_Model
 
 		$this->load->model('registry_model');
 
-		$class = get_class($this);
-
 		$this->registry_model->registerModel(
 			$this->ModelTitle,
-			($class == 'MY_DBmodel')?null:strtolower($class),
+			$this->getModelClass(),
 			$this->isArrayModel?1:0,
 			$this->TableName,
 			$this->TablePrimaryKey,
 			$this->FieldPrefix
 		);
+	}
+
+	protected function getModelClass() {
+		$class = get_class($this);
+		return ($class == 'MY_DBmodel')?null:strtolower($class);
 	}
 
 

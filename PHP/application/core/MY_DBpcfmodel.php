@@ -19,7 +19,6 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
-		$this->createCategoryTable();
 		
 		$this->registerCategoryTable('General','database_pcf_general_model');
         $this->registerCategoryTable('Smile Train','database_pcf_smiletrain_model');

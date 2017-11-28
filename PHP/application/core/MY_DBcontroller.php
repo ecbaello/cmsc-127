@@ -21,7 +21,7 @@ class MY_DBcontroller extends CI_Controller
 	public function _loadCustom ($ModelTitle, $TableName, $FieldPrefix) {
 		$this->load->model('custom_model');
 		$this->model = $this->custom_model;
-		$this->model->loadCustom($ModelTitle, $TableName, $FieldPrefix);
+		return $this->model->loadCustom($ModelTitle, $TableName, $FieldPrefix);
 	}
 
 	public function _useModel ($model) {
@@ -69,7 +69,7 @@ class MY_DBcontroller extends CI_Controller
 	}
 
 
-	public function get ($id) {
+	public function get ($id = null) {
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();
     	echo json_encode( 
@@ -140,7 +140,7 @@ class MY_DBcontroller extends CI_Controller
 		force_download($name, $data, true);
 	}
 
-	public function update ($id) {
+	public function update ($id = null) {
 
 		if ($this->getUserPermission() < PERMISSION_CHANGE) {
 			show_404();
@@ -152,7 +152,7 @@ class MY_DBcontroller extends CI_Controller
     	$this->get($id);
 	}
 
-	public function remove ($id) {
+	public function remove ($id = null) {
 
 		if ($this->getUserPermission() < PERMISSION_CHANGE) {
 			show_404();

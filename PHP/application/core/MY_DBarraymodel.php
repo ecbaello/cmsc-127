@@ -23,6 +23,18 @@ class MY_DBarraymodel extends MY_DBmodel
 
     public function createCategoryTable()
     {
+    	if (!($this->db->table_exists($this->categoryTableName))) {
+            $fields = array(
+                $this->arrayFieldName => array(
+                    'type' => 'INT',
+                    'auto_increment' => TRUE
+                )
+            );
+            $this->dbforge->add_field($fields);
+            $this->dbforge->add_field($this->categoryFieldName.' VARCHAR(100) NOT NULL');
+            $this->dbforge->add_key($this->arrayFieldName, TRUE);
+            $this->dbforge->create_table($this->categoryTableName);
+        }
     }
 
 	public function getFieldAssociations() {

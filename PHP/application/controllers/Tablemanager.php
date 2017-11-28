@@ -36,7 +36,7 @@ class Tablemanager extends CI_Controller {
 			$title = self::prefix.str_replace(' ', '_', $name);
 			
 			$this->load->model('custom_model');
-            $this->custom_model->loadCustom($custom->mdl_name, $table, $custom->table_prefix);
+            $this->custom_model->loadCustom($name, $title, $prefix);
 			$this->custom_model->createTableWithID();
 
 			echo json_encode(

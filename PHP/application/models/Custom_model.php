@@ -14,6 +14,12 @@ class Custom_model extends MY_DBmodel
 		$this->ModelTitle = $ModelTitle;
 		$this->TableName = $TableName;
 		$this->FieldPrefix = $FieldPrefix;
+
+		return $this->db->table_exists($this->TableName);
+	}
+
+	protected function getModelClass() {
+		return null;
 	}
 }
 
