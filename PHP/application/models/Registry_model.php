@@ -53,6 +53,22 @@ class Registry_model extends CI_Model
 	                'constraint' => 1,
 	                'default'=>0
 	            )
+	            ,
+	            'table_array_table' => array(
+	                'type' => 'VARCHAR',
+	                'constraint' => 100,
+	                'default'=>null
+	            ),
+	            'table_array_id' => array(
+	                'type' => 'VARCHAR',
+	                'constraint' => 100,
+	                'default'=>null
+	            ),
+	            'table_array_title' => array(
+	                'type' => 'VARCHAR',
+	                'constraint' => 100,
+	                'default'=>null
+	            )
        		);
 
 			$this->dbforge->add_field		($fields);
@@ -61,7 +77,7 @@ class Registry_model extends CI_Model
 		}
 	}
 
-	public function registerModel($title, $class, $array, $tablename, $pk, $prefix = null, $private = false) {
+	public function registerModel($title, $class, $array, $tablename, $pk, $prefix = null, $private = false, $arrayTable = null, $arrayId = null, $arrayTitle = null) {
 		return $this->db->insert(self::modelTableName,
 			array(
 				MDL_NAME => $title,
@@ -70,7 +86,10 @@ class Registry_model extends CI_Model
 				'table_name' => $tablename,
 				'table_prefix' => $prefix,
 				'table_pk' => $pk,
-				'private' => $private
+				'private' => $private,
+				'table_array_table' => $arrayTable,
+				'table_array_id' => $arrayId,
+				'table_array_title' => $arrayTitle
 			)
 		);
 	}
@@ -88,6 +107,13 @@ class Registry_model extends CI_Model
 	public function customs() {
 		$this->db->where('mdl_class IS NULL', null, false);
 		return $this->db->get(self::modelTableName);
+	}
+
+	public function tableIsPrivate($table) {
+		$this->db->select('private');
+		$this->db->where('table_name', $table);
+		$query = $this->db->get(self::modelTableName)->row();
+		return empty($query)||($query->private==1);
 	}
 
 }

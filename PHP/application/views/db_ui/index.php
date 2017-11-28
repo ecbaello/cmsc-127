@@ -23,10 +23,7 @@
 			<md-grid-list class="text-center" md-cols="1" md-cols-sm="2" md-cols-md="4" md-cols-lg="5" md-cols-gt-lg="8" md-row-height="1:1" md-gutter="8px" md-gutter-gt-sm="4px">
 				<md-grid-tile>
 					<a class="link-grid-tile" href="<?=base_url().'database/detchar'?>">
-						<span>
-							<i class="d-block mb-3 fa fa-2x fa-pencil"></i>
-							Patient Charges Detail
-						</span>
+						Patient Charges Detail
 					</a>
 				</md-grid-tile>
 				<md-grid-tile>

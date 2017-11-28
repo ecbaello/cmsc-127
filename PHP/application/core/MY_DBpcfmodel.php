@@ -25,6 +25,20 @@ class MY_DBpcfmodel extends MY_DBarraymodel
         $this->registerCategoryTable('Cataract','database_pcf_cataract_model');
 	}
 
+	protected function registerModel() {
+
+		$this->load->model('registry_model');
+
+		$this->registry_model->registerModel(
+			$this->ModelTitle,
+			$this->getModelClass(),
+			0,
+			$this->TableName,
+			$this->TablePrimaryKey,
+			$this->FieldPrefix
+		);
+	}
+
     public function createCategoryTable()
     {
         if (!($this->db->table_exists($this->categoryTableName))) {

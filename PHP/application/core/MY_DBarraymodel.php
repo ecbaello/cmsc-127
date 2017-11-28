@@ -2,13 +2,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBarraymodel extends MY_DBmodel
 {
-	public $categoryTableName = '';
-	public $arrayFieldName = '';
-	public $categoryFieldName = '';
-
-	private $selectedSubtable = '';
-
-	protected $isArrayModel = TRUE;
+	public $categoryTableName = null;
+	public $arrayFieldName = null;
+	public $categoryFieldName = null;
 
 	/**
 	* The constructor method
@@ -19,6 +15,24 @@ class MY_DBarraymodel extends MY_DBmodel
 		parent::__construct(); // do constructor for parent class
 
 		$this->createCategoryTable();
+	}
+
+	protected function registerModel() {
+
+		$this->load->model('registry_model');
+
+		$this->registry_model->registerModel(
+			$this->ModelTitle,
+			parent::getModelClass(),
+			1,
+			$this->TableName,
+			$this->TablePrimaryKey,
+			$this->FieldPrefix,
+			false,
+			$this->categoryTableName,
+			$this->arrayFieldName,
+			$this->categoryFieldName
+		);
 	}
 
     public function createCategoryTable()
@@ -58,6 +72,20 @@ class MY_DBarraymodel extends MY_DBmodel
 			);
 			$this->db->insert($this->categoryTableName, $data);
 		}
+	}
+
+	public function unregisterCategoryTable($name) {
+		$categ = $this->convertNameToCategory($name);
+
+		if ( $categ != null ) {
+			$success = true;
+			$this->db->where($this->arrayFieldName, $categ);
+			$success = $success && $this->db->delete($this->categoryTableName);
+			$this->db->where($this->arrayFieldName, $categ);
+			$success = $success && $this->db->delete($this->TableName);
+			return $success;
+		}
+		return false;
 	}
 
 	public function getFields($hide_items = true) {
@@ -130,13 +158,7 @@ class MY_DBarraymodel extends MY_DBmodel
 	}
 
 	public function deleteFromCategoryTable($name, $pk) {
-		$fromtable = $this->TableName;
-		$totable = $fromtable."_arch";
-		$condition = $this->TablePrimaryKey."=$pk";
-		$tempsql = "INSERT INTO $totable SELECT * FROM $fromtable WHERE $condition";
-		$this->db->query($tempsql);
 		$table = $this->convertNameToCategory($name);
-		$this->db->where( $this->TablePrimaryKey, $pk);
 		$this->db->where( $this->arrayFieldName, $table);
 	    return parent::deleteWithPK( $pk ); 
 	}
@@ -146,10 +168,10 @@ class MY_DBarraymodel extends MY_DBmodel
 		$this->db->where($this->categoryFieldName, $name);
 		$query = $this->db->get($this->categoryTableName);
 
-		$query = $query->result_array();
-		$query = $query[0];
+		$query = $query->row();
 
-		return $query[$this->arrayFieldName];
+		if (empty($query)) return null;
+		return $query->{$this->arrayFieldName};
 	}
 }
 

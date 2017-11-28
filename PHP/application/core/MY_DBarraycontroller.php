@@ -267,13 +267,13 @@ class MY_DBarraycontroller extends CI_Controller {
 		, JSON_NUMERIC_CHECK);
 	}
 
-	public function addCategory()
+	public function addcategory()
 	{
 		$success = false;
 		$name = $this->input->post('title');
 
 		if (!empty($name))
-			$success = $this->registerCategoryTable($name);
+			$success = $this->model->registerCategoryTable($name);
 		echo json_encode( 
 			array(
 				'csrf' => $token,
@@ -281,6 +281,22 @@ class MY_DBarraycontroller extends CI_Controller {
 				'success' => $success
 			)
 
+		, JSON_NUMERIC_CHECK);
+	}
+
+	public function removecategory()
+	{
+		$success = false;
+		$name = $this->input->post('title');
+
+		if (!empty($name))
+			$success = $this->model->unregisterCategoryTable($name);
+		echo json_encode( 
+			array(
+				'csrf' => $token,
+				'csrf_hash' => $hash,
+				'success' => $success
+			)
 		, JSON_NUMERIC_CHECK);
 	}
 

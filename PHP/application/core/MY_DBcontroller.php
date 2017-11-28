@@ -63,6 +63,15 @@ class MY_DBcontroller extends CI_Controller
 		show_error('The user doesn\'t have the permission to perform this action.', 403, 'Forbidden');
 	}
 
+	protected function response($data) {
+		$data['csrf'] = $this->security->get_csrf_token_name();
+		$data['csrf_hash'] = $this->security->get_csrf_hash();
+		echo json_encode (
+			$data,
+			JSON_NUMERIC_CHECK
+		);
+	}
+
 	public function makeTableHTML()
 	{
 		$this->load->view('table_view', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
@@ -70,14 +79,9 @@ class MY_DBcontroller extends CI_Controller
 
 
 	public function get ($id = null) {
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-    	echo json_encode( 
-    	[
-    		'data'=>$this->model->getByPK($id),
-    		'csrf' => $token,
-			'csrf_hash' => $hash
-		], JSON_NUMERIC_CHECK);
+		$this->response([
+    		'data'=>$this->model->getByPK($id)
+		]);
 	}
 
 	public function filters ($action = null, $id = null) {
@@ -86,12 +90,7 @@ class MY_DBcontroller extends CI_Controller
 			return;
 		}
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-
 		$return = [
-			'csrf' => $token,
-			'csrf_hash' => $hash
 		];
 
 		if ($action == 'add') {
@@ -109,10 +108,7 @@ class MY_DBcontroller extends CI_Controller
 		} else {
 			$return['data'] = $this->model->getSearches( $this->getUser() );
 		}
-		echo json_encode (
-			$return,
-			JSON_NUMERIC_CHECK
-		);
+		$this->response($return);
 	}
 
 	public function export() {
@@ -159,15 +155,10 @@ class MY_DBcontroller extends CI_Controller
 			return;
 		}
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-
 		$success = $this->model->deleteWithPK($id);
 
-		echo json_encode(
-			[	'success' => $success,
-				'csrf' => $token,
-				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
+		$this->response(
+			[	'success' => $success ]);
 		
 	}
 
@@ -180,9 +171,6 @@ class MY_DBcontroller extends CI_Controller
 
 		$insert = json_decode($this->input->post('data'), true);
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-
 		$inputs = $this->model->getFields();
 		$arr = array();
 		foreach ($inputs as $input) {
@@ -193,14 +181,33 @@ class MY_DBcontroller extends CI_Controller
 		
 		$success = $this->model->insertIntoTable($arr);
 
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
+		$this->response(
+			[	'success' => $success ]);
+	}
 
-		, JSON_NUMERIC_CHECK);
+	public function editor($id = null) {
+		
+		if ($id == null) {
+			show_404();
+			return;
+		}
+
+		$action = $this->input->get('action');
+
+		if ($action == null) {
+			//load editor
+		} else {
+			$data = [];
+			switch ($action) {
+				case 'value':
+					# code...
+					break;
+				
+				default:
+					# code...
+					break;
+			}
+		}
 	}
 
 	public function rows() {
@@ -209,9 +216,6 @@ class MY_DBcontroller extends CI_Controller
 			show_404();
 			return;
 		}
-
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
 
 		$action = $this->input->get('action');
 		$rows = json_decode($this->input->post('rows'), true);
@@ -230,14 +234,8 @@ class MY_DBcontroller extends CI_Controller
 				return;
 				break;
 		}
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-
-		, JSON_NUMERIC_CHECK);
+		$this->response(
+			[	'success' => $success ]);
 	}
 
 	public function addfield () {
@@ -248,9 +246,6 @@ class MY_DBcontroller extends CI_Controller
 		}
 
 		$data = json_decode($this->input->post('data'), true);
-
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
 
 		$prefix = null;
 		$suffix = null;
@@ -267,14 +262,8 @@ class MY_DBcontroller extends CI_Controller
 			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
 		}
 
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-
-		, JSON_NUMERIC_CHECK);
+		$this->response(
+			[	'success' => $success ]);
 
 		
 	}
@@ -288,39 +277,22 @@ class MY_DBcontroller extends CI_Controller
 
 		$key = $this->input->post('header');
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-
 		$success = $this->model->removeField($key);
 
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-
-		, JSON_NUMERIC_CHECK);
+		$this->response(
+			[ 'success' => $success ]);
 
 		
 	}
 
 	public function headers () {
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-		echo json_encode( 
-			[
-				'id'=>$this->model->TablePrimaryKey,
-				'headers'=>$this->model->getFieldAssociations(),
-	    		'csrf' => $token,
-				'csrf_hash' => $hash
-			]
-		);
+
+		$this->response(
+			[ 'id'=>$this->model->TablePrimaryKey,
+				'headers'=>$this->model->getFieldAssociations()]);
 	}
 
 	public function data () {
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
 
 		$qry = null;
 
@@ -355,8 +327,6 @@ class MY_DBcontroller extends CI_Controller
 		$response = 
 		[
 			'data'=> $qry ? $qry->result() : '',
-			'csrf' => $token,
-			'csrf_hash' => $hash,
 			'count' => $this->model->lastFindCount,
 			'success' => !empty($qry)
 		];
@@ -366,9 +336,7 @@ class MY_DBcontroller extends CI_Controller
 			$response['id'] = $this->model->TablePrimaryKey;
 		}
 
-		echo json_encode( 
-			$response
-		, JSON_NUMERIC_CHECK);
+		$this->response($response);
 	}
 }
 

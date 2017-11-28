@@ -8,6 +8,7 @@ if (!isset($permission)) $permission = -1;
 <script type="text/javascript">
 	app.constant('tableURL', '<?= isset($url)?$url:current_url() ?>');
 </script>
+<?php if ($permission >= PERMISSION_PUBLIC): ?>
 <div ng-controller="database" ng-init="rebuild(true)" layout-padding>
 	<md-card class="p-0">
 		<md-progress-linear md-mode="indeterminate" ng-disabled="!serverRequesting"></md-progress-linear>
@@ -327,3 +328,4 @@ if (!isset($permission)) $permission = -1;
 	</md-card>
 </div>
 <script type="text/javascript" src="<?= base_url().'js/controllers/database.js' ?>"></script>
+<?php endif ?>

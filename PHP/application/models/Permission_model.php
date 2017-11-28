@@ -17,14 +17,14 @@ class Permission_model extends CI_Model {
 		$this->load->dbforge();
 		$this->load->library('ion_auth');
 
+		defined('PERMISSION_NONE') OR define('PERMISSION_NONE', 0);
+		defined('PERMISSION_PUBLIC') OR define('PERMISSION_PUBLIC', 1);
+		defined('PERMISSION_LOGIN') OR define('PERMISSION_LOGIN', 2);
+		defined('PERMISSION_ADD') OR define('PERMISSION_ADD', 3);
+		defined('PERMISSION_CHANGE') OR define('PERMISSION_CHANGE', 4);
+		defined('PERMISSION_ALTER') OR define('PERMISSION_ALTER', 5);
+
 		$this->createTable();
-
-		defined('PERMISSION_NONE') OR define('PERMISSION_NONE', -1);
-		defined('PERMISSION_VIEW') OR define('PERMISSION_LOGIN', 0);
-		defined('PERMISSION_ADD') OR define('PERMISSION_ADD', 1);
-		defined('PERMISSION_CHANGE') OR define('PERMISSION_CHANGE', 2);
-		defined('PERMISSION_ALTER') OR define('PERMISSION_ALTER', 3);
-
 		// group_id, table_name, permission
 	}
 
@@ -33,19 +33,24 @@ class Permission_model extends CI_Model {
 		{
 			$this->dbforge->add_field		("table_name VARCHAR(100) NOT NULL");
 			$this->dbforge->add_field		("group_id int NOT NULL");
-			$this->dbforge->add_field		("permission int DEFAULT 0");
+			$this->dbforge->add_field		("permission int DEFAULT ".PERMISSION_LOGIN);
 			$this->dbforge->create_table	( self::tableName);
 		}
 	}
 
 	public function userPermission($table, $userid = null) {
-		if ( $userid = null ) {
-			if ( !$this->ion_auth->logged_in() ) return -1;
-			if ( $this->ion_auth->is_admin() ) return 3;
+		if ( $userid == null ) {
+			$this->load->model('registry_model');
+			$private = $this->registry_model->tableIsPrivate($table);
+
+			if ( !$this->ion_auth->logged_in() ) return $private?PERMISSION_NONE:PERMISSION_PUBLIC;
+			if ( $this->ion_auth->is_admin() ) return PERMISSION_ALTER;
 			$userid = $this->ion_auth->user()->row()->id;
 		}
 		$groups = $this->ion_auth->get_users_groups($userid)->result();
-		$maxPermission = -1;
+
+		$maxPermission = PERMISSION_LOGIN;
+
 		// for each group permission
 		foreach ($groups as $group) {
 			$grpid = $group->id;
@@ -66,7 +71,7 @@ class Permission_model extends CI_Model {
 		$this->db->where('group_id', $groupid);
 		$qry = $this->db->get(self::tableName);
 
-		return $qry->num_rows() > 0 ? $qry->row()->permission : ($returnNull ? null : -1);
+		return $qry->num_rows() > 0 ? $qry->row()->permission : ($returnNull ? null : PERMISSION_LOGIN);
 	}
 
 	public function setPermission($table, $groupid, $permission) {

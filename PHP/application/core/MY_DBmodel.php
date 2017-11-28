@@ -15,8 +15,6 @@ class MY_DBmodel extends CI_Model
 	public $ReadOnlyFields = array();
 
 	public $lastFindCount = 0;
-
-	protected $isArrayModel = FALSE;
 	protected $willRegister = TRUE;
 
 	protected $searchTable = '';
@@ -65,7 +63,7 @@ class MY_DBmodel extends CI_Model
 		$this->registry_model->registerModel(
 			$this->ModelTitle,
 			$this->getModelClass(),
-			$this->isArrayModel?1:0,
+			0,
 			$this->TableName,
 			$this->TablePrimaryKey,
 			$this->FieldPrefix
