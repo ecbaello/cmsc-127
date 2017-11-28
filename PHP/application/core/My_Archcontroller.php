@@ -61,7 +61,7 @@ class MY_Archcontroller extends CI_Controller
 
 	public function makeTableHTML()
 	{
-		$this->load->view('table_view', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
+		$this->load->view('arch_table', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 	}
 
 
