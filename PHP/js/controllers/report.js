@@ -6,7 +6,6 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
 
 	$scope.year = (new Date()).getFullYear();
     $scope.series = [];
-    $scope.colors = [{borderColor:'#f00'},{borderColor:'#0f0'},{borderColor:'#00f'}];
 
     $scope.data = [0];
 
@@ -16,7 +15,7 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
 
 	$scope.setYear = function(){
 		if(!isNaN($scope.year))
-			loadData();
+			loadSeries();
 	}
 	
     $scope.setURL = function(url) {
@@ -27,51 +26,28 @@ app.controller("LineCtrl", ['$scope', '$interval', function ($scope, $interval) 
     function loadSeries() {
         $.ajax({
             method: "GET",
-            url: $scope.selectorUrl+'/table',
+            url: $scope.selectorUrl+'/getMonthlyExpenses/'+$scope.year,
             dataType: "json",
             success: function (data) {
-            	var log=[];
-            	angular.forEach(data.data, function(value,key){
-					this.push(value.title);
-				},log);
-            	$scope.series=log;
-
-                loadData();
+				$scope.series=[];
+				var log=[];
+                angular.forEach(data, function(value,key){
+                	var log2=[];
+					$scope.series.push(key);
+                    angular.forEach(value, function(value){
+						this.push(value);
+					},log2);
+                    this.push(log2);
+                },log);
+				
+            	$scope.data=log;
 				$scope.$apply();
             }
         });
 
     }
 
-    function loadData(){
-        $.ajax({
-            method: "GET",
-            url: $scope.selectorUrl+'/getMonthlyExpenses/'+$scope.year,
-            dataType: "json",
-            success: function (data) {
-                var log=[];
-
-                angular.forEach(data, function(value,key){
-                	var log2=[];
-                    angular.forEach(value, function(value,key){
-						//console.log(value);
-						this.push(value);
-					},log2);
-                    this.push(log2);
-                },log);
-
-               	$scope.data = log;
-				$scope.$apply();
-            }
-        });
-
-	}
-
     $scope.options = {
-        title:{
-        	display:true,
-			text: 'Petty Cash Fund Monthly Expenses'
-		},
 		legend:{
         	display:true
 		}
@@ -114,21 +90,117 @@ app.controller('dateRangeSelector',['$scope',function($scope){
 
 }]);
 
-app.controller('reportTable',['$scope',function($scope){
+app.controller('tableSelector',['$scope',function($scope){
+	
+	$scope.current = '';
 	
 	$scope.setURL = function(url) {
         $scope.selectorUrl = url;
-		makeTable();
+		makeSelector();
     };
+
+	function makeSelector(){
+
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/getModelNames',
+            dataType: "json",
+            success: function (data) {
+            	$scope.data = data;
+				$scope.$apply();
+            }
+        });
+	}
+	
+	$scope.setSelected = function(select) {
+		$scope.select = select;
+	};
+	
+	$scope.redirect = function() {
+		window.location.href = $scope.selectorUrl +'/table/'+ encodeURI($scope.select);
+	};
+
+
+}]);
+
+app.controller('reportTable',['$scope',function($scope){
+	
+	$scope.fields = [];
+	$scope.model = '';
+	$scope.options='add';
+	$scope.fromDate = new Date();
+	$scope.toDate = new Date();
+	$scope.customTable = '';
+	
+	$scope.setURL = function(url,model) {
+        $scope.selectorUrl = url;
+		setModel(model);
+    };
+	
+	$scope.changeFields = function(){
+		var fromDate = $scope.fromDate.getFullYear()+'-'+($scope.fromDate.getMonth()+1)+'-'+$scope.fromDate.getDate();
+		var toDate = $scope.toDate.getFullYear()+'-'+($scope.toDate.getMonth()+1)+'-'+$scope.toDate.getDate();
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/table/'+encodeURI($scope.model)+'/fields',
+			data: {'data':$scope.fields},
+            dataType: "json",
+            success: function (data) {
+				loadFields();
+            	//window.location.reload();
+            }
+        });
+	}
+	
+	$scope.makeCustomTable = function(){
+		
+		var fromDate = $scope.fromDate.getFullYear()+'-'+($scope.fromDate.getMonth()+1)+'-'+$scope.fromDate.getDate();
+		var toDate = $scope.toDate.getFullYear()+'-'+($scope.toDate.getMonth()+1)+'-'+$scope.toDate.getDate();
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/table/'+encodeURI($scope.model)+'/custom/'+fromDate+'/'+toDate,
+            dataType: "json",
+            success: function (data) {
+            	$scope.customTable = data;
+				$scope.$apply();
+            }
+        });
+	}
 
 	function makeTable(){
 
 		$.ajax({
             method: "GET",
-            url: $scope.selectorUrl+'/getReports',
+            url: $scope.selectorUrl+'/table/'+encodeURI($scope.model)+'/reports/',
             dataType: "json",
             success: function (data) {
             	$scope.table = data;
+				$scope.$apply();
+            }
+        });
+	}
+	
+	function setModel(model){
+		$scope.model = model;
+		loadFields();
+	}
+	
+	function loadFields(){
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/table/'+encodeURI($scope.model)+'/fields/',
+            dataType: "json",
+            success: function (data) {
+				$scope.fields = [];
+				angular.forEach(data,function(value){
+					var temp = {};
+					temp['field']=value['field'];
+					temp['name']=value['name'];
+					temp['option']=value['option'];
+					$scope.fields.push(temp);
+				});
+				makeTable();
+				$scope.makeCustomTable();
 				$scope.$apply();
             }
         });

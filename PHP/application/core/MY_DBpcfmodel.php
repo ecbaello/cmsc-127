@@ -10,7 +10,7 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 
     public $afFieldName = 'pcf_allotted_fund';
     public $etFieldName = 'pcf_expense_threshold';
-	public $pcfDateName = 'pcf_date';
+	public $dateField = 'pcf_date';
 
 	/**
 	* The constructor method
@@ -19,24 +19,13 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
+		$this->createCategoryTable();
 		
 		$this->registerCategoryTable('General','database_pcf_general_model');
         $this->registerCategoryTable('Smile Train','database_pcf_smiletrain_model');
         $this->registerCategoryTable('Cataract','database_pcf_cataract_model');
-	}
-
-	protected function registerModel() {
-
-		$this->load->model('registry_model');
-
-		$this->registry_model->registerModel(
-			$this->ModelTitle,
-			$this->getModelClass(),
-			0,
-			$this->TableName,
-			$this->TablePrimaryKey,
-			$this->FieldPrefix
-		);
+		
+		$this->load->model('report_model');
 	}
 
     public function createCategoryTable()
@@ -102,6 +91,10 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 		}
 	}
 	
+	public function registerReport(){
+		$this->report_model->register($this->TableName,$this->dateField);
+	}
+	
 	public function getNumericalFields(){
 
         $fields = $this->getFieldAssociations();
@@ -126,7 +119,7 @@ class MY_DBpcfmodel extends MY_DBarraymodel
         }
 
         $this->db->select(implode(" + ",$numericsQuery).' as total');
-        $this->db->where($this->pcfDateName.' between "'.$fromDate.'" and "'.$toDate.'"');
+        $this->db->where($this->dateField.' between "'.$fromDate.'" and "'.$toDate.'"');
 		
         $result= $this->db->get($this->TableName)->result_array();
 
@@ -149,7 +142,7 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 		$this->db->select(implode(' , ',$fields));
         $this->db->select('('.implode(" + ",$numerics).') as total');
 		if($mode == 0)
-			$this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
+			$this->db->where($this->dateField . ' between "' . $fromDate . '" and "' . $toDate . '"');
 		if($mode == 1)
 			$this->db->where($this->booleanFieldName,0);
 		
@@ -164,7 +157,7 @@ class MY_DBpcfmodel extends MY_DBarraymodel
         $this->db->select(implode(" , ",$summations));
 		
         if($mode == 0)
-			$this->db->where($this->pcfDateName . ' between "' . $fromDate . '" and "' . $toDate . '"');
+			$this->db->where($this->dateField. ' between "' . $fromDate . '" and "' . $toDate . '"');
 		if($mode == 1)
 			$this->db->where($this->booleanFieldName,0);
 			

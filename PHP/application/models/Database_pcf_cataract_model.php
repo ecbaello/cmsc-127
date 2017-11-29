@@ -46,6 +46,7 @@ class Database_pcf_cataract_model extends MY_DBpcfmodel
             $this->registerFieldTitle( 'pcf_medical_supplies', 'Medical Supplies', 'FLOAT');
             $this->registerFieldTitle( 'pcf_other_expenses', 'Other Expenses', 'FLOAT');
 			$this->registerModel();
+			$this->registerReport();
         }
     }
 

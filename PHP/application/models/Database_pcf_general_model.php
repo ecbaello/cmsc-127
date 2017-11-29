@@ -7,7 +7,6 @@ class Database_pcf_general_model extends MY_DBpcfmodel
 	public $TableName = 'pcf_general';
 	public $TablePrimaryKey = 'pcf_expense_id';
 
-
 	/**
 	* Make PCF table if does not exists
 	*
@@ -51,6 +50,7 @@ class Database_pcf_general_model extends MY_DBpcfmodel
 			$this->registerFieldTitle( 'pcf_communications', 'Communications', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_other_expenses', 'Other Expenses', 'FLOAT');
 			$this->registerModel();
+			$this->registerReport();
 		}
 	}
 

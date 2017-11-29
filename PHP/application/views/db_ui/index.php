@@ -22,6 +22,11 @@
 		<md-card-content>
 			<md-grid-list class="text-center" md-cols="1" md-cols-sm="2" md-cols-md="4" md-cols-lg="5" md-cols-gt-lg="8" md-row-height="1:1" md-gutter="8px" md-gutter-gt-sm="4px">
 				<md-grid-tile>
+					<a class="link-grid-tile" href="<?=base_url().'database/report'?>">
+						Financial Report
+					</a>
+				</md-grid-tile>
+				<md-grid-tile>
 					<a class="link-grid-tile" href="<?=base_url().'database/detchar'?>">
 						Patient Charges Detail
 					</a>
@@ -29,11 +34,6 @@
 				<md-grid-tile>
 					<a class="link-grid-tile" href="<?=base_url().'database/pcf'?>">
 						Petty Cash Fund
-					</a>
-				</md-grid-tile>
-				<md-grid-tile>
-					<a class="link-grid-tile" href="<?=base_url().'database/pcfreport'?>">
-						Petty Cash Fund Report
 					</a>
 				</md-grid-tile>
 				<md-grid-tile>
