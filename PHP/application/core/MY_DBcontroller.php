@@ -184,7 +184,9 @@ class MY_DBcontroller extends CI_Controller
 
 		$this->load->helper('download');
 
-		switch ($action) {this->model->deleteWithPK($rows);
+		switch ($action) {
+			case 'remove':
+				$this->model->deleteWithPK($rows);
 				break;
 			
 			default:
@@ -239,10 +241,7 @@ class MY_DBcontroller extends CI_Controller
 		csrf_json_response(
 			[ 'success' => $success ]);
 
-		
 	}
-			case 'remove':
-				$success = $
 
 	public function headers () {
 
