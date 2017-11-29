@@ -75,7 +75,13 @@ class MY_DBmodel extends CI_Model
 		return ($class == 'MY_DBmodel')?null:strtolower($class);
 	}
 
-
+	protected function registerReport(){
+		$this->load->model('report_model');
+		if(isset($this->dateField))
+			$this->report_model->register($this->TableName,$this->dateField);
+		
+	}
+	
 	private function createMetaTable() {
 		if (!($this->db->table_exists(self::metaTableName)))
 		{
@@ -87,6 +93,7 @@ class MY_DBmodel extends CI_Model
 			$this->dbforge->add_field		("field_suffix VARCHAR(100) DEFAULT ''");
 			$this->dbforge->add_field		( self::fieldInputTypeField . " VARCHAR(100) NOT NULL DEFAULT 'text'");
 			$this->dbforge->add_field		("required TINYINT(1) DEFAULT 0");
+			$this->dbforge->add_field		("reporting_option TINYINT(1) DEFAULT 0");
 			$this->dbforge->create_table	( self::metaTableName);
 		}
 	}
