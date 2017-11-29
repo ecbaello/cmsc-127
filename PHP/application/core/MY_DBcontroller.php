@@ -158,16 +158,22 @@ class MY_DBcontroller extends CI_Controller
 		}
 	}
 
-	public function hide() {
-		if ($this->getUserPermission() < PERMISSION_ALTER) {
-			show_404();
-			return;
+	public function privacy() {
+		$set = $this->input->post('private');
+		if ($set !== null) {
+			if ($this->getUserPermission() < PERMISSION_ALTER) {
+				show_404();
+				return;
+			}
+
+			$set = $set == 1;
+
+			csrf_json_response(
+				[ 'success' => $this->model->setPrivate($set) ]);
+		} else {
+			csrf_json_response(
+				[ 'private' => $this->model->isPrivate() ]);
 		}
-
-		$set = $this->input->get('set');
-		$set = $set == 1;
-
-		$this->model->setPrivate($set);
 	}
 	
 	public function rows() {

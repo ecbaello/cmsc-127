@@ -42,6 +42,24 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 		return null;
 	};
 
+	$scope.isPrivate = false;
+	$scope.checkPrivacy = function () {
+		tables.getprivacy(
+			function (resultData) {
+				$scope.isPrivate = resultData.private;
+				$scope.$apply();
+			}, 
+			function () {});
+	};
+	$scope.modifyPrivacy = function (value) {
+		tables.setprivacy(
+			value,
+			function () {
+				
+			}, 
+			function () {});
+	};
+
 	$scope.download = function() {
 		window.location.href = tables.downloadUrl();
 	};

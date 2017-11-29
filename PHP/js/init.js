@@ -97,8 +97,6 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		requestAJAX(tableURL+'/data', options, gets, fsuccess, ferror);
 	};
 
-	
-
 	var reqpost = function (link, id, data, fsuccess, ferror) {
 
 		var href = tableURL+'/'+link;
@@ -120,6 +118,14 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 
 	tables.saveFilter = function (data, fsuccess, ferror) {
 		reqpost('filters/add', null, data, fsuccess, ferror);
+	};
+
+	tables.setprivacy = function (data, fsuccess, ferror) {
+		reqpost('privacy', null, { private: (data?1:0) }, fsuccess, ferror);
+	};
+
+	tables.getprivacy = function (fsuccess, ferror) {
+		requestAJAX(tableURL+'/privacy', null, null, fsuccess, ferror);
 	};
 
 	tables.deleteFilter = function (id, fresponse) {
@@ -183,7 +189,6 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 	{
 		TEXT: 'Text',
 		TEXTAREA: 'Long Text',
-		CHECKBOX: 'Checkbox',
 		FLOAT: 'Float',
 		NUMBER: 'Integer',
 		DATE: 'Date',

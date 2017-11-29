@@ -113,6 +113,9 @@ class MY_DBarraycontroller extends CI_Controller {
 					case 'data':
 						$this->data($subtable, $arg0, $arg1);
 						break;
+					case 'export':
+						$this->export($subtable);
+						break;
 					
 					default:
 						if (!method_exists($this, $action) )
@@ -167,32 +170,6 @@ class MY_DBarraycontroller extends CI_Controller {
 		}
 		csrf_json_response($return);
 	}
-
-	protected function export() {
-
-		$permission = $this->getUserPermission();
-
-		if ($permission < PERMISSION_CHANGE) {
-			show_404();
-			return;
-		}
-
-		$rows = $this->input->get('rows');
-
-		if (!empty($rows)) $rows = json_decode($rows);
-		else if ($permission < PERMISSION_ALTER) {
-			show_404();
-			return;
-		}
-
-		$this->load->helper('download');
-
-		$name = $this->model->ModelTitle.' - '.date("D M d, Y").'('.(empty($rows)?'':'partial, ').'exported).csv';
-		$data = $this->model->getAsCSV($rows);
-
-		force_download($name, $data, true);
-	}
-
 	
 
 	protected function editor($id = null) {
@@ -229,16 +206,22 @@ class MY_DBarraycontroller extends CI_Controller {
 		}
 	}
 
-	protected function hide() {
-		if ($this->getUserPermission() < PERMISSION_ALTER) {
-			show_404();
-			return;
+	protected function privacy() {
+		$set = $this->input->post('private');
+		if ($set !== null) {
+			if ($this->getUserPermission() < PERMISSION_ALTER) {
+				show_404();
+				return;
+			}
+
+			$set = $set == 1;
+
+			csrf_json_response(
+				[ 'success' => $this->model->setPrivate($set) ]);
+		} else {
+			csrf_json_response(
+				[ 'private' => $this->model->isPrivate() ]);
 		}
-
-		$set = $this->input->get('set');
-		$set = $set == 1;
-
-		$this->model->setPrivate($set);
 	}
 	
 	protected function rows() {
@@ -374,6 +357,31 @@ class MY_DBarraycontroller extends CI_Controller {
 	}
 
 	// Functions similar to source
+
+	protected function export($table) {
+
+		$permission = $this->getUserPermission();
+
+		if ($permission < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$rows = $this->input->get('rows');
+
+		if (!empty($rows)) $rows = json_decode($rows);
+		else if ($permission < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$this->load->helper('download');
+
+		$name = $this->model->ModelTitle.' - '.date("D M d, Y").'('.(empty($rows)?'':'partial, ').'exported).csv';
+		$data = empty($rows)?$this->model->getSubtableAsCSV($table):$this->model->getAsCSV($rows);
+
+		force_download($name, $data, true);
+	}
 
 	protected function add ($subtable) {
 

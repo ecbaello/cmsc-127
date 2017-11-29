@@ -15,6 +15,11 @@ $CI =& get_instance();
 						<md-tab-body>
 							<div layout-padding>
 								<div>
+									<md-checkbox ng-init="checkPrivacy()" ng-model="isPrivate" ng-change="modifyPrivacy(isPrivate)">
+										Make this table unavailable to the public
+									</md-checkbox>
+								</div>
+								<div>
 									<md-button class="md-primary md-raised" ng-click="download()">
 										Download
 									</md-button>

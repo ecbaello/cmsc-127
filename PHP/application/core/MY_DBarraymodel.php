@@ -146,6 +146,19 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $assocs;
 	}
 
+	public function getSubtableAsCSV($table) {
+		$this->load->dbutil();
+
+		$categ = $this->convertNameToCategory($table);
+		$fields = $this->getFieldAssociations();
+
+		$this->select($fields, true);
+		$this->db->where($this->arrayFieldName, $categ);
+		$query = $this->db->get($this->TableName);
+
+		return $this->dbutil->csv_from_result($query);
+	}
+
 	public function insertIntoCategoryTable($name, $values) {
 		$values[$this->arrayFieldName] = $this->convertNameToCategory($name);
 		return parent::insertIntoTable($values);

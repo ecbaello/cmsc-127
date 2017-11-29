@@ -17,8 +17,6 @@ class MY_DBmodel extends CI_Model
 	public $lastFindCount = 0;
 	protected $willRegister = TRUE;
 
-	protected $searchTable = '';
-
 	/**
 	* The constructor method
 	*
@@ -31,6 +29,8 @@ class MY_DBmodel extends CI_Model
 		$this->load->dbforge();
 		
 		$this->load->model('search_model');
+
+		$this->load->library('registry');
 
 		$this->createMetaTable();
 		$this->createTable();
@@ -564,9 +564,12 @@ class MY_DBmodel extends CI_Model
 		
 	}
 
-	public function setPrivate($bool) {
-		$this->load->model('registry_model');
-		return $this->registry_model->setTablePrivate($this->TableName, $bool);
+	public function setPrivate($ye) {
+		return $this->registry->setTablePrivate($this->TableName, $ye);
+	}
+
+	public function isPrivate() {
+		return $this->registry->tableIsPrivate($this->TableName);
 	}
 
 	/* ---------------------
