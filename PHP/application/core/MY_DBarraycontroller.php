@@ -136,6 +136,9 @@ class MY_DBarraycontroller extends CI_Controller {
 					case 'export':
 						$this->export($subtable);
 						break;
+					case 'removeChecked':
+						$this->rows();
+						break;
 					
 					default:
 						if (!method_exists($this, $action) )
@@ -259,7 +262,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->helper('download');
 
 		switch ($action) {
-			case 'remove':
+			case 'removeChecked':
 				$success = $this->model->deleteWithPK($rows);
 				break;
 			
