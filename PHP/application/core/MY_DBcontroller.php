@@ -10,8 +10,7 @@ class MY_DBcontroller extends CI_Controller
 	{
 		parent::__construct(); // do constructor for parent class
 
-		$this->load->library('session');
-		$this->load->helper('url');
+		$this->load->helper("csrf_helper");
 
 		$this->load->model('permission_model');
 
@@ -63,28 +62,15 @@ class MY_DBcontroller extends CI_Controller
 		show_error('The user doesn\'t have the permission to perform this action.', 403, 'Forbidden');
 	}
 
-	protected function response($data) {
-		$data['csrf'] = $this->security->get_csrf_token_name();
-		$data['csrf_hash'] = $this->security->get_csrf_hash();
-		echo json_encode (
-			$data,
-			JSON_NUMERIC_CHECK
-		);
-	}
-
 	public function makeTableHTML()
 	{
 		$this->load->view('table_view', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 	}
 
-
-	public function get ($id = null) {
-		$this->response([
-    		'data'=>$this->model->getByPK($id)
-		]);
-	}
+	// Functions same with array
 
 	public function filters ($action = null, $id = null) {
+
 		if (!$this->loggedIn()) {
 			show_404();
 			return;
@@ -108,7 +94,7 @@ class MY_DBcontroller extends CI_Controller
 		} else {
 			$return['data'] = $this->model->getSearches( $this->getUser() );
 		}
-		$this->response($return);
+		csrf_json_response($return);
 	}
 
 	public function export() {
@@ -136,58 +122,12 @@ class MY_DBcontroller extends CI_Controller
 		force_download($name, $data, true);
 	}
 
-	public function update ($id = null) {
-
-		if ($this->getUserPermission() < PERMISSION_CHANGE) {
-			show_404();
-			return;
-		}
-
-		$insert = json_decode($this->input->post('data'), true);
-    	$this->model->updateWithPK($id, $insert);
-    	$this->get($id);
-	}
-
-	public function remove ($id = null) {
-
-		if ($this->getUserPermission() < PERMISSION_CHANGE) {
-			show_404();
-			return;
-		}
-
-		$success = $this->model->deleteWithPK($id);
-
-		$this->response(
-			[	'success' => $success ]);
-		
-	}
-
-	public function add () {
-
-		if ($this->getUserPermission() < PERMISSION_ADD) {
-			show_404();
-			return;
-		}
-
-		$insert = json_decode($this->input->post('data'), true);
-
-		$inputs = $this->model->getFields();
-		$arr = array();
-		foreach ($inputs as $input) {
-			if (isset($insert[$input])) {
-				$arr[$input] = $insert[$input]; 
-			}
-		}
-		
-		$success = $this->model->insertIntoTable($arr);
-
-		$this->response(
-			[	'success' => $success ]);
-	}
+	
 
 	public function editor($id = null) {
 		
-		if ($id == null) {
+		if ($id == null
+			|| $this->getUserPermission() < PERMISSION_CHANGE) {
 			show_404();
 			return;
 		}
@@ -195,21 +135,41 @@ class MY_DBcontroller extends CI_Controller
 		$action = $this->input->get('action');
 
 		if ($action == null) {
-			//load editor
+			$data = $this->model->getByPK($id);
+
+			$this->load->view('header');
+			// load editor ui w/ data
+			$this->load->view('footer');
 		} else {
 			$data = [];
 			switch ($action) {
-				case 'value':
-					# code...
+				case 'update':
+					$this->update($id);
+					break;
+
+				case 'remove':
+					$this->remove($id);
 					break;
 				
 				default:
-					# code...
+					show_404();
 					break;
 			}
 		}
 	}
 
+	public function hide() {
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$set = $this->input->get('set');
+		$set = $set == 1;
+
+		$this->model->setPrivate($set);
+	}
+	
 	public function rows() {
 
 		if ($this->getUserPermission() < PERMISSION_CHANGE) {
@@ -224,9 +184,7 @@ class MY_DBcontroller extends CI_Controller
 
 		$this->load->helper('download');
 
-		switch ($action) {
-			case 'remove':
-				$success = $this->model->deleteWithPK($rows);
+		switch ($action) {this->model->deleteWithPK($rows);
 				break;
 			
 			default:
@@ -234,7 +192,7 @@ class MY_DBcontroller extends CI_Controller
 				return;
 				break;
 		}
-		$this->response(
+		csrf_json_response(
 			[	'success' => $success ]);
 	}
 
@@ -262,9 +220,8 @@ class MY_DBcontroller extends CI_Controller
 			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
 		}
 
-		$this->response(
+		csrf_json_response(
 			[	'success' => $success ]);
-
 		
 	}
 
@@ -279,20 +236,99 @@ class MY_DBcontroller extends CI_Controller
 
 		$success = $this->model->removeField($key);
 
-		$this->response(
+		csrf_json_response(
 			[ 'success' => $success ]);
 
 		
 	}
+			case 'remove':
+				$success = $
 
 	public function headers () {
 
-		$this->response(
+		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
+			show_404();
+			return;	
+		}
+
+		csrf_json_response(
 			[ 'id'=>$this->model->TablePrimaryKey,
 				'headers'=>$this->model->getFieldAssociations()]);
 	}
 
+
+
+	public function get ($id = null) {
+		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
+			show_404();
+			return;	
+		}
+		
+		csrf_json_response([
+    		'data'=>$this->model->getByPK($id)
+		]);
+	}
+
+	// Functions different from array
+
+	public function add () {
+
+		if ($this->getUserPermission() < PERMISSION_ADD) {
+			show_404();
+			return;
+		}
+
+		$insert = json_decode($this->input->post('data'), true);
+
+		$inputs = $this->model->getFields();
+		$arr = array();
+		foreach ($inputs as $input) {
+			if (isset($insert[$input])) {
+				$arr[$input] = $insert[$input]; 
+			}
+		}
+		
+		$success = $this->model->insertIntoTable($arr);
+
+		csrf_json_response(
+			[	'success' => $success ]);
+	}
+
+	public function update ($id = null) {
+
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$insert = json_decode($this->input->post('data'), true);
+    	if ($this->model->updateWithPK($id, $insert))
+    		$this->get($id);
+    	else
+    		csrf_json_response(
+			[ 'success' => false ]);
+	}
+
+	public function remove ($id = null) {
+
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$success = $this->model->deleteWithPK($id);
+
+		csrf_json_response(
+			[ 'success' => $success ]);
+		
+	}
+
 	public function data () {
+
+		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
+			show_404();
+			return;	
+		}
 
 		$qry = null;
 
@@ -336,7 +372,7 @@ class MY_DBcontroller extends CI_Controller
 			$response['id'] = $this->model->TablePrimaryKey;
 		}
 
-		$this->response($response);
+		csrf_json_response($response);
 	}
 }
 

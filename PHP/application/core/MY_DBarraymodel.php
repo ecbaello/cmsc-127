@@ -21,7 +21,7 @@ class MY_DBarraymodel extends MY_DBmodel
 
 		$this->load->model('registry_model');
 
-		$this->registry_model->registerModel(
+		return $this->registry_model->registerModel(
 			$this->ModelTitle,
 			parent::getModelClass(),
 			1,

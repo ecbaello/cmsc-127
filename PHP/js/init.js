@@ -14,8 +14,75 @@ var app = angular.module('app', ['ngMaterial', 'ngMessages','chart.js', 'ngUploa
     	$rootScope.$mdColors = $mdColors;
 	});
 
-var csrf = '';
-var csrfHash = '';
+var encodeObject = function (getopts) {
+	var append = '';
+	if (getopts !== null && !$.isEmptyObject(getopts)) {
+		var begin = '?';
+		$.each(getopts, function(prop) {
+			append += begin;
+			if (begin == '?') begin = '&';
+			append += encodeURIComponent(prop)+'='+encodeURIComponent(getopts[prop]);
+		});
+	}
+	return append;
+};
+
+var generateError = function (error_code, message) {
+	alert('Error '+error_code+': '+message);
+};
+
+var loadCSRF = function(obj) {
+	csrf = obj.csrf;
+	csrfHash = obj.csrf_hash;
+};
+
+var requestAJAX = function (link, data, encodeable, fsuccess, ferror) {
+	
+	var request = {
+		url: link,
+		success: function(resultData) {
+			var data = JSON.parse(resultData);
+			loadCSRF(data);
+
+			if(data.success === false){
+				alert('Error: '+(typeof data.error_message!=='undefined' ? data.error_message:''));
+			}
+			
+			fsuccess(data);
+		},
+		error: function(error) {
+			alert('Something went wrong.');
+			ferror();
+		}
+	};
+
+	if (data && !$.isEmptyObject(data)) {
+
+		data[csrf] = csrfHash;
+
+		request.type = 'POST';
+		request.data = data;
+
+		request.url = request.url+(encodeable?encodeObject(encodeable):'');
+
+		
+	} else {
+		request.type = 'GET';
+
+		if (encodeable)
+			request.data = encodeable;
+	}
+
+	$.ajax(request);
+};
+
+var requestpost = function (link, data, encodeable, fsuccess, ferror) {
+	requestAJAX(link, data, encodeable, fsuccess, ferror);
+};
+
+var requestget = function (link, encodeable, fsuccess, ferror) {
+	requestAJAX(link, null, encodeable, fsuccess, ferror);
+};
 
 app.filter('page', function() {
   return function(input) {
@@ -27,77 +94,20 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 	var tables = {};
 
 	tables.get = function (options, fsuccess, ferror, gets) {
-		var request = {
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
-				fsuccess(data);
-			},
-			error: function() {
-				ferror();
-			}
-		};
-
-		if (!$.isEmptyObject(options)) {
-			options[csrf] = csrfHash;
-
-			request.data = options;
-			request.type = 'POST';
-
-			request.url = tableURL+'/data'+encodeObject(gets);
-		} else {
-			request.type = 'GET';
-			request.data = gets;
-			request.url = tableURL+'/data';
-		}
-
-		$.ajax(request);
+		requestAJAX(tableURL+'/data', options, gets, fsuccess, ferror);
 	};
 
-	var encodeObject = function (getopts) {
-		var append = '';
-		if (getopts !== null && !$.isEmptyObject(getopts)) {
-			var begin = '?';
-			$.each(getopts, function(prop) {
-				append += begin;
-				if (begin == '?') begin = '&';
-				append += encodeURIComponent(prop)+'='+encodeURIComponent(getopts[prop]);
-			});
-		}
-		return append;
-	};
+	
 
 	var reqpost = function (link, id, data, fsuccess, ferror) {
-		
-		data[csrf] = csrfHash;
-		var request = {
-			type: 'POST',
-			data: data,
-			success: function(resultData) {
-				var data = JSON.parse(resultData);
-				csrf = data.csrf;
-				csrfHash = data.csrf_hash;
 
-				if(data.success === false){
-					alert('Error: '+(typeof data['error_message']!=='undefined' ? data['error_message']:''));
-				}
-				
-				fsuccess(data);
-			},
-			error: function(error) {
-				alert('Something went wrong.');
-				ferror();
-			}
-		};
-
-		request.url = tableURL+'/'+link;
+		var href = tableURL+'/'+link;
 
 		if (id !== null) {
-			request.url += '/'+id;
+			href += '/'+id;
 		}
 
-		$.ajax(request);
+		requestpost(href, data, null, fsuccess, ferror);
 	};
 
 	tables.update = function (id, data, fsuccess, ferror) {

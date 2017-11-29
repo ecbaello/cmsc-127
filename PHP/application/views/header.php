@@ -2,6 +2,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 $CI =& get_instance();
 $CI->load->model('permission_model');
+$CI->load->model('bookmarks_model');
+
+$bookmarks = $CI->bookmarks_model->getBookmarks()->result_array();
 
 $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 
@@ -15,14 +18,14 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 
   <style type="text/css">
     input, textarea {
-    border: none;
-    overflow: auto;
-    outline: none;
+      border: none;
+      overflow: auto;
+      outline: none;
 
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-}
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
   </style>
 
   <link rel="shortcut icon" href="<?= base_url().'favicon.ico' ?>" type="image/x-icon">
@@ -54,8 +57,16 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
   <script src="<?= base_url().'js/angular/angular-chart.min.js' ?>"></script>
   <script src="<?= base_url().'js/angular/ng-upload.min.js' ?>"></script>
   <script src="<?= base_url().'js/ng-table-to-csv.min.js' ?>"></script>
-  <script src="<?= base_url().'js/init.js' ?>"></script>
 
+  <script type="text/javascript">
+    var csrf = '<?= $CI->security->get_csrf_token_name() ?>';
+    var csrfHash = '<?= $CI->security->get_csrf_hash() ?>';
+  </script>
+
+  <script src="<?= base_url().'js/init.js' ?>"></script>
+  <script type="text/javascript">
+    app.constant('baseUrl', '<?= base_url() ?>');
+  </script>
 </head>
 <body ng-controller="navi" layout="column" class="">
   <div class="cloak-loader" ng-class="true?'hide':''">
@@ -90,10 +101,15 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
             <md-list-item class="<?= $selectNav==4 ? 'active' : '' ?>" href="<?=base_url().'importer' ?>">
               <i class="fa fa-cloud-upload fa-lg fa-fw"></i> CSV Import
             </md-list-item>
-			<md-list-item class="<?= $selectNav==5 ? 'active' : '' ?>" href="<?=base_url().'archives' ?>">
+            <?php endif ?>
+			      <md-list-item class="<?= $selectNav==5 ? 'active' : '' ?>" href="<?=base_url().'archives' ?>">
               <i class="fa fa-archive fa-lg fa-fw"></i> Archive
             </md-list-item>
-            <?php endif ?>
+            <?php foreach ($bookmarks as $item): ?>
+            <md-list-item href="<?= $item['link'] ?>">
+              <i class="fa fa-star fa-lg fa-fw"></i> <?= $item['title'] ?>
+            </md-list-item>
+            <?php endforeach; ?>
           </md-list>
         </md-content>
       </div>
@@ -120,9 +136,13 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
 
                 <span flex class="d-inline">
                 </span>
-                
+
                 <div ng-controller="user">
                   <span class="user-menu" ng-if="loggedIn">
+                    <md-button class="md-icon-button" ng-click="showBookmarkDialog($event)">
+                        <span class="sr-only">Bookmark</span>
+                        <span class="fa fa-bookmark fa-lg"></span>
+                    </md-button>
                     <md-menu>
                       <md-button ng-click="$mdMenu.open()">
                         <i class="fa fa-user-circle fa-fw fa-lg"> </i> {{ userTitle }}
@@ -139,6 +159,11 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
                           </md-button>
                         </md-menu-item>
                         <?php endif ?>
+                        <md-menu-item>
+                          <md-button ng-href="<?=base_url()?>bookmarks">
+                            <i class="fa fa-bookmark mr-3 fa-fw"></i> Manage Bookmarks
+                          </md-button>
+                        </md-menu-item>
                         <md-menu-item>
                           <md-button class="md-primary" ng-href="<?=base_url()?>auth/change_password">
                             <i class="fa fa-key mr-3 fa-fw"></i> Change Password
@@ -163,3 +188,34 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
         </header>
       </md-toolbar>
       <div id="capsule">
+
+      <div style="visibility: hidden">
+        <div class="md-dialog-container" id="bookmarkDialog">
+          <md-dialog>
+            <md-toolbar>
+              <div class="md-toolbar-tools">
+                <h2>Bookmark Page</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="closeDialog()">
+                  <i class="fa fa-times fa-lg"></i>
+                </md-button>
+              </div>
+            </md-toolbar>
+            <form ng-cloak name="bookname" ng-submit="bookmark(bookmarkName)">
+            <md-dialog-content>
+              
+                <div layout-padding>
+                  <md-input-container>
+                    <label>Name</label>
+                    <input ng-model="bookmarkName">
+                  </md-input-container>
+                </div>
+              
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+              <md-button ng-disabled="!bookname.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Bookmark</md-button>
+            </md-dialog-actions>
+            </form>
+          </md-dialog>
+        </div>
+      </div>

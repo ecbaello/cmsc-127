@@ -12,6 +12,8 @@ class MY_DBarraycontroller extends CI_Controller {
 		parent::__construct(); // do constructor for parent class
 		$this->filepath = $file;
 
+		$this->load->helper("csrf_helper");
+
 		$this->load->model('permission_model');
 
 		define('NAV_SELECT', 1);
@@ -21,6 +23,20 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->load->view('header');
         
 		$this->makeSelector();
+		
+		$this->load->view('footer');
+	}
+
+	protected function makeHTML($subtable)
+	{
+		$this->load->view('header');
+
+		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable, 'permission' => $this->getUserPermission()]);
+
+		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
+
+		if ($this->getUserPermission() >= PERMISSION_ALTER)
+			$this->load->view('table_settings');
 		
 		$this->load->view('footer');
 	}
@@ -35,7 +51,6 @@ class MY_DBarraycontroller extends CI_Controller {
 		return $this->userPermission;
 	}
 
-	// DIRECTORY_SEPARATOR
 	protected function getAccessURL($file_url) {
 		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers'.DIRECTORY_SEPARATOR, '', $file_url));
 	}
@@ -63,6 +78,8 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		$arg0 = isset($arguments[2])?$arguments[2]:null;
 		$arg1 = isset($arguments[3])?$arguments[3]:null;
+
+
 		
 		if ($subtable !== null) {
 			$subtable = urldecode($subtable);
@@ -74,10 +91,6 @@ class MY_DBarraycontroller extends CI_Controller {
 							$this->add($subtable);
 						else 
 							$this->permissionError();
-						break;
-					case 'get':
-						if ($arg0 !== null) $this->get($subtable, $arg0);
-						else show_404();
 						break;
 					case 'update':
 						if ($arg0 !== null) {
@@ -99,24 +112,6 @@ class MY_DBarraycontroller extends CI_Controller {
 						break;
 					case 'data':
 						$this->data($subtable, $arg0, $arg1);
-						break;
-					case 'filters':
-						$this->filters($subtable);
-						break;
-					case 'addfield';
-						if ($this->getUserPermission() >= PERMISSION_ALTER)
-							$this->addfield();
-						else 
-							$this->permissionError();
-						break;
-					case 'removefield';
-						if ($this->getUserPermission() >= PERMISSION_ALTER)
-							$this->removefield();
-						else 
-							$this->permissionError();
-						break;
-					case 'headers';
-						$this->headers();
 						break;
 					
 					default:
@@ -143,17 +138,34 @@ class MY_DBarraycontroller extends CI_Controller {
 		}
 	}
 
-	protected function headers () {
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-		echo json_encode( 
-			[
-				'id'=>$this->model->TablePrimaryKey,
-				'headers'=>$this->model->getFieldAssociations(),
-	    		'csrf' => $token,
-				'csrf_hash' => $hash
-			]
-		);
+	// Functions same with source
+
+	protected function filters ($action = null, $id = null) {
+
+		if (!$this->loggedIn()) {
+			show_404();
+			return;
+		}
+
+		$return = [
+		];
+
+		if ($action == 'add') {
+			$title = $this->input->post('title');
+			$data = $this->input->post('data');
+			if ( !empty($title) && !empty($data) )
+				$this->model->saveSearch( $title, $data, $this->getUser());
+		} else if ($action == 'remove') {
+			if ( !empty($id) )
+				$this->model->removeSearch( $id, $this->getUser());
+		} else if ($action == 'update') {
+			$data = $this->input->post('data');
+			if ( !empty($id) && !empty($data) )
+				$this->model->updateSearch( $id, $this->getUser(), $data);
+		} else {
+			$return['data'] = $this->model->getSearches( $this->getUser() );
+		}
+		csrf_json_response($return);
 	}
 
 	protected function export() {
@@ -181,15 +193,60 @@ class MY_DBarraycontroller extends CI_Controller {
 		force_download($name, $data, true);
 	}
 
+	
+
+	protected function editor($id = null) {
+		
+		if ($id == null
+			|| $this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$action = $this->input->get('action');
+
+		if ($action == null) {
+			$data = $this->model->getByPK($id);
+
+			$this->load->view('header');
+			// load editor ui w/ data
+			$this->load->view('footer');
+		} else {
+			$data = [];
+			switch ($action) {
+				case 'update':
+					$this->update($id);
+					break;
+
+				case 'remove':
+					$this->remove($id);
+					break;
+				
+				default:
+					show_404();
+					break;
+			}
+		}
+	}
+
+	protected function hide() {
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$set = $this->input->get('set');
+		$set = $set == 1;
+
+		$this->model->setPrivate($set);
+	}
+	
 	protected function rows() {
 
 		if ($this->getUserPermission() < PERMISSION_CHANGE) {
 			show_404();
 			return;
 		}
-
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
 
 		$action = $this->input->get('action');
 		$rows = json_decode($this->input->post('rows'), true);
@@ -208,21 +265,18 @@ class MY_DBarraycontroller extends CI_Controller {
 				return;
 				break;
 		}
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-
-		, JSON_NUMERIC_CHECK);
+		csrf_json_response(
+			[	'success' => $success ]);
 	}
 
 	protected function addfield () {
-		$data = json_decode($this->input->post('data'), true);
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$data = json_decode($this->input->post('data'), true);
 
 		$prefix = null;
 		$suffix = null;
@@ -239,33 +293,52 @@ class MY_DBarraycontroller extends CI_Controller {
 			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
 		}
 
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-
-		, JSON_NUMERIC_CHECK);
+		csrf_json_response(
+			[	'success' => $success ]);
+		
 	}
 
 	protected function removefield () {
-		$key = $this->input->post('header');
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;	
+		}
+
+		$key = $this->input->post('header');
 
 		$success = $this->model->removeField($key);
 
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
+		csrf_json_response(
+			[ 'success' => $success ]);
 
-		, JSON_NUMERIC_CHECK);
+		
 	}
+
+	protected function headers () {
+
+		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
+			show_404();
+			return;	
+		}
+
+		csrf_json_response(
+			[ 'id'=>$this->model->TablePrimaryKey,
+				'headers'=>$this->model->getFieldAssociations()]);
+	}
+
+	protected function get ($id = null) {
+		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
+			show_404();
+			return;	
+		}
+		
+		csrf_json_response([
+    		'data'=>$this->model->getByPK($id)
+		]);
+	}
+
+	// Functions different from source
 
 	public function addcategory()
 	{
@@ -300,42 +373,88 @@ class MY_DBarraycontroller extends CI_Controller {
 		, JSON_NUMERIC_CHECK);
 	}
 
-	protected function makeHTML($subtable)
-	{
-		$this->load->view('header');
+	// Functions similar to source
 
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable, 'permission' => $this->getUserPermission()]);
+	protected function add ($subtable) {
 
-		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
+		if ($this->getUserPermission() < PERMISSION_ADD) {
+			show_404();
+			return;
+		}
 
-		if ($this->getUserPermission() >= PERMISSION_ALTER)
-			$this->load->view('table_settings');
+		$insert = json_decode($this->input->post('data'), true);
+
+		$inputs = $this->model->getFields();
+		$arr = array();
+		foreach ($inputs as $input) {
+			if (isset($insert[$input])) {
+				$arr[$input] = $insert[$input]; 
+			}
+		}
 		
-		$this->load->view('footer');
+		$success = $this->model->insertIntoCategoryTable($subtable, $arr);
+
+		csrf_json_response(
+			[	'success' => $success ]);
 	}
 
-	protected function data($table) {
+	public function update ($subtable, $id = null) {
 
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$insert = json_decode($this->input->post('data'), true);
+    	if ( $this->model->updateOnCategoryTable($subtable, $id, $insert) )
+    		$this->get($id);
+    	else
+    		csrf_json_response(
+			[ 'success' => false ]);
+	}
+
+	public function remove ($subtable, $id = null) {
+
+		if ($this->getUserPermission() < PERMISSION_CHANGE) {
+			show_404();
+			return;
+		}
+
+		$success = $this->model->deleteFromCategoryTable($subtable, $id);
+
+		csrf_json_response(
+			[ 'success' => $success ]);
+		
+	}
+
+	public function data ($table) {
+
+		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
+			show_404();
+			return;	
+		}
 
 		$qry = null;
 
 		$settings = [];
 
 		$orderby = $this->input->get('orderby');
+
 		if (!empty($orderby)) {
 			$settings['order_by'] = $orderby;
 			$order = $this->input->get('order');
 			if (!empty($order)) $settings['order_dir'] = $order;
 		}
 
+		$limit = $this->input->get('limit');
+		
 		if (!empty($limit)) {
 			$settings['limit_by'] = $limit;
-			$settings['limit_offset'] = $page*$limit;
+			$page = $this->input->get('page');
+			$settings['limit_offset'] = ( empty($page) ? 0 : $page )*$limit;
 		}
 
-		$headers = $this->model->getFieldAssociations();
+		$headers =  $this->model->getFieldAssociations();
 
 		$filter = $this->input->post('filter');
 		if (!empty($filter)) {
@@ -348,9 +467,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		$response = 
 		[
 			'data'=> $qry ? $qry->result() : '',
-			'csrf' => $token,
-			'csrf_hash' => $hash,
-			'count' => $qry ? $qry->num_rows() : -1,
+			'count' => $this->model->lastFindCount,
 			'success' => !empty($qry)
 		];
 
@@ -359,73 +476,7 @@ class MY_DBarraycontroller extends CI_Controller {
 			$response['id'] = $this->model->TablePrimaryKey;
 		}
 
-		echo json_encode( 
-			$response
-
-		, JSON_NUMERIC_CHECK);
+		csrf_json_response($response);
 	}
-
-	protected function filters ($action) {
-		if ($action == 'add') {
-			$this->model->saveSearch( $this->input->post('data') );
-		} else if ($action == 'remove') {
-			$this->model->saveSearch( $this->input->post('data') );
-		}
-	}
-
-	protected function add($subtable) {
-		$insert = json_decode($this->input->post('data'), true);
-
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-
-		if (!empty($insert)) {
-			$inputs = $this->model->getFields();
-			$arr = array();
-			foreach ($inputs as $input) {
-				if (isset($insert[$input])) {
-					$arr[$input] = $insert[$input]; 
-				}
-			}
-			$success = $this->model->insertIntoCategoryTable($subtable, $arr);
-		} else 
-			$success = false;
-
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-
-		, JSON_NUMERIC_CHECK);
-	}
-
-	protected function get($subtable, $id) {
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-    	echo json_encode( [
-    		'data'=>$this->model->getByPK($id),
-    		'csrf' => $token,
-			'csrf_hash' => $hash
-		], JSON_NUMERIC_CHECK);
-	}
-
-	protected function remove($subtable, $id) {
-		$token = $this->security->get_csrf_token_name();
-		$hash = $this->security->get_csrf_hash();
-
-		$this->model->deleteFromCategoryTable($subtable, $id);
-
-		echo json_encode(['success'=>true,'csrf' => $token,
-				'csrf_hash' => $hash], JSON_NUMERIC_CHECK);
-	}
-
-	protected function update($subtable, $id) {
-		$insert = json_decode($this->input->post('data'), true);
-
-    	$this->model->updateOnCategoryTable($subtable, $id, $insert);
-
-    	$this->get($subtable, $id);
-	}
+	
 }

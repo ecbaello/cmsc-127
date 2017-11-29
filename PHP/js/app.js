@@ -1,6 +1,6 @@
 // Put here controllers that are loaded always
 
-app.controller('navi', ['$scope', '$mdSidenav', function($scope,  $mdSidenav){
+app.controller('navi', ['$scope', '$mdSidenav', '$mdDialog', 'baseUrl', function($scope,  $mdSidenav, $mdDialog, baseUrl){
 
 	$scope.toggleNavi = function() {
 		$mdSidenav('navigation')
@@ -13,6 +13,36 @@ app.controller('navi', ['$scope', '$mdSidenav', function($scope,  $mdSidenav){
 
 	$scope.forward = function() {
 		window.history.forward();
+	};
+
+	$scope.bookmark = function(bookmark) {
+		$scope.closeDialog();
+		requestpost(
+			baseUrl+'bookmarks/add',
+			{
+				title: bookmark,
+				link: window.location.href
+			},
+			null,
+			function () {
+				location.reload();
+			},
+			function () {
+				
+			}
+		);
+	};
+	$scope.showBookmarkDialog = function(ev) {
+		$mdDialog.show({
+			contentElement: '#bookmarkDialog',
+			parent: angular.element(document.body),
+			targetEvent: ev,
+			clickOutsideToClose: true,
+			fullscreen: false
+		});
+	};
+	$scope.closeDialog = function() {
+		$mdDialog.cancel();
 	};
 }]);
 

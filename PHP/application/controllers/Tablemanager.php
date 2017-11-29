@@ -10,6 +10,7 @@ class Tablemanager extends CI_Controller {
 		parent::__construct();
 		$this->load->model('permission_model');
 		$this->load->model('registry_model');
+		$this->load->helper('csrf_helper');
 
 		define('NAV_SELECT', 3);
 	}
@@ -27,9 +28,6 @@ class Tablemanager extends CI_Controller {
 	{
 		if ( $this->permission_model->adminAllow() ) {
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
-
 			$name = $this->input->post('title');
 			$prefix = $this->input->post('prefix');
 
@@ -37,14 +35,10 @@ class Tablemanager extends CI_Controller {
 			
 			$this->load->model('custom_model');
             $this->custom_model->loadCustom($name, $title, $prefix);
-			$this->custom_model->createTableWithID();
+			$success = $this->custom_model->createTableWithID();
 
-			echo json_encode(
-				[
-					'csrf' => $token,
-					'csrf_hash' => $hash
-				]
-				,JSON_NUMERIC_CHECK);	
+			csrf_json_response(['success' => $success]);
+			
 		} else show_404();
 	}
 
@@ -54,34 +48,28 @@ class Tablemanager extends CI_Controller {
 
 			$meta = MY_DBmodel::metaTableName;
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
-
 			$table = $this->input->post('table');
 			$regmod = $this->registry_model;
 
 			$this->db->where('table_name', $table);
 			$qry = $this->db->get($regmod::modelTableName)->row();
 
+			$success = false;
+
 			if ( $qry->mdl_class == null && $this->dbforge->drop_table($table, TRUE) ) {
 				$this->db->where('table_name', $table);
-				$this->db->delete($meta);
+				$success = $this->db->delete($meta);
 
 				$this->db->where('table_name', $table);
-				$this->db->delete($regmod::modelTableName);
+				$success = $success && $this->db->delete($regmod::modelTableName);
 
 				$permiss = $this->permission_model;
 
 				$this->db->where('table_name', $table);
-				$this->db->delete($permiss::tableName);
+				$success = $success && $this->db->delete($permiss::tableName);
 			}
 
-			echo json_encode(
-				[
-					'csrf' => $token,
-					'csrf_hash' => $hash
-				]
-				,JSON_NUMERIC_CHECK);
+			csrf_json_response(['success' => $success]);
 		} else show_404();
 	}
 
@@ -91,21 +79,12 @@ class Tablemanager extends CI_Controller {
 
 			$meta = MY_DBmodel::metaTableName;
 
-			$token = $this->security->get_csrf_token_name();
-			$hash = $this->security->get_csrf_hash();
-
 			$table = $this->input->post('table');
 			$regmod = $this->registry_model;
 
 			$qry = $regmod->customs()->result();
 
-			echo json_encode(
-				[
-					'csrf' => $token,
-					'csrf_hash' => $hash,
-					'data' => $qry
-				]
-				,JSON_NUMERIC_CHECK);	
+			csrf_json_response(['data' => $qry]);
 		} else show_404();
 	}
 }

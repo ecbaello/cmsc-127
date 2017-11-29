@@ -29,7 +29,6 @@ class MY_DBmodel extends CI_Model
 
 		$this->load->database();
 		$this->load->dbforge();
-
 		
 		$this->load->model('search_model');
 
@@ -49,18 +48,19 @@ class MY_DBmodel extends CI_Model
        		$this->dbforge->add_field		($fields);
 
        		$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
-			$this->dbforge->create_table	($this->TableName);
+			$success = $this->dbforge->create_table	($this->TableName);
 
-			$this->registerFieldTitle( $this->TablePrimaryKey, '#');
-			$this->registerModel();
-		}
+			$success = $success && $this->registerFieldTitle( $this->TablePrimaryKey, '#');
+			$success = $success && $this->registerModel();
+			return $success;
+		} else return false;
 	}
 
 	protected function registerModel() {
 
 		$this->load->model('registry_model');
 
-		$this->registry_model->registerModel(
+		return $this->registry_model->registerModel(
 			$this->ModelTitle,
 			$this->getModelClass(),
 			0,
@@ -557,14 +557,9 @@ class MY_DBmodel extends CI_Model
 		
 	}
 
-	public function registerSearchQuery($title, $query) {
-		return $this->db->insert( self::searchTableName, 
-			[
-				'search_query'=>json_encode($query),
-				'query_title'=>$title,
-				'table_name'=>$this->TableName
-			]
-		);
+	public function setPrivate($bool) {
+		$this->load->model('registry_model');
+		return $this->registry_model->setTablePrivate($this->TableName, $bool);
 	}
 
 	/* ---------------------

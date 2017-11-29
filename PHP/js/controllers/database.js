@@ -160,6 +160,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		var data = {};
 		data.data = angular.toJson($scope.filter);
 		data.title = title;
+		$scope.closeDialog();
 		tables.saveFilter(
 			data,
 			function(resultData) {
@@ -184,7 +185,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			parent: angular.element(document.body),
 			targetEvent: ev,
 			clickOutsideToClose: true,
-			fullscreen: true
+			fullscreen: false
 		});
 	};
 

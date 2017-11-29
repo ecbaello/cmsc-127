@@ -133,7 +133,7 @@ if (!isset($permission)) $permission = -1;
 								<em>{{ filter.query_title }}</em>
 							</md-option>
 						</md-select>
-						<md-button class="md-raised md-primary" ng-click="showFilterNameDialog()">Save...</md-button>
+						<md-button class="md-raised md-primary" ng-click="showFilterNameDialog($event)">Save...</md-button>
 					</div>
 				</div>
 				<?php endif ?>
@@ -174,9 +174,6 @@ if (!isset($permission)) $permission = -1;
 			<?php if ($permission >= PERMISSION_CHANGE): ?>
 			<div ng-hide="!multiEdit">
 				<div class="pl-2">Perform action on selected rows</div>
-				<md-button class="md-raised md-primary" ng-click="performSelectAction('archive', false)">
-					Archive
-				</md-button>
 				<md-button class="md-raised md-primary" ng-click="downloadSelected()">
 					Download
 				</md-button>
@@ -261,7 +258,7 @@ if (!isset($permission)) $permission = -1;
 					<md-dialog>
 						<md-toolbar>
 							<div class="md-toolbar-tools">
-								<h2>Create Item</h2>
+								<h2>Save Filter</h2>
 								<span flex></span>
 								<md-button class="md-icon-button" ng-click="closeDialog()">
 									<i class="fa fa-times fa-lg"></i>
@@ -317,7 +314,7 @@ if (!isset($permission)) $permission = -1;
 								</div>
 						</md-dialog-content>
 						<md-dialog-actions layout="row">
-							<md-button ng-disabled="!addform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
+							<md-button ng-disabled="!addform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Create</md-button>
 						</md-dialog-actions>
 						</form>
 					</md-dialog>

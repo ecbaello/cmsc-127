@@ -109,6 +109,11 @@ class Registry_model extends CI_Model
 		return $this->db->get(self::modelTableName);
 	}
 
+	public function setTablePrivate($table, $bool = true) {
+		$this->db->where('table_name', $table);
+		return $this->db->update($table, ['privacy' => $bool?1:0]);
+	}
+
 	public function tableIsPrivate($table) {
 		$this->db->select('private');
 		$this->db->where('table_name', $table);

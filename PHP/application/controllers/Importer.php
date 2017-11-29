@@ -4,7 +4,8 @@ class Importer extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model('registry_model');
+        $this->load->library('registry');
+        $this->load->helper('csrf_helper');
     }
 
     function index() {
@@ -15,12 +16,10 @@ class Importer extends CI_Controller {
     }
 
     function headers() {
-        $token = $this->security->get_csrf_token_name();
-        $hash = $this->security->get_csrf_hash();
 
         $table = $this->input->post('table');
 
-        $custom = $this->registry_model->customtable($table);
+        $custom = $this->registry->customtable($table);
 
         if ($custom->num_rows() > 0) {
             $custom = $custom->row();
@@ -35,26 +34,18 @@ class Importer extends CI_Controller {
                 $fields = $this->custom_model->getFieldAssociations();
             }
 
-            echo json_encode(
-                [
+            csrf_json_response([
                     'headers' => $fields,
                     'csrf' => $token,
                     'csrf_hash' => $hash
-                ]
-                ,JSON_NUMERIC_CHECK); 
+                ]); 
         }
     }
 
     function tablemaps() {
-        $token = $this->security->get_csrf_token_name();
-        $hash = $this->security->get_csrf_hash();
-        echo json_encode(
-                [
-                    'tables' => $this->registry_model->models()->result(),
-                    'csrf' => $token,
-                    'csrf_hash' => $hash
-                ]
-                ,JSON_NUMERIC_CHECK); 
+        csrf_json_response([        
+            'tables' => $this->registry->models()->result()
+        ]); 
     }
 
     function importcsv() {
@@ -66,8 +57,6 @@ class Importer extends CI_Controller {
 
         $this->load->library('upload', $config);
 
-        $token = $this->security->get_csrf_token_name();
-        $hash = $this->security->get_csrf_hash();
 
         $table = $this->input->post('table');
 
@@ -111,16 +100,12 @@ class Importer extends CI_Controller {
 
         }
 
-        echo json_encode(
-                [
-                    'csrf' => $token,
-                    'csrf_hash' => $hash,
-                    'success' => $success,
-                    'error' => $error,
-                    'imported' => $count,
-                    'size' => $size
-                ]
-                ,JSON_NUMERIC_CHECK);
+        csrf_json_response([
+            'success' => $success,
+            'error' => $error,
+            'imported' => $count,
+            'size' => $size
+        ]);
 
               
     }

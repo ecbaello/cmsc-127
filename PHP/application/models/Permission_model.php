@@ -16,6 +16,7 @@ class Permission_model extends CI_Model {
 		$this->load->database();
 		$this->load->dbforge();
 		$this->load->library('ion_auth');
+		$this->load->library('registry');
 
 		defined('PERMISSION_NONE') OR define('PERMISSION_NONE', 0);
 		defined('PERMISSION_PUBLIC') OR define('PERMISSION_PUBLIC', 1);
@@ -40,8 +41,8 @@ class Permission_model extends CI_Model {
 
 	public function userPermission($table, $userid = null) {
 		if ( $userid == null ) {
-			$this->load->model('registry_model');
-			$private = $this->registry_model->tableIsPrivate($table);
+
+			$private = $this->registry->tableIsPrivate($table);
 
 			if ( !$this->ion_auth->logged_in() ) return $private?PERMISSION_NONE:PERMISSION_PUBLIC;
 			if ( $this->ion_auth->is_admin() ) return PERMISSION_ALTER;
