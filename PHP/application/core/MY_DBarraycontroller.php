@@ -16,7 +16,13 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		$this->load->model('permission_model');
 
-		define('NAV_SELECT', 1);
+		defined('NAV_SELECT') OR define('NAV_SELECT', 1);
+	}
+
+	public function _loadCustom($ModelTitle, $TableName, $FieldPrefix, $categoryTableName, $arrayFieldName, $categoryFieldName) {
+		$this->load->model('custom_array_model');
+		$this->model = $this->custom_array_model;
+		return $this->model->loadCustom($ModelTitle, $TableName, $FieldPrefix, $categoryTableName, $arrayFieldName, $categoryFieldName);
 	}
 
 	public function index() {
@@ -25,6 +31,10 @@ class MY_DBarraycontroller extends CI_Controller {
 		$this->makeSelector();
 		
 		$this->load->view('footer');
+	}
+
+	public function _useModel ($model) {
+		$this->model = $model;
 	}
 
 	protected function makeHTML($subtable)
@@ -39,6 +49,14 @@ class MY_DBarraycontroller extends CI_Controller {
 			$this->load->view('table_settings');
 		
 		$this->load->view('footer');
+	}
+
+	protected function loggedIn() {
+		return $this->permission_model->ion_auth->logged_in();
+	}
+
+	protected function getUser() {
+		return $this->permission_model->ion_auth->user()->row()->id;
 	}
 
 	protected function permissionError() {

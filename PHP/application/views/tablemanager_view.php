@@ -26,6 +26,9 @@ $CI =& get_instance();
 							Custom Table Prefix
 						</th>
 						<th>
+							Custom Table Type
+						</th>
+						<th>
 							
 						</th>
 					</tr>
@@ -38,6 +41,9 @@ $CI =& get_instance();
 						</td>
 						<td>
 							{{ table.table_prefix }}
+						</td>
+						<td>
+							{{ table.is_array==1?'Array':'Basic' }}
 						</td>
 						<th>
 							<md-button class="md-raised md-warn" ng-click="delete(table.table_name)">
@@ -57,7 +63,13 @@ $CI =& get_instance();
 					</md-input-container>
 					<md-input-container>
 						<input placeholder="Prefix" ng-model="newItem.prefix" required>
-
+					</md-input-container>
+					<md-input-container>
+						<p>Table Type</p>
+						<md-radio-group ng-model="newItem.array" required>
+					      <md-radio-button ng-value="0" class="md-primary">Basic</md-radio-button>
+					      <md-radio-button ng-value="1">Array</md-radio-button>
+					    </md-radio-group>
 					</md-input-container>
 					<md-button class="md-raised md-primary" type="submit">
 						Add New

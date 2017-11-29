@@ -31,11 +31,23 @@ class Tablemanager extends CI_Controller {
 			$name = $this->input->post('title');
 			$prefix = $this->input->post('prefix');
 
+			$arraytype = $this->input->post('array');
+
 			$title = self::prefix.str_replace(' ', '_', $name);
-			
-			$this->load->model('custom_model');
-            $this->custom_model->loadCustom($name, $title, $prefix);
-			$success = $this->custom_model->createTableWithID();
+				
+			if ($arraytype != 1) {
+				$this->load->model('custom_model');
+	            $this->custom_model->loadCustom($name, $title, $prefix);
+				$success = $this->custom_model->createTableWithID();
+			} else {
+				$categtable = $title.'_type_table';
+				$arrid = $title.'_type';
+				$cattitle = $title.'_type_title';
+
+				$this->load->model('custom_array_model');
+	            $this->custom_array_model->loadCustom($name, $title, $prefix, $categtable, $arrid, $cattitle);
+				$success = $this->custom_array_model->createTableWithID();
+			}
 
 			csrf_json_response(['success' => $success]);
 			

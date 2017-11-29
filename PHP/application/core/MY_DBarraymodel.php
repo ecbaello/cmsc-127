@@ -14,7 +14,7 @@ class MY_DBarraymodel extends MY_DBmodel
 	{
 		parent::__construct(); // do constructor for parent class
 
-		$this->createCategoryTable();
+		if ($this->willRegister) $this->createCategoryTable();
 	}
 
 	protected function registerModel() {
@@ -23,7 +23,7 @@ class MY_DBarraymodel extends MY_DBmodel
 
 		return $this->registry_model->registerModel(
 			$this->ModelTitle,
-			parent::getModelClass(),
+			$this->getModelClass(),
 			1,
 			$this->TableName,
 			$this->TablePrimaryKey,
@@ -33,6 +33,30 @@ class MY_DBarraymodel extends MY_DBmodel
 			$this->arrayFieldName,
 			$this->categoryFieldName
 		);
+	}
+
+	public function createTableWithID() {
+		if (!$this->db->table_exists($this->TableName)){
+			$fields = array(
+        		$this->TablePrimaryKey => array(
+	                'type' => 'INT',
+	                'constraint' => 9,
+	                'auto_increment' => TRUE
+	            )
+       		);
+       		$this->dbforge->add_field		($this->arrayFieldName." INT NOT NULL");
+       		$this->dbforge->add_field		($fields);
+
+       		$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
+       		
+			$success = $this->dbforge->create_table	($this->TableName);
+
+			$success = $success && $this->registerFieldTitle( $this->TablePrimaryKey, '#');
+			$success = $success && $this->registerModel();
+
+			$this->createCategoryTable();
+			return $success;
+		} else return false;
 	}
 
     public function createCategoryTable()

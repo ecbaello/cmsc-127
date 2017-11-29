@@ -36,8 +36,14 @@ class Custom extends CI_Controller {
 			return;
 		}
 
-		$controller = new MY_DBcontroller();
-		$controller->_loadCustom($custom->mdl_name, $table_name, $custom->table_prefix);
+		if ($custom->is_array == 1) {
+			$pseudolink = APPPATH.'controllers'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'custom'.DIRECTORY_SEPARATOR.'load'.DIRECTORY_SEPARATOR.urlencode($table_name);
+			$controller = new MY_DBarraycontroller($pseudolink);
+			$controller->_loadCustom($custom->mdl_name, $table_name, $custom->table_prefix, $custom->table_array_table, $custom->table_array_id, $custom->table_array_title);
+		} else {
+			$controller = new MY_DBcontroller();
+			$controller->_loadCustom($custom->mdl_name, $table_name, $custom->table_prefix);
+		}
 
 		return call_user_func_array( array($controller, $method), $arguments);
 	}

@@ -14,36 +14,29 @@ app.controller("tablemanager", ['$scope', '$http', 'tablemanagerURL', function (
 	$scope.customTables = [];
 	$scope.newItem = {
 		prefix:'',
-		title:''
+		title:'',
+		array: 0
 	};
 
 	$scope.new = function() {
-		console.log($scope.newItem);
 
 		var data = {};
 		data.title = $scope.newItem.title;
 		data.prefix = $scope.newItem.prefix;
+		data.array = $scope.newItem.array;
 
-		data[csrf] = csrfHash;
-
-		var send = {
-			type: 'POST',
-			url: tablemanagerURL+'/new',
-			data: data,
-			success: function(resultData) {
+		requestpost(
+			tablemanagerURL+'/new',
+			data,
+			function(resultData) {
 				var object = JSON.parse(resultData);
 				csrf = object.csrf;
 				csrfHash = object.csrf_hash;
 
 				$scope.loadTables();
-			},
-			error: function() {
+			}, function() {
 				$scope.loadTables();
-			}
-		};
-
-		$.ajax(send);
-
+			});
 	};
 
 	$scope.delete = function(table) {
@@ -52,25 +45,18 @@ app.controller("tablemanager", ['$scope', '$http', 'tablemanagerURL', function (
 		var data = {};
 		data.table = table;
 
-		data[csrf] = csrfHash;
-
-		var send = {
-			type: 'POST',
-			url: tablemanagerURL+'/delete',
-			data: data,
-			success: function(resultData) {
+		requestpost(
+			tablemanagerURL+'/delete',
+			data,
+			function(resultData) {
 				var object = JSON.parse(resultData);
 				csrf = object.csrf;
 				csrfHash = object.csrf_hash;
-				
-				$scope.loadTables();
-			},
-			error: function() {
-				$scope.loadTables();
-			}
-		};
 
-		$.ajax(send);
+				$scope.loadTables();
+			}, function() {
+				$scope.loadTables();
+			});
 
 	};
 }]);
