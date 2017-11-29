@@ -7,7 +7,7 @@ $CI =& get_instance();
 	<md-content layout-padding>
 			<md-card class="p-0">
 				<md-toolbar>
-					<h5 class="md-toolbar-tools">Tools</h5>
+					<h5 class="md-toolbar-tools">Table Tools</h5>
 				</md-toolbar>
 				<md-tabs md-dynamic-height md-selected="0" md-align-tabs="top">
 					<md-tab id="ts-tab1">

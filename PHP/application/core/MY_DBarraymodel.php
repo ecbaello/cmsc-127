@@ -103,7 +103,7 @@ class MY_DBarraymodel extends MY_DBmodel
 
 		if ( $categ != null ) {
 			$success = true;
-			$this->db->where($this->arrayFieldName, $categ);
+			$this->db->where($this->categoryFieldName, $name);
 			$success = $success && $this->db->delete($this->categoryTableName);
 			$this->db->where($this->arrayFieldName, $categ);
 			$success = $success && $this->db->delete($this->TableName);

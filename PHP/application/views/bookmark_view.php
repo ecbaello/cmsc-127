@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<md-list>
 					<md-list-item class="md-2-line align-items-center" ng-repeat-start="item in bookmarks" class="secondary-button-padding">
 						<p class="d-inline">{{item.title}}</p>
-						<md-button class="md-secondary" ng-href="{{item.link}}">Go</md-button>
+						<md-button class="md-secondary md-raised md-primary" ng-href="{{item.link}}">Go</md-button>
 						<md-button class="md-secondary md-raised md-warn" ng-click="removeBookmark(item.title)">Delete</md-button>
 					</md-list-item>
 					<md-divider ng-repeat-end></md-divider>

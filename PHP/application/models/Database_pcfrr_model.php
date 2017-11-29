@@ -17,10 +17,6 @@ class Database_pcfrr_model extends MY_DBarraymodel
 	public function __construct()
 	{
 		parent::__construct(); // do constructor for parent class
-
-		$this->registerCategoryTable('General');
-		$this->registerCategoryTable('Smile Train');
-		$this->registerCategoryTable('Cataract');
 	}
 
 	/**
@@ -88,6 +84,10 @@ class Database_pcfrr_model extends MY_DBarraymodel
 			$this->registerFieldTitle( 'pcf_rr_other_expenses', 'Other Expenses', 'FLOAT');
 			$this->registerFieldTitle( 'pcf_rr_other_desc', 'Other Description', 'TEXTAREA');
 			$this->registerModel();
+
+			$this->registerCategoryTable('General');
+			$this->registerCategoryTable('Smile Train');
+			$this->registerCategoryTable('Cataract');
 		}
 	}
 

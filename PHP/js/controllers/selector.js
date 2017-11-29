@@ -19,6 +19,36 @@ app.controller('selector', ['$scope', '$http', function($scope, $http){
 		$scope.current = select;
 	};
 
+	$scope.addCategory = function(category) {
+		requestpost(
+			$scope.selectorUrl+'/addcategory',
+			{title: category},
+			null,
+			function(data) {
+				loadOptions();
+				$scope.$apply();
+			},
+			function() {
+				
+			}
+			);
+	};
+
+	$scope.removeCategory = function(category) {
+		requestpost(
+			$scope.selectorUrl+'/removecategory',
+			{title: category},
+			null,
+			function(data) {
+				loadOptions();
+				$scope.$apply();
+			},
+			function() {
+				
+			}
+			);
+	};
+
 	function loadOptions() {
 		$.ajax({
 			method: "GET",
@@ -28,8 +58,12 @@ app.controller('selector', ['$scope', '$http', function($scope, $http){
 				$scope.options = data.data;
 				$scope.setSelected($scope.current);
 				$scope.$apply();
+
+				console.log(data);
 			}
 		});
+
+
 		
 	}
 }]);

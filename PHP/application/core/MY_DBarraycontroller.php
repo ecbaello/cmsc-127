@@ -74,7 +74,9 @@ class MY_DBarraycontroller extends CI_Controller {
 	}
 
 	protected function makeSelector($table = null, $replacelink = null) {
-		$settings = array();
+		$permission = $this->getUserPermission();
+
+		$settings = ['permission' => $permission];
 
 		if (!empty($table))
 			$settings['current_tbl'] = $this->model->convertNameToCategory($table);
@@ -343,35 +345,38 @@ class MY_DBarraycontroller extends CI_Controller {
 
 	public function addcategory()
 	{
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
 		$success = false;
 		$name = $this->input->post('title');
 
 		if (!empty($name))
 			$success = $this->model->registerCategoryTable($name);
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
 
-		, JSON_NUMERIC_CHECK);
+		csrf_json_response([
+    		'success' => $success
+		]);
 	}
 
 	public function removecategory()
 	{
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
 		$success = false;
 		$name = $this->input->post('title');
 
 		if (!empty($name))
 			$success = $this->model->unregisterCategoryTable($name);
-		echo json_encode( 
-			array(
-				'csrf' => $token,
-				'csrf_hash' => $hash,
-				'success' => $success
-			)
-		, JSON_NUMERIC_CHECK);
+		
+		csrf_json_response([
+    		'success' => $success
+		]);
 	}
 
 	// Functions similar to source

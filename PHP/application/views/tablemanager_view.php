@@ -53,30 +53,37 @@ $CI =& get_instance();
 						</th>
 					</tr>
 				</table>
-				<form class="p-4" ng-submit="new()">
-					<h5>
-					New Custom Table
-					</h5>
-					<md-input-container>
-						<input placeholder="Title" ng-model="newItem.title" required>
-
-					</md-input-container>
-					<md-input-container>
-						<input placeholder="Prefix" ng-model="newItem.prefix" required>
-					</md-input-container>
-					<md-input-container>
-						<p>Table Type</p>
-						<md-radio-group ng-model="newItem.array" required>
-					      <md-radio-button ng-value="0" class="md-primary">Basic</md-radio-button>
-					      <md-radio-button ng-value="1">Array</md-radio-button>
-					    </md-radio-group>
-					</md-input-container>
-					<md-button class="md-raised md-primary" type="submit">
-						Add New
-					</md-button>
-				</form>
 			</md-card-content>
 		</md-card>
 	</md-content>
+
+	<md-content layout-padding>
+		<md-card class="p-0">
+			<md-toolbar>
+				<h5 class="md-toolbar-tools">New Custom Table</h5>
+			</md-toolbar>
+			<form class="p-4" ng-submit="new()">
+				<md-input-container>
+					<input placeholder="Title" ng-model="newItem.title" required>
+
+				</md-input-container>
+				<md-input-container>
+					<input placeholder="Prefix" ng-model="newItem.prefix" required>
+				</md-input-container>
+				<md-input-container>
+					<p>Table Type</p>
+					<md-radio-group ng-model="newItem.array" required>
+				      <md-radio-button ng-value="0" class="md-primary">Basic</md-radio-button>
+				      <md-radio-button ng-value="1">Array</md-radio-button>
+				    </md-radio-group>
+				</md-input-container>
+				<md-button class="md-raised md-primary" type="submit">
+					Add New
+				</md-button>
+			</form>
+		</md-card>
+	</md-content>
+
+	
 </div>
 <script type="text/javascript" src="<?= base_url().'js/controllers/tablemanager.js' ?>"></script>

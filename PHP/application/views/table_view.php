@@ -17,11 +17,11 @@ if (!isset($permission)) $permission = -1;
 			<span class="table-tools">
 				<div>
 					<?php if ($permission >= PERMISSION_CHANGE): ?>
-					<md-button ng-class="!multiEdit?'':' md-focused'" class="md-icon-button" ng-click="multiEdit=!multiEdit; cancel()">
+					<md-button ng-class="!multiEdit?'':' md-primary'" class="md-icon-button" ng-click="multiEdit=!multiEdit; cancel()">
 						<i class="fa fa-check-square-o fa-lg"></i>
 					</md-button>
 					<?php endif ?>
-					<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-focused'" class="md-icon-button" ng-click="hideFilter=!hideFilter; cancel()">
+					<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-primary'" class="md-icon-button" ng-click="hideFilter=!hideFilter; cancel()">
 						<i class="fa fa-filter fa-lg"></i>
 					</md-button>
 					<?php if ($permission >= PERMISSION_ADD): ?>

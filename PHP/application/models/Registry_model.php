@@ -3,6 +3,7 @@
 class Registry_model extends CI_Model
 {
 	const modelTableName = 'fin_model_registry';
+	const systemTables = ["fin_db_meta","fin_db_meta_arch","fin_group_permissions","fin_groups","fin_login_attempts","fin_model_registry","fin_searches","fin_user_bookmarks_model","fin_users","fin_users_groups"];
 
 	public function __construct()
 	{
@@ -119,6 +120,25 @@ class Registry_model extends CI_Model
 		$this->db->where('table_name', $table);
 		$query = $this->db->get(self::modelTableName)->row();
 		return empty($query)||($query->private==1);
+	}
+
+	public function notRegistered() {
+		$tables = $this->db->list_tables();
+
+		$this->db->select('table_name');
+		$result = $this->db->get(self::modelTableName)->result();
+		$list_main = [];
+		foreach ($result as $item) {
+			array_push($list_main, $item->table_name);
+		}
+
+		$this->db->select('DISTINCT `table_array_table`', false);
+		$result = $this->db->get(self::modelTableName)->result();
+		foreach ($result as $item) {
+			array_push($list_main, $item->table_array_table);
+		}
+
+		return array_values(array_diff($tables, $list_main, self::systemTables));
 	}
 
 }
