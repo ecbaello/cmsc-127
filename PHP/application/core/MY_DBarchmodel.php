@@ -102,11 +102,11 @@ class MY_DBArchmodel extends MY_DBmodel // lazy class for archive support
 	}
 
 	public function setPrivate($ye) {
-		return true;
+		return $this->archiveMode || parent::setPrivate($ye);
 	}
 
 	public function isPrivate() {
-		return true;
+		return $this->archiveMode || parent::isPrivate();
 	}
 }
 
