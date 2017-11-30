@@ -28,7 +28,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	public function index() {
 		$this->load->view('header');
         
-		$this->makeSelector();
+		$this->makeSelector(null, null, true);
 		
 		$this->load->view('footer');
 	}
@@ -41,9 +41,13 @@ class MY_DBarraycontroller extends CI_Controller {
 	{
 		$this->load->view('header');
 
-		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle.': '.$subtable, 'permission' => $this->getUserPermission()]);
-
 		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
+
+		$this->load->view('table_view', [
+			'url'=>current_url(),
+			'title'=>$this->model->ModelTitle.': '.$subtable,
+			'permission' => $this->getUserPermission()]);
+
 
 		if ($this->getUserPermission() >= PERMISSION_ALTER)
 			$this->load->view('table_settings');
@@ -73,10 +77,10 @@ class MY_DBarraycontroller extends CI_Controller {
 		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers'.DIRECTORY_SEPARATOR, '', $file_url));
 	}
 
-	protected function makeSelector($table = null, $replacelink = null) {
+	protected function makeSelector($table = null, $replacelink = null, $modifiable = false) {
 		$permission = $this->getUserPermission();
 
-		$settings = ['permission' => $permission];
+		$settings = ['permission' => $permission, 'show_category' => $modifiable, 'title' => $this->model->ModelTitle];
 
 		if (!empty($table))
 			$settings['current_tbl'] = $this->model->convertNameToCategory($table);

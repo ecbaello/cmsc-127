@@ -13,7 +13,7 @@ if (!isset($permission)) $permission = -1;
 	<md-card class="p-0">
 		<md-progress-linear md-mode="indeterminate" ng-disabled="!serverRequesting"></md-progress-linear>
 		<md-card-title>
-			<span class="md-headline font-weight-bold" flex><?= $title ?></span>
+			<h2 class="md-headline font-weight-bold" flex><?= $title ?></h2>
 			<span class="table-tools">
 				<div>
 					<?php if ($permission >= PERMISSION_CHANGE): ?>
@@ -248,7 +248,20 @@ if (!isset($permission)) $permission = -1;
 					</table>
 					<div class="text-center" ng-if="data.length==0" layout-padding>
 						<div>
-							<i class="fa fa-minus-circle"></i> <em> Nothing to see here...</em>
+							<div style="padding-left: 15%; padding-right: 15%; background: {{ colors('primary-100-0.1'); }}">
+								
+								<i class="fa fa-minus-circle fa-3x pb-3" style="color: {{ colors('primary-400'); }}"></i>
+								<h5 class="font-weight-bold">The Table is Empty</h5>
+
+								<?php if ($permission >= PERMISSION_ADD): ?>
+								<p>You might want to add an item by clicking on the (+) button located on the upper right of the page or this button here.</p>
+								<md-button class="md-primary md-raised" ng-click="showAddDialog($event)">
+									Add an Item
+								</md-button>
+								<?php else: ?>
+								<p>It looks like this table is yet to be filled up.</p>
+								<?php endif ?>
+							</div>
 						</div>
 					</div>
 			</div>
@@ -290,14 +303,14 @@ if (!isset($permission)) $permission = -1;
 					<md-dialog>
 						<md-toolbar>
 							<div class="md-toolbar-tools">
-								<h2>Create Item</h2>
+								<h2>Add Item</h2>
 								<span flex></span>
 								<md-button class="md-icon-button" ng-click="closeDialog()">
 									<i class="fa fa-times fa-lg"></i>
 								</md-button>
 							</div>
 						</md-toolbar>
-						<form ng-cloak name="addform" ng-submit="add()">
+						<form ng-cloak name="addform" ng-submit="add(false)">
 						<md-dialog-content>
 								<div layout-padding>
 									<div ng-repeat="(key, item) in headers" ng-if="!item.read_only" class="md-block">
@@ -306,7 +319,8 @@ if (!isset($permission)) $permission = -1;
 												'swtch' => 'item.type',
 												'model' => 'newItem[key]',
 												'label' => '{{item.title}}',
-												'required' => 'item.required'
+												'required' => 'item.required',
+												'initialize' => 'item.default_value'
 											]
 										, true); ?>
 										
@@ -314,7 +328,8 @@ if (!isset($permission)) $permission = -1;
 								</div>
 						</md-dialog-content>
 						<md-dialog-actions layout="row">
-							<md-button ng-disabled="!addform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Create</md-button>
+							<md-button ng-disabled="!addform.$valid" ng-click="add(true)" class="btn-confirm md-raised">Quick Add</md-button>
+							<md-button ng-disabled="!addform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-plus"></i> Add</md-button>
 						</md-dialog-actions>
 						</form>
 					</md-dialog>

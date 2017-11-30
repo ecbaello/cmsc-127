@@ -15,7 +15,7 @@
 
 			}
 			.link-grid-tile:hover {
-				background: {{ $mdColors.getThemeColor('primary-800'); }};
+				background: {{ colors('primary-800'); }};
 				color: white;
 			}
 		</style>

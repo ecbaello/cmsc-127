@@ -10,6 +10,10 @@ if (!isset($inp_attr)) $inp_attr = '';
 if (!isset($required)) $required = '';
 else $required = 'ng-required = "'.$required.'" ';
 
+$init = isset($initialize);
+
+$init_st = $init?'ng-init="'.$model.'='.$initialize.'" ':'';
+
 $placeholder = (isset($placeholder)?'placeholder = "'.$placeholder.'"':'').' ';
 $modelstr = 'ng-model = "'.$model.'" ';
 
@@ -26,25 +30,27 @@ $label = isset($label)?'<label>'.$label.'</label>':'';
 <md-input-container <?= $container ?> >
 	<?= $label ?>
 	<span ng-switch-when="DATE">
-		<md-datepicker type="date" <?= $input ?> ng-required="true"></md-datepicker>
+		<md-datepicker type="date" <?=
+			$init?'ng-init="'.$model.'=\''.date('c').'\'"':''
+			?> <?= $input ?>></md-datepicker>
 	</span>
 	<span ng-switch-when="FLOAT">
-		<input type="number" step="0.01" <?= $input.$required ?> >
+		<input type="number" step="0.01" <?= $input.$required.$init_st ?> >
 	</span>
 	<span ng-switch-when="NUMBER">
-		<input type="number" <?= $input.$required ?> >
+		<input type="number" <?= $input.$required.$init_st ?> >
 	</span>
 	<span ng-switch-when="TEXTAREA">
-		<textarea <?= $input.$required ?> ></textarea>
+		<textarea <?= $input.$required.$init_st ?> ></textarea>
 	</span>
 	<span ng-switch-when="URL">
-		<input type="url" <?= $input.$required ?> >
+		<input type="url" <?= $input.$required.$init_st ?> >
 	</span>
 	<span ng-switch-when="EMAIL">
-		<input type="email" <?= $input.$required ?> >
+		<input type="email" <?= $input.$required.$init_st ?> >
 	</span>
 	<span ng-switch-default>
-		<input <?= $input.$required ?> >
+		<input <?= $input.$required.$init_st ?> >
 	</span>
 </md-input-container>
 

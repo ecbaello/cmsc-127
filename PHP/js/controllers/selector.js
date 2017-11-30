@@ -1,27 +1,18 @@
-app.controller('selector', ['$scope', '$http', function($scope, $http){
+app.controller('selector', ['$scope', '$http', 'selectorUrl', 'selectorSelection', function($scope, $http, selectorUrl, selectorSelection){
 
 	$scope.options = {};
 
-	$scope.current = null;
+	$scope.selection = selectorSelection;
 
-	$scope.redirect = function() {
-		window.location.href = $scope.selectorUrl +'/table/'+ $scope.select.link;
-	};
+	$scope.menuUrl = selectorUrl;
 
-	$scope.setURL = function(url) {
-		$scope.selectorUrl = url;
-		loadOptions();
-	};
-
-	$scope.setSelected = function(select) {
-		//console.log(select);
-		$scope.select = $scope.options[select];
-		$scope.current = select;
+	$scope.redirect = function(url) {
+		window.location.href = selectorUrl +'/table/'+ url;
 	};
 
 	$scope.addCategory = function(category) {
 		requestpost(
-			$scope.selectorUrl+'/addcategory',
+			selectorUrl+'/addcategory',
 			{title: category},
 			null,
 			function(data) {
@@ -36,7 +27,7 @@ app.controller('selector', ['$scope', '$http', function($scope, $http){
 
 	$scope.removeCategory = function(category) {
 		requestpost(
-			$scope.selectorUrl+'/removecategory',
+			selectorUrl+'/removecategory',
 			{title: category},
 			null,
 			function(data) {
@@ -52,18 +43,16 @@ app.controller('selector', ['$scope', '$http', function($scope, $http){
 	function loadOptions() {
 		$.ajax({
 			method: "GET",
-			url: $scope.selectorUrl+'/table',
+			url: selectorUrl+'/table',
 			dataType: "json",
 			success: function (data) {
 				$scope.options = data.data;
-				$scope.setSelected($scope.current);
 				$scope.$apply();
 
 				console.log(data);
 			}
 		});
-
-
-		
 	}
+
+	loadOptions();
 }]);

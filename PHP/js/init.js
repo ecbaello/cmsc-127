@@ -11,7 +11,7 @@ var app = angular.module('app', ['ngMaterial', 'ngMessages','chart.js', 'ngUploa
 	                            // other color intentions will be inherited
 	                            // from default
 	}).run(function($rootScope, $mdColors) {
-    	$rootScope.$mdColors = $mdColors;
+    	$rootScope.colors = $mdColors.getThemeColor;
 	});
 
 var encodeObject = function (getopts) {

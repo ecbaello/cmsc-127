@@ -355,7 +355,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 	// Adding to Tables
 	$scope.newItem = {};
-	$scope.add = function () {
+	$scope.add = function (quick) {
 		$scope.serverRequesting = true;
 		var data = {};
 		data.data = angular.toJson($scope.newItem);
@@ -369,7 +369,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 				$scope.rebuild(true);
 			}
 		);
-		$mdDialog.hide();
+		if (!quick) $mdDialog.hide();
 	};
 
 	$scope.showAddDialog = function(ev) {
