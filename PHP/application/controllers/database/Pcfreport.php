@@ -158,24 +158,6 @@ class Pcfreport extends MY_DBarraycontroller {
 		
 	}
 
-    public function getMonthlyExpenses($year){
-
-        $expenses = array();
-		
-        $categories = $this->model->getCategories();
-        foreach($categories as $subtable) {
-			$this->model = $this->switchModel($subtable);
-            for ($i = 1; $i <= 12; $i++) {
-
-                $expenses[$subtable][date("F", mktime(0, 0, 0, $i, 10))] = $this->model->getExpense(date($year .'-'. $i . '-01'), date($year . '-'.$i . '-t'));
-
-            }
-        }
-        echo json_encode($expenses);
-
-        return $expenses;
-    }
-
     public function getExpenseTable($subtable,$mode=0,$fromDate=null,$toDate=null){
 		// mode 0 - all expenses
 		// mode 1 - unreplenished expenses

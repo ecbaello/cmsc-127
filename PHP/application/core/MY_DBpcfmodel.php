@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_DBpcfmodel extends MY_DBarraymodel
 {
 	public $arrayFieldName = 'pcf_type';
-	public $categoryTableName = 'pcf_type_table';	
+	public $categoryTableName = 'fin_pcf_type_table';	
     public $categoryFieldName = 'pcf_name';
     public $categoryModelName = 'model_name';
     public $booleanFieldName = 'replenished';
@@ -21,9 +21,9 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 		parent::__construct(); // do constructor for parent class
 		$this->createCategoryTable();
 		
-		$this->registerCategoryTable('General','database_pcf_general_model');
-        $this->registerCategoryTable('Smile Train','database_pcf_smiletrain_model');
-        $this->registerCategoryTable('Cataract','database_pcf_cataract_model');
+		$this->registerCategoryTable('General','database_pcf_general_model','fin_pcf_general');
+        $this->registerCategoryTable('Smile Train','database_pcf_smiletrain_model','fin_pcf_smiletrain');
+        $this->registerCategoryTable('Cataract','database_pcf_cataract_model','fin_pcf_cataract');
 		
 		$this->load->model('report_model');
 	}
@@ -32,7 +32,7 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 
 		$this->load->model('registry_model');
 
-		$this->registry_model->registerModel(
+		return $this->registry_model->registerModel(
 			$this->ModelTitle,
 			$this->getModelClass(),
 			0,
@@ -53,7 +53,9 @@ class MY_DBpcfmodel extends MY_DBarraymodel
             );
             $this->dbforge->add_field($fields);
             $this->dbforge->add_field("pcf_name VARCHAR(100) NOT NULL");
-            $this->dbforge->add_field("model_name VARCHAR(100) NOT NULL");
+            $this->dbforge->add_field("model_name VARCHAR(100)");
+            $this->dbforge->add_field("model_title VARCHAR(100)");
+            $this->dbforge->add_field("table_name VARCHAR(100)");
             $this->dbforge->add_field("pcf_allotted_fund FLOAT NOT NULL DEFAULT 5000.0");
             $this->dbforge->add_field("pcf_expense_threshold FLOAT NOT NULL DEFAULT 3000.0");
             $this->dbforge->add_key('pcf_type', TRUE);
@@ -85,24 +87,91 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 
     public function getModel($name){
 		
-	    $this->db->select($this->categoryModelName);
+	    $this->db->select($this->categoryModelName.',model_title,table_name');
 	    $this->db->where($this->categoryFieldName,$name);
 	    $result = $this->db->get($this->categoryTableName);
-	    if(!empty($result->result_array()))
-	        return $result->result_array()[0][$this->categoryModelName];
-	    else
-	        return '';
+	    if(!empty($result->result_array())){
+			$r = $result->result_array()[0];
+	        $modelName = $r[$this->categoryModelName];
+			if($modelName === null){
+				$this->load->model('custom_pcf_model');
+				$this->custom_pcf_model->loadCustom($r['model_title'], $r['table_name']);
+				return $this->custom_pcf_model;
+			}else{
+				$this->load->model($modelName);
+				return $this->$modelName;
+			}
+	    }else{
+	        return null;
+		}
     }
 
 
-	public function registerCategoryTable($name, $modelName = '') {
-		if ( !$this->checkCategoryExists($name) ) {
-			$data = array(
-			    $this->categoryFieldName => $name,
-                $this->categoryModelName => $modelName
-			);
-			$this->db->insert($this->categoryTableName, $data);
+	public function registerCategoryTable($name, $modelName = null,$tableName=null) {
+		if ( !$this->checkCategoryExists($name)) {
+			if($modelName != null){
+				$data = array(
+					$this->categoryFieldName => $name,
+					$this->categoryModelName => $modelName,
+					'table_name'=>$tableName
+				);
+				return $this->db->insert($this->categoryTableName, $data);
+			}else{
+				
+				$prefix = '';
+				$title = 'fin_pcf_'.strtolower(str_replace(' ', '_', $name));
+				
+				$this->load->model('custom_pcf_model');
+				$this->custom_pcf_model->loadCustom('Petty Cash Fund: '.$name, $title);
+				if($this->custom_pcf_model->initializeCustomTable()){
+					$success = $this->db->insert($this->categoryTableName,array(
+						$this->categoryFieldName => $name,
+						'model_title'=>'Petty Cash Fund: '.$name,
+						'table_name'=>$title
+					));
+					
+					if($success){
+						$this->db->where('table_name',$title);
+						$this->db->update(Registry_model::modelTableName,array(MDL_CLASS=>'pcf'));
+						return true;
+					}else{
+						return false;
+					}
+					
+				}else{
+					return false;
+				}
+			}
 		}
+		return false;
+	}
+
+	public function unregisterCategoryTable($name) {
+		$categ = $this->convertNameToCategory($name);
+		
+		if($categ===1||$categ===2||$categ===3)
+			return false;
+		
+		if ( $categ != null ) {
+			$success = true;
+			$this->db->select('table_name');
+			$this->db->where($this->categoryFieldName,$name);
+			$result = $this->db->get($this->categoryTableName)->result_array();
+			if(empty($result)) return false;
+			$tableName = $result[0]['table_name'];
+			
+			$this->db->where($this->categoryFieldName, $name);
+			$success = $success && $this->db->delete($this->categoryTableName);
+			
+			$this->db->where('table_name',$tableName);
+			$success = $success && $this->db->delete(Registry_model::modelTableName);
+			
+			$this->db->where('table_name',$tableName);
+			$success = $success && $this->db->delete(MY_DBmodel::metaTableName);
+			
+			return $success && $this->dbforge->drop_table($tableName,true);
+		}
+		return false;
 	}
 	
 	public function registerReport(){

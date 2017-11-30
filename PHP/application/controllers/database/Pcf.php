@@ -10,31 +10,25 @@ class Pcf extends MY_DBarraycontroller {
 		$this->model = new MY_DBpcfmodel();
 	}
 	
-	protected function switchModel($subtable){
-        $modelName = $this->model->getModel($subtable);	
-        $this->load->model($modelName);
-        return $this->$modelName;
-    }
-
 	protected function makeHTML($subtable)
 	{		
 		$this->load->view('header');
 
 		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))), false);
-
+		
 		$this->load->view('table_view', ['url'=>current_url(), 'title'=>$this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 
 		$html = '<md-button href="'.base_url().'database/pcfreport/UnreplenishedPCF/'.urlencode($subtable).'" class="md-primary md-raised" >
 					View Unreplenished Funds >>>>
                 </md-button>';
 		$this->load->view('html',array('html'=>$html));
-		
+
 		if ($this->getUserPermission() >= PERMISSION_ALTER)
 			$this->load->view('table_settings');
 		
 		$this->load->view('footer');
 	}
-
+	
 	protected function makeSelector($table = null, $replacelink = null, $modifiable = false) {
 		$permission = $this->getUserPermission();
 
@@ -52,14 +46,14 @@ class Pcf extends MY_DBarraycontroller {
 	public function table($subtable = null, $action = null, $arg0 = null, $arg1 = 0) {
 		if($subtable!=null){
 			$subtable = urldecode($subtable);
-			$this->model = $this->switchModel($subtable);
+			$this->model = $this->model->getModel($subtable);
 		}
 		parent::table($subtable,$action,$arg0,$arg1);
 	}
 	
 	protected function add($subtable) {
 		
-		$this->model = $this->switchModel($subtable);
+		$this->model = $this->model->getModel($subtable);
 		$insert = json_decode($this->input->post('data'), true);
 		$token = $this->security->get_csrf_token_name();
 		$hash = $this->security->get_csrf_hash();

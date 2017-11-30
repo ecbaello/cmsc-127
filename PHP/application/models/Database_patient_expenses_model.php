@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Database_patient_expenses_model extends MY_DBArchmodel
+class Database_patient_expenses_model extends MY_DBmodel
 {
 	public $ModelTitle = 'Patient Expenses';
-	public $TableName = 'patient_expenses'; // Overideable
+	public $TableName = 'fin_patient_expenses'; // Overideable
 	public $TablePrimaryKey = 'pe_transaction_id'; // Overideable
 	public $FieldPrefix = 'pe';
 	public $dateField = 'pe_date_discharged';

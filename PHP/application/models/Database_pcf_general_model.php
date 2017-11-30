@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Database_pcf_general_model extends MY_DBpcfmodel
 {
 	public $ModelTitle = 'Petty Cash Fund: General';
-	public $TableName = 'pcf_general';
+	public $TableName = 'fin_pcf_general';
 	public $TablePrimaryKey = 'pcf_expense_id';
 
 	/**

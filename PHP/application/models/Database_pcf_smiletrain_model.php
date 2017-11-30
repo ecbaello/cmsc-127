@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Database_pcf_smiletrain_model extends MY_DBpcfmodel
 {
     public $ModelTitle = 'Petty Cash Fund: Smile Train';
-    public $TableName = 'pcf_smiletrain';
+    public $TableName = 'fin_pcf_smiletrain';
     public $TablePrimaryKey = 'pcf_expense_id';
 
     /**
