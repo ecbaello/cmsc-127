@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Database_patient_expenses_model extends MY_DBmodel
+class Database_patient_expenses_model extends MY_DBArchmodel
 {
 	public $ModelTitle = 'Patient Expenses';
 	public $TableName = 'fin_patient_expenses'; // Overideable
