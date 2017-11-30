@@ -283,7 +283,8 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 		
 		foreach($data as $key=>$value){
 			if(in_array($key,$numerics)){
-				$total += $data[$key];
+				if(is_numeric($data[$key]))
+					$total += $data[$key];
 			}
 		}
 		return $this->getFieldsFromTypeTable($category,array($this->afFieldName))[$this->afFieldName] >= $grandtotal+$total;
