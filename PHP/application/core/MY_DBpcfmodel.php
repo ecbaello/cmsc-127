@@ -149,7 +149,7 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 	public function unregisterCategoryTable($name) {
 		$categ = $this->convertNameToCategory($name);
 		
-		if($categ===1||$categ===2||$categ===3)
+		if($name==='Smile Train'||$name==='General'||$name==='Cataract')
 			return false;
 		
 		if ( $categ != null ) {

@@ -29,20 +29,6 @@ class Pcf extends MY_DBarraycontroller {
 		$this->load->view('footer');
 	}
 	
-	protected function makeSelector($table = null, $replacelink = null, $modifiable = false) {
-		$permission = $this->getUserPermission();
-
-		$settings = ['permission' => -1, 'show_category' => $modifiable, 'title' => 'Petty Cash Fund'];
-
-		if (!empty($table))
-			$settings['current_tbl'] = $this->model->convertNameToCategory($table);
-
-		if (!empty($replacelink)) 
-			$settings['url'] = $replacelink;
-		
-		$this->load->view('model_selector', $settings);
-	}
-	
 	public function table($subtable = null, $action = null, $arg0 = null, $arg1 = 0) {
 		if($subtable!=null){
 			$subtable = urldecode($subtable);
@@ -87,6 +73,44 @@ class Pcf extends MY_DBarraycontroller {
 			)
 
 		, JSON_NUMERIC_CHECK);
+	}
+	
+	public function addcategory()
+	{
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$success = false;
+		$name = $this->input->post('title');
+
+		if (!empty($name))
+			$success = $this->model->registerCategoryTable($name);
+
+		csrf_json_response([
+    		'success' => $success,
+			'error_message'=>'Action Not Allowed'
+		]);
+	}
+
+	public function removecategory()
+	{
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$success = false;
+		$name = $this->input->post('title');
+
+		if (!empty($name))
+			$success = $this->model->unregisterCategoryTable($name);
+		
+		csrf_json_response([
+    		'success' => $success,
+			'error_message'=>'Action Not Allowed'
+		]);
 	}
 
 }
