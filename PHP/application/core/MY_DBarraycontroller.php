@@ -4,6 +4,7 @@ class MY_DBarraycontroller extends CI_Controller {
 
 	public $model = NULL;
 	protected $userPermission = null;
+	protected $tableView = 'table_view';
 	
 	protected $filepath = ''; 
 	
@@ -43,7 +44,7 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
 
-		$this->load->view('table_view', [
+		$this->load->view($this->tableView, [
 			'url'=>current_url(),
 			'title'=>$this->model->ModelTitle.': '.$subtable,
 			'permission' => $this->getUserPermission()]);
@@ -207,7 +208,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		$action = $this->input->get('action');
 
 		if ($action == null) {
-			$data = $this->model->getByPK($id);
+			$data = $this->model->getByPK($id)->row();
 
 			$this->load->view('header');
 			// load editor ui w/ data
@@ -341,7 +342,7 @@ class MY_DBarraycontroller extends CI_Controller {
 		}
 		
 		csrf_json_response([
-    		'data'=>$this->model->getByPK($id)
+    		'data'=>$this->model->getByPK($id)->row()
 		]);
 	}
 

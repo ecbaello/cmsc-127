@@ -189,7 +189,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		});
 	};
 
-
 	$scope.isAscending = true;
 	$scope.sortHeader = null;
 	$scope.sort = function(header) {

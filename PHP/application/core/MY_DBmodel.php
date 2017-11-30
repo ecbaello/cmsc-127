@@ -164,9 +164,11 @@ class MY_DBmodel extends CI_Model
 		return $arr;
 	}
 
-	public function getFieldAssociations() {
+	public function getFieldAssociations($table = null) {
+		if (empty($table)) $table = $this->TableName;
+
 		$this->db->select('table_field, table_field_title, table_field_derived, field_prefix, field_suffix, required, default_value, '.self::fieldInputTypeField);
-		$this->db->where('table_name', $this->TableName);
+		$this->db->where('table_name', $table);
 
 		$inp = $this->db->get(self::metaTableName)->result_array();
 		$arr = array();
@@ -430,30 +432,21 @@ class MY_DBmodel extends CI_Model
 	}
 
 	public function deleteWithPK($id) {
-		$fromtable = $this->TableName;
-		$totable = $fromtable."_arch";
-		if (is_array($id)){
+		if (is_array($id))
 			$this->db->where_in($this->TablePrimaryKey, $id);
-			foreach($id as $id){
-				$condition = (string) $this->TablePrimaryKey;
-				$condition = $condition."=$id";
-				$tempsql = "INSERT INTO $totable SELECT * FROM $fromtable WHERE $condition";
-				$this->db->query($tempsql);
-			}
-		}else{
-			$condition = (string) $this->TablePrimaryKey;
-			$condition = $condition."=$id";
-			$tempsql = "INSERT INTO $totable SELECT * FROM $fromtable WHERE $condition";
-			$this->db->query($tempsql);
+		else
 			$this->db->where( $this->TablePrimaryKey, $id);
-		}
-		return $this->db->delete( $this->TableName); 
+		$this->db->delete( $this->TableName);
+		return true;
 	}
 
 	public function getByPK($id, $fields = null) {
 		$this->select($fields);
-		$this->db->where( $this->TablePrimaryKey, $id);
-	    return $this->db->get( $this->TableName)->row(); 
+		if (is_array($id))
+			$this->db->where_in($this->TablePrimaryKey, $id);
+		else
+			$this->db->where( $this->TablePrimaryKey, $id);
+	    return $this->db->get( $this->TableName); 
 	}
 
 	public function insertField($title, $kind, $default = null, $prefix = null, $suffix = null, $require = false) {
@@ -507,28 +500,29 @@ class MY_DBmodel extends CI_Model
 
 			return
 				!$this->fieldExists($field)
-				&& $this->dbforge->add_column($this->TableName, $ins) // if field exists skip this
+				&& $this->addColumn($ins) // if field exists skip this
 				&& $this->registerFieldTitle($field, $title, $kind, [$prefix, $suffix], $require, $default); // if column was not added skip this
 		}
 	}
 
+	protected function addColumn($fields) {
+		return $this->dbforge->add_column($this->TableName, $fields);
+	}
+
 	public function removeField($field) {
-		$done = false;
 
-		if ($field != $this->TablePrimaryKey) {
+		if ($field == $this->TablePrimaryKey) return false;
 			
-			
-			$this->db->where( "table_name", $this->TableName );
-			$this->db->like( "table_field_derived", '`'.$field.'`' );
-			$this->db->delete( self::metaTableName );
+		$this->db->where( "table_name", $this->TableName );
+		$this->db->like( "table_field_derived", '`'.$field.'`' );
+		$this->db->delete( self::metaTableName );
 
-			$this->db->where( "table_field", $field );
-			$this->db->where( "table_name", $this->TableName );
+		$this->db->where( "table_field", $field );
+		$this->db->where( "table_name", $this->TableName );
 
-			$done = $this->db->delete( self::metaTableName );
+		$done = $this->db->delete( self::metaTableName );
 
-			$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
-		}
+		$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
 
 		return $done; 
 	}

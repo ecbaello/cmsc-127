@@ -13,9 +13,6 @@
 				<md-list-item href="<?=base_url().'archives/detchar' ?>">
 					Patient Charges Detail
 				</md-list-item>
-				<md-list-item href="<?=base_url().'archives/pcf'?>">
-					Petty Cash Fund
-				</md-list-item>
 				<md-list-item href="<?=base_url().'archives/patientexp'?>">
 					Patient Expenses
 				</md-list-item>

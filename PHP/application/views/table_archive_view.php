@@ -24,11 +24,6 @@ if (!isset($permission)) $permission = -1;
 					<md-button ng-init="hideFilter=true" ng-class="hideFilter?'':' md-primary'" class="md-icon-button" ng-click="hideFilter=!hideFilter; cancel()">
 						<i class="fa fa-filter fa-lg"></i>
 					</md-button>
-					<?php if ($permission >= PERMISSION_ADD): ?>
-					<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
-						<i class="fa fa-plus fa-lg"></i>
-					</md-button>
-					<?php endif ?>
 				</div>
 			</span>
 		</md-card-title>
@@ -125,18 +120,6 @@ if (!isset($permission)) $permission = -1;
 						</div>
 					</div>
 				</form>
-				<?php if ($permission >= PERMISSION_LOGIN): ?>
-				<div>
-					<div>
-						<md-select class="m-0" ng-model="currentUserFilterId" ng-change="filterChanged()" placeholder="Use saved filter" ng-init="loadFilters()">
-							<md-option ng-repeat="(id, filter) in userFilters" ng-value="id" ng-selected="currentUserFilterId==id">
-								<em>{{ filter.query_title }}</em>
-							</md-option>
-						</md-select>
-						<md-button class="md-raised md-primary" ng-click="showFilterNameDialog($event)">Save...</md-button>
-					</div>
-				</div>
-				<?php endif ?>
 				<div class="row" layout-padding>
 					<div class="col-lg-11 col-md-10 col-sm-8 text-right">Limit items by</div>
 					<div class="col-lg-1 col-md-2 col-sm-4">
@@ -225,21 +208,11 @@ if (!isset($permission)) $permission = -1;
 											, true); ?> 
 											 }}{{ item.suffix }}
 										</span>
-										<?php if ($permission >= PERMISSION_CHANGE): ?>
-										<?= $CI->load->view('input_switcher', 
-											[ 
-												'swtch' => 'item.type',
-												'model' => 'value[key]',
-												'cont_attr' => 'ng-if="!item.read_only"'
-											]
-										, true); ?>
-										<?php endif ?>
 
 
 									</td>
 									<?php if ($permission >= PERMISSION_CHANGE): ?>
 									<td ng-if="!multiEdit" class="toolbox">
-										<md-button class="btn-edit md-square md-primary" ng-click="edit(index)"><i class="fa fa-pencil"></i></md-button>
 										<md-button class="btn-edit md-square md-warn" ng-click="delete(index)"><i class="fa fa-trash"></i></md-button>
 										<md-button class="btn-confirm md-square md-raised md-accent" ng-click="send()"><i class="fa fa-check"></i></md-button>
 										<md-button class="btn-confirm md-square md-raised md-warn" ng-click="cancel()"><i class="fa fa-times"></i></md-button>
@@ -257,11 +230,8 @@ if (!isset($permission)) $permission = -1;
 												<i class="fa fa-minus-circle fa-3x pb-3" style="color: {{ colors('primary-400'); }}"></i>
 												<h5 class="font-weight-bold">The Table is Empty</h5>
 
-												<?php if ($permission >= PERMISSION_ADD): ?>
+												<?php if ($permission >= PERMISSION_CHANGE): ?>
 												<p>You might want to add an item by clicking on the (+) button located on the upper right of the page or this button here.</p>
-												<md-button class="md-primary md-raised" ng-click="showAddDialog($event)">
-													Add an Item
-												</md-button>
 												<?php else: ?>
 												<p>It looks like this table is yet to be filled up.</p>
 												<?php endif ?>
@@ -273,77 +243,6 @@ if (!isset($permission)) $permission = -1;
 						</tbody>
 					</table>
 			</div>
-			<?php if ($permission >= PERMISSION_LOGIN): ?>
-			<div style="visibility: hidden">
-				<div class="md-dialog-container" id="filterNameDialog">
-					<md-dialog>
-						<md-toolbar>
-							<div class="md-toolbar-tools">
-								<h2>Save Filter</h2>
-								<span flex></span>
-								<md-button class="md-icon-button" ng-click="closeDialog()">
-									<i class="fa fa-times fa-lg"></i>
-								</md-button>
-							</div>
-						</md-toolbar>
-						<form ng-cloak name="nameform" ng-submit="saveFilter(filterName)">
-						<md-dialog-content>
-							
-								<div layout-padding>
-									<md-input-container>
-										<label>Name</label>
-										<input ng-model="filterName">
-									</md-input-container>
-								</div>
-							
-						</md-dialog-content>
-						<md-dialog-actions layout="row">
-							<md-button ng-disabled="!nameform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
-						</md-dialog-actions>
-						</form>
-					</md-dialog>
-				</div>
-			</div>
-			<?php endif ?>
-			<?php if ($permission >= PERMISSION_ADD): ?>
-			<div style="visibility: hidden">
-				<div class="md-dialog-container" id="addDialog">
-					<md-dialog>
-						<md-toolbar>
-							<div class="md-toolbar-tools">
-								<h2>Add Item</h2>
-								<span flex></span>
-								<md-button class="md-icon-button" ng-click="closeDialog()">
-									<i class="fa fa-times fa-lg"></i>
-								</md-button>
-							</div>
-						</md-toolbar>
-						<form ng-cloak name="addform" ng-submit="add(false)">
-						<md-dialog-content>
-								<div layout-padding>
-									<div ng-repeat="(key, item) in headers" ng-if="!item.read_only" class="md-block">
-										<?php echo $CI->load->view('input_switcher', 
-											[
-												'swtch' => 'item.type',
-												'model' => 'newItem[key]',
-												'label' => '{{item.title}}',
-												'required' => 'item.required',
-												'initialize' => 'item.default_value'
-											]
-										, true); ?>
-										
-									</div>
-								</div>
-						</md-dialog-content>
-						<md-dialog-actions layout="row">
-							<md-button ng-disabled="!addform.$valid" ng-click="add(true)" class="btn-confirm md-raised">Quick Add</md-button>
-							<md-button ng-disabled="!addform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-plus"></i> Add</md-button>
-						</md-dialog-actions>
-						</form>
-					</md-dialog>
-				</div>
-			</div>
-			<?php endif ?>
 		</md-card-content>
 	</md-card>
 </div>

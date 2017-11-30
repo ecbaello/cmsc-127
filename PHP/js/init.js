@@ -90,6 +90,12 @@ app.filter('page', function() {
   };
 });
 
+app.filter('keyLength', function() {
+  return function(input) {
+    return Object.keys(input).length;
+  };
+});
+
 app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 	var tables = {};
 

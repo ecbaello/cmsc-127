@@ -33,7 +33,7 @@ class Tablemanager extends CI_Controller {
 
 			$arraytype = $this->input->post('array');
 
-			$title = self::prefix.str_replace(' ', '_', $name);
+			$title = self::prefix.strtr($name, [' '=>'_', '_'=>'+']); // replace special characters
 				
 			if ($arraytype != 1) {
 				$this->load->model('custom_model');

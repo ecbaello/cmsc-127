@@ -56,18 +56,19 @@ class Registry_model extends CI_Model
 	            )
 	            ,
 	            'table_array_table' => array(
-	                'type' => 'VARCHAR',
-	                'constraint' => 100,
+	                'type' => 'TEXT',
 	                'default'=>null
 	            ),
 	            'table_array_id' => array(
-	                'type' => 'VARCHAR',
-	                'constraint' => 100,
+	                'type' => 'TEXT',
 	                'default'=>null
 	            ),
 	            'table_array_title' => array(
-	                'type' => 'VARCHAR',
-	                'constraint' => 100,
+	                'type' => 'TEXT',
+	                'default'=>null
+	            ),
+	            'archive_table' => array(
+	                'type' => 'TEXT',
 	                'default'=>null
 	            )
        		);

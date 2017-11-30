@@ -5,6 +5,7 @@ class MY_DBcontroller extends CI_Controller
 
 	protected $model = null;
 	protected $userPermission = null;
+	protected $tableView = 'table_view';
 
 	public function __construct()
 	{
@@ -64,7 +65,7 @@ class MY_DBcontroller extends CI_Controller
 
 	public function makeTableHTML()
 	{
-		$this->load->view('table_view', ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
+		$this->load->view($this->tableView, ['title' => $this->model->ModelTitle, 'permission' => $this->getUserPermission()]);
 	}
 
 	// Functions same with array
@@ -135,7 +136,7 @@ class MY_DBcontroller extends CI_Controller
 		$action = $this->input->get('action');
 
 		if ($action == null) {
-			$data = $this->model->getByPK($id);
+			$data = $this->model->getByPK($id)->row();
 
 			$this->load->view('header');
 			// load editor ui w/ data
@@ -192,7 +193,7 @@ class MY_DBcontroller extends CI_Controller
 
 		switch ($action) {
 			case 'remove':
-				$this->model->deleteWithPK($rows);
+				$success = $this->model->deleteWithPK($rows);
 				break;
 			
 			default:
@@ -270,7 +271,7 @@ class MY_DBcontroller extends CI_Controller
 		}
 		
 		csrf_json_response([
-    		'data'=>$this->model->getByPK($id)
+    		'data'=>$this->model->getByPK($id)->row()
 		]);
 	}
 
