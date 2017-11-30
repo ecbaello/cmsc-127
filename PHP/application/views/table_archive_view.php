@@ -231,7 +231,7 @@ if (!isset($permission)) $permission = -1;
 												<h5 class="font-weight-bold">The Table is Empty</h5>
 
 												<?php if ($permission >= PERMISSION_CHANGE): ?>
-												<p>You might want to add an item by clicking on the (+) button located on the upper right of the page or this button here.</p>
+												<p>Delete any row on the data table and they will show up here.</p>
 												<?php else: ?>
 												<p>It looks like this table is yet to be filled up.</p>
 												<?php endif ?>
