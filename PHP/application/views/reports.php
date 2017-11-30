@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		</md-card-title>
 		
 		<md-card-content>
-			<md-button class="md-icon-button md-raised" title="Export Table" ng-click='csvReport.generate()' ng-href="{{ csvReport.link() }}" download="fin_report.csv">
+			<md-button class="md-icon-button md-raised" title="Export Table" ng-click='csvReport.generate()' ng-href="{{ csvReport.link() }}" download="<?= 'detailed_expenses-'.(isset($current_model)?$current_model:' ').'-'.date('Y-m-d')?>.csv">
 						<i class="fa fa-download fa-lg"></i>
 					</md-button>
 					
@@ -41,7 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <md-datepicker md-min-date="fromDate" ng-required="TRUE" md-placeholder="To" ng-model="toDate"></md-datepicker>
 
                 <md-button class="md-primary md-raised" ng-click="makeCustomTable()">Go</md-button>
-				<md-button class="md-icon-button md-raised" title="Export Table" ng-click='csvCustom.generate()' ng-href="{{ csvCustom.link() }}" download="fin_custom_report.csv">
+				<md-button class="md-icon-button md-raised" title="Export Table" ng-click='csvCustom.generate()' ng-href="{{ csvCustom.link() }}" download="<?= 'custom_report-'.(isset($current_model)?$current_model:' ')?>.csv">
 					<i class="fa fa-download fa-lg"></i>
 				</md-button>
 				<div  style="overflow-x:auto">

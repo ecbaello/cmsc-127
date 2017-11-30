@@ -265,7 +265,6 @@ app.controller('reportSettings',['$scope',function($scope){
 		$.ajax({
             method: "GET",
             url: $scope.selectorUrl+'/settings/add/'+encodeURI(output.table)+'/'+encodeURI(output.fields[$scope.fieldSelect].field),
-            dataType: "json",
             success: function () {
             	window.location.reload();
             }
@@ -281,7 +280,6 @@ app.controller('reportSettings',['$scope',function($scope){
 		$.ajax({
             method: "GET",
             url: $scope.selectorUrl+'/settings/change/'+encodeURI(output.table)+'/'+encodeURI(output.fields[$scope.fieldSelect].field),
-            dataType: "json",
             success: function () {
             	window.location.reload();
             }
@@ -297,7 +295,6 @@ app.controller('reportSettings',['$scope',function($scope){
 		$.ajax({
             method: "GET",
             url: $scope.selectorUrl+'/settings/remove/'+encodeURI(output.table),
-            dataType: "json",
             success: function () {
             	window.location.reload();
             }

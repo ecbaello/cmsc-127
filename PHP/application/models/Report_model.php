@@ -297,12 +297,12 @@ class Report_model extends CI_Model
 		foreach($numerics as $numeric){
 			switch($numeric['option']){
 				case 1:
-					array_push($numericsQuery,'SUM('.$numeric['field'].')');
+					array_push($numericsQuery,$numeric['field']);
 					array_push($summations,'SUM('.$numeric['field'].') as "'.$numeric['field'].'"');
 					array_push($numericFields,$numeric['field']);
 					break;
 				case 2:
-					array_push($numericsQuery,'-SUM('.$numeric['field'].')');
+					array_push($numericsQuery,'-'.$numeric['field']);
 					array_push($summations,'-SUM('.$numeric['field'].') as "'.$numeric['field'].'"');
 					array_push($numericFields,$numeric['field']);
 					break;

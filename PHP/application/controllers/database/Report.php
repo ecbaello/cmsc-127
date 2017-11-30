@@ -27,6 +27,7 @@ class Report extends CI_Controller {
 			$this->load->view('reporting_settings', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
 		}else{
 			$this->load->view('html',array("html"=>'<md-card><md-content layout-padding>No Tables Found</md-content></md-card>'));
+			$this->load->view('reporting_settings', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
 		}
         $this->load->view('footer');
     }
@@ -262,7 +263,7 @@ class Report extends CI_Controller {
 	
 	public function getCustomReport($modelName,$fromDate,$toDate){
         $table = array();
-
+		
 		/** Header Names **/
         $fields = $this->report_model->getFields($modelName);
 
