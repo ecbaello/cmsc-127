@@ -24,6 +24,7 @@ class Report extends CI_Controller {
 			$this->load->view('graph', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
 			
 			$this->makeModelSelector();
+			$this->load->view('reporting_settings', array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))) ));
 		}else{
 			$this->load->view('html',array("html"=>'<md-card><md-content layout-padding>No Tables Found</md-content></md-card>'));
 		}
@@ -41,6 +42,78 @@ class Report extends CI_Controller {
 		$this->load->view('reports',array('url'=>site_url(str_replace('\\','/',$this->getAccessURL(__FILE__))),'current_model'=>$modelName ));
 
         $this->load->view('footer');
+	}
+
+	protected function reportSetting($tableName,$mode,$date=null){
+		if(!$this->permission_model->adminAllow()){
+			show_error('The user doesn\'t have the permission to perform this action.', 403, 'Forbidden');
+			return null;
+		}
+		if($tableName==null) show_404();
+		
+		switch($mode){
+			case 0:
+				if(!$this->report_model->register($tableName,$date)) show_404();
+				break;
+			case 1:
+				if(!$this->report_model->changeDateField($tableName,$date)) show_404();
+				break;
+			case 2:
+				if(!$this->report_model->removeFromReporting($tableName)) show_404();
+				break;
+		}
+		return null;
+	}
+	
+	public function settings($action=null,$tableName=null,$date=null){
+		
+		if($action != null){
+			$tableName = $tableName===null ? null:urldecode($tableName);
+			switch($action){
+				case 'add':
+					$this->reportSetting($tableName,0,$date);
+					break;
+				case 'change':
+					$this->reportSetting($tableName,1,$date);
+					break;
+				case 'remove':
+					$this->reportSetting($tableName,2);
+					break;
+				case 'map':
+					$result = array();
+					$models = $this->report_model->getReportMapping();
+					foreach($models as $model){
+						$temp = array();
+						$temp['model'] = $model['table'];
+						$temp['table'] = $model['table_name'];
+						$temp['fields'] = $this->report_model->getDateFields($model['table_name']);
+						array_push($result,$temp);
+					}
+					echo json_encode($result);
+					break;
+				default:
+					show_404();
+					break;
+			}
+		}else{
+			$result = array();
+			$models = $this->registry_model->models()->result_array();
+			$tables = $this->report_model->getReportMapping();
+			$tableNames = array();
+			foreach($tables as $table){
+				array_push($tableNames,$table['table_name']);
+			}
+			foreach($models as $model){
+				if(in_array($model['table_name'],$tableNames))
+					continue;
+				$temp = array();
+				$temp['model'] = $model[MDL_NAME];
+				$temp['table'] = $model['table_name'];
+				$temp['fields'] = $this->report_model->getDateFields($model['table_name']);
+				array_push($result,$temp);
+			}
+			echo json_encode($result);
+		}
 	}
 	
 	public function table($modelName = null,$action=null,$fromDate=null,$toDate=null){
@@ -78,7 +151,10 @@ class Report extends CI_Controller {
 	}
 
 	public function changeFields($modelName,$data){
-		if(!$this->permission_model->adminAllow()) show_404();
+		if(!$this->permission_model->adminAllow()){
+			show_404();
+			return null;
+		}
 		foreach($data as $value){
 			$this->report_model->changeFieldOption($modelName,$value['field'],$value['option']);
 		}
@@ -198,7 +274,6 @@ class Report extends CI_Controller {
         array_push($table,$headers);
 		/** **/
 		
-		
 		/** Table Body **/
 		$result = $this->report_model->getCustomExpenseTable($modelName,$fromDate,$toDate);
 		foreach($result as $r){
@@ -208,7 +283,6 @@ class Report extends CI_Controller {
         }
 		
 		/** **/
-
         echo json_encode($table);
 		return $table;
 		
