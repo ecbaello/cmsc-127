@@ -39,12 +39,16 @@ class Report_model extends CI_Model
 
 	public function register($tableName,$dateField) {
 		
+		$this->db->where('table_name',$tableName);
+		$this->db->where('table_field',$dateField);
+		if($this->db->get(MY_DBmodel::metaTableName)->num_rows() === 0) return null;
+		
 		$this->db->select('table_name','date_field_name');
 		$this->db->where('table_name',$tableName);
 		$this->db->where('date_field_name',$dateField);
 		
 		if($this->db->get(self::TableName)->num_rows()>0)
-			return null;
+			return false;
 		
 		$this->db->where(self::tableFieldName,$tableName);
 		$this->db->where(MY_DBmodel::fieldInputTypeField,'FLOAT');
@@ -57,7 +61,48 @@ class Report_model extends CI_Model
 			)
 		);
 	}
-
+	
+	public function changeDateField($tableName,$dateField){
+		
+		$this->db->where('table_name',$tableName);
+		$this->db->where('table_field',$dateField);
+		if($this->db->get(MY_DBmodel::metaTableName)->num_rows() === 0) return false;
+		
+		$this->db->where(self::tableFieldName,$tableName);
+		return $this->db->update(self::TableName,array(self::dateFieldName=>$dateField));
+	}
+	
+	public function removeFromReporting($tableName){
+		$this->db->where(self::tableFieldName,$tableName);
+		return $this->db->delete(self::TableName);
+	}
+	
+	public function getReportMapping(){
+		$output = array();
+		$result = $this->db->get(self::TableName)->result_array();
+		
+		foreach($result as $r){
+			$this->db->select('table_field_title');
+			$this->db->where('table_field',$r[self::dateFieldName]);
+			$this->db->where('table_name',$r[self::tableFieldName]);
+			$name = $this->db->get(MY_DBmodel::metaTableName)->result_array();
+			if(!empty($name)) $name = $name[0]['table_field_title'];
+			
+			$this->db->select(MDL_NAME);
+			$this->db->where('table_name',$r[self::tableFieldName]);
+			$modelName = $this->db->get(Registry_model::modelTableName)->result_array();
+			if(!empty($modelName)) $modelName = $modelName[0][MDL_NAME];
+			
+			array_push($output,array(
+				'table'=>$modelName,
+				'table_name'=>$r[self::tableFieldName],
+				'key'=>$r[self::dateFieldName],
+				'field'=>$name
+			));
+		}
+		return $output;
+	}
+	
 	public function getModelNames() {
 		$this->db->select(self::tableFieldName);
 		$this->db->from(self::TableName);
@@ -84,9 +129,21 @@ class Report_model extends CI_Model
 		$this->db->where(self::tableFieldName,$tableName);
 		$query = $this->db->get(self::TableName)->result_array();
 		
-		if(empty($query)) return null;
+		if(empty($query)){
+			$this->removeFromReporting($tableName);
+			return null;
+		}
 		
-		return $query[0][self::dateFieldName];
+		$dateField = $query[0][self::dateFieldName];
+		
+		$this->db->where('table_field',$dateField);
+		$this->db->where('table_name',$tableName);
+		if ($this->db->get(MY_DBmodel::metaTableName)->num_rows()===0){
+			$this->removeFromReporting($tableName);
+			return null;
+		}
+		
+		return $dateField;
 	}
 	
 	protected function getFieldOption($field){
@@ -209,6 +266,17 @@ class Report_model extends CI_Model
 		return $this->db->update(MY_DBmodel::metaTableName,array('reporting_option'=>$option));
 	}
 	
+	public function getDateFields($tableName){
+		$this->db->select('table_field,table_field_title');
+		$this->db->where(self::tableFieldName,$tableName);
+		$this->db->where(MY_DBmodel::fieldInputTypeField,'DATE');
+		$result = $this->db->get(MY_DBmodel::metaTableName)->result_array();
+		$fields = array();
+		foreach($result as $r){
+			array_push($fields,array('title'=>$r['table_field_title'],'field'=>$r['table_field']));
+		}
+		return $fields;
+	}
 	
 	public function getCustomExpenseTable($modelName,$fromDate,$toDate,$constraints = array()){
 		
@@ -216,7 +284,7 @@ class Report_model extends CI_Model
 		$dateField = $this->getModelDateField($tableName);
 		$numerics = $this->getNumericalFields($modelName);
 		$numericFields = array();
-		$result = array();
+		$results = array();
 		
 		$preFields = $this->getFields($modelName);
 		$fields = array();
@@ -229,12 +297,12 @@ class Report_model extends CI_Model
 		foreach($numerics as $numeric){
 			switch($numeric['option']){
 				case 1:
-					array_push($numericsQuery,'SUM('.$numeric['field'].')');
+					array_push($numericsQuery,$numeric['field']);
 					array_push($summations,'SUM('.$numeric['field'].') as "'.$numeric['field'].'"');
 					array_push($numericFields,$numeric['field']);
 					break;
 				case 2:
-					array_push($numericsQuery,'-SUM('.$numeric['field'].')');
+					array_push($numericsQuery,'-'.$numeric['field']);
 					array_push($summations,'-SUM('.$numeric['field'].') as "'.$numeric['field'].'"');
 					array_push($numericFields,$numeric['field']);
 					break;
@@ -251,8 +319,15 @@ class Report_model extends CI_Model
 		$this->db->where($dateField. ' between "' . $fromDate . '" and "' . $toDate . '"');
 		$result = $this->db->get($tableName)->result_array();
 		
+		foreach($result as $key=>$r){
+			if($r['total']===null){
+				unset($result,$key);
+			}else{
+				array_push($results,$r);
+			}
+		}
+			
 		/** Sub-Totals **/
-		
         $this->db->select(implode(" , ",$summations));
 		$this->db->where($dateField . ' between "' . $fromDate . '" and "' . $toDate . '"');
 		$data = $this->db->get($tableName)->result_array();
@@ -273,8 +348,8 @@ class Report_model extends CI_Model
 			$subtotals[reset($fields)]='Sub-Totals';
         }
 		
-		array_push($result,$subtotals);
-		return $result;
+		array_push($results,$subtotals);
+		return $results;
 		
 	}
 

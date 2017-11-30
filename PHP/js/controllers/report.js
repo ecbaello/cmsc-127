@@ -209,6 +209,112 @@ app.controller('reportTable',['$scope',function($scope){
 
 }]);
 
+app.controller('reportSettings',['$scope',function($scope){
+	
+	$scope.unTables = [];
+	$scope.reportTables=[];
+	$scope.customTable = '';
+	
+	$scope.tableSelect = '';
+	$scope.fieldSelect = '';
+	
+	$scope.existsField = false;
+	
+	$scope.setURL = function(url,model) {
+        $scope.selectorUrl = url;
+		init();
+    };
+	
+	function init(){
+		loadUnTables();
+		loadReportTables();
+	}
+
+	function loadUnTables(){
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/settings/',
+            dataType: "json",
+            success: function (data) {
+				var fields = data;
+				$scope.unTables = fields;
+				$scope.apply;
+            }
+        });
+	}
+	
+	function loadReportTables(){
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/settings/map/',
+            dataType: "json",
+            success: function (data) {
+				$scope.reportTables = data;
+				$scope.apply;
+            }
+        });
+		
+	}
+
+	$scope.addTable=function(){
+		if($scope.tableSelect === '' || $scope.fieldSelect ===''){
+			alert('Please select a table and a field');
+			return;
+		}
+		var output = $scope.unTables[$scope.tableSelect];
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/settings/add/'+encodeURI(output.table)+'/'+encodeURI(output.fields[$scope.fieldSelect].field),
+            success: function () {
+            	window.location.reload();
+            }
+        });
+	}
+	
+	$scope.changeTable=function(){
+		if($scope.tableSelect === '' || $scope.fieldSelect ===''){
+			alert('Please select a table and a field');
+			return;
+		}
+		var output = $scope.reportTables[$scope.tableSelect];
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/settings/change/'+encodeURI(output.table)+'/'+encodeURI(output.fields[$scope.fieldSelect].field),
+            success: function () {
+            	window.location.reload();
+            }
+        });
+	}
+	
+	$scope.removeTable=function(){
+		if($scope.tableSelect === ''){
+			alert('Please select a table');
+			return;
+		}
+		var output = $scope.reportTables[$scope.tableSelect];
+		$.ajax({
+            method: "GET",
+            url: $scope.selectorUrl+'/settings/remove/'+encodeURI(output.table),
+            success: function () {
+            	window.location.reload();
+            }
+        });
+	}
+	
+	$scope.changeTab=function(){
+		$scope.tableSelect = '';
+		$scope.fieldSelect = '';
+	}
+	
+	$scope.selected = function(){
+		$scope.fieldSelect='';
+		if(typeof $scope.unTables[$scope.tableSelect] === "undefined")
+			$scope.existsField=false;
+		$scope.existsField = $scope.unTables[$scope.tableSelect].fields.length > 0 ? true:false;
+	}
+
+}]);
+
 app.controller('pcfReport',['$scope',function($scope){
 
     $scope.table = '';
