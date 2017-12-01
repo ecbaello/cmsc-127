@@ -7,7 +7,7 @@ class Main extends CI_Controller {
 	{
 		parent::__construct(); // do constructor for parent class
 
-		$this->load->model('registry_model');
+		$this->load->library('registry');
 	}
 
 	public function index()
@@ -17,11 +17,10 @@ class Main extends CI_Controller {
 		
 		$this->load->view('header');
 
-		$extratables = $this->registry_model->customs()->result();
+		$extratables = $this->registry->customs()->result();
 
 		$this->load->view('db_ui/index', ['extratables' => $extratables]);
 		$this->load->view('footer');
-		
 	}
 	
 }

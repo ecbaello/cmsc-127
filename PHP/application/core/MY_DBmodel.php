@@ -522,7 +522,7 @@ class MY_DBmodel extends CI_Model
 
 		$done = $this->db->delete( self::metaTableName );
 
-		$done = $done && $this->dbforge->drop_column( $this->TableName, $field );
+		$done = $done || $this->dbforge->drop_column( $this->TableName, $field );
 
 		return $done; 
 	}

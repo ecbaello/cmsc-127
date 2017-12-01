@@ -383,4 +383,15 @@ if (!isset($permission)) $permission = -1;
 	</md-card>
 </div>
 <script type="text/javascript" src="<?= base_url().'js/controllers/database.js' ?>"></script>
+<?php else: ?>
+<div layout-padding class="text-center">
+	<md-card class="pt-5">
+		<i class="fa fa-user-secret fa-3x pb-3" style="color: {{ colors('primary-400'); }}"></i>
+		<h3>This table is kept private</h3>
+		<p>You will need to login to see this table.</p>
+		<md-button class="md-raised md-primary" ng-href="<?=base_url()?>auth/login">
+          <i class="fa fa-sign-in fa-fw fa-lg"> </i> Proceed to Login
+        </md-button>
+	</md-card>
+</div>
 <?php endif ?>

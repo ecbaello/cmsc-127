@@ -70,8 +70,8 @@ class MY_DBArchmodel extends MY_DBmodel // lazy class for archive support
 		return $this->archiveMode || parent::insertIntoTable($data);
 	}
 
-	public function updateWithPK($data) {
-		return $this->archiveMode || parent::updateWithPK($data);
+	public function updateWithPK($id, $data) {
+		return $this->archiveMode || parent::updateWithPK($id, $data);
 	}
 
 	public function deleteWithPK($id) {

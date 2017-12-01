@@ -308,6 +308,7 @@ class MY_DBcontroller extends CI_Controller
 		}
 
 		$insert = json_decode($this->input->post('data'), true);
+		
     	if ($this->model->updateWithPK($id, $insert))
     		$this->get($id);
     	else

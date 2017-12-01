@@ -13,7 +13,7 @@ $CI =& get_instance();
 				<span class="md-headline" flex>Permissions</span>
 			</md-card-title>
 			<md-card-content>
-				<div id="accordion" role="tablist">
+				<div id="accordion" class="pb-2" role="tablist">
 					<div class="card" ng-repeat="model in models">
 						<div class="card-header" role="tab" id="headingOne">
 							<h5 class="mb-0">
@@ -46,9 +46,16 @@ $CI =& get_instance();
 							</md-list>
 						</div>
 					</div>
-					<div ng-if="models.length == 0">
-						Open any table in the database for them to be registered here.
-					</div>
+					
+				</div>
+				<em ng-if="models.length != 0">Open a table in the database to register them here.</em>
+				<div ng-if="models.length == 0" class="text-center">
+					<i class="fa fa-folder-open fa-3x pb-3" style="color: {{ colors('primary-400'); }}"></i>
+					<h3>No tables loaded</h3>
+					<p>You will need to open a table in the database for them to register here.</p>
+					<md-button class="md-raised md-primary" ng-href="<?=base_url()?>database">
+			          <i class="fa fa-database fa-fw fa-lg"> </i> Go to the database
+			        </md-button>
 				</div>
 			</md-card-content>
 		</md-card>
