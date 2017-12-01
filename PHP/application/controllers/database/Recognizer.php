@@ -9,61 +9,44 @@ class Recognizer extends CI_Controller {
 		$this->load->database();
 		$this->load->helper("csrf_helper");
 		$this->load->library('registry');
-		$this->load->model('permission_model');
-		// permissions
 	}
 
 	public function index()
 	{
-		if (!$this->permission_model->adminAllow()) {
-			show_404();
-			return;
-		}
-
 		$this->load->view('header');
-		$this->load->view('recognizer_view');
+		
 		$this->load->view('footer');
 	}
 
 	public function data() {
-		if (!$this->permission_model->adminAllow()) {
-			show_404();
-			return;
-		}
-
 		$data = [
 			'data' => $this->registry->notRegistered()
 		];
 		csrf_json_response($data);
 	}
 
-	public function recognized() {
-		if (!$this->permission_model->adminAllow()) {
-			show_404();
-			return;
-		}
+	public function add()
+	{	
+		$title = $this->input->post('title');
+		$link = $this->input->post('link');
 
-		$data = [
-			'data' => $this->registry->imports()->result()
+		$data = 
+		[
+			'success' => $this->bookmarks_model->newBookmark($title, $link)
 		];
+
 		csrf_json_response($data);
 	}
 
-	public function identify () {
-		if (!$this->permission_model->adminAllow()) {
-			show_404();
-			return;
-		}
-
-		$key = $this->input->post('table');
+	public function remove()
+	{
 		$title = $this->input->post('title');
 
-		$success = $this->registry->registerTable($key, $title);
+		$data = 
+		[
+			'success' => $this->bookmarks_model->deleteBookmark($title)
+		];
 
-		csrf_json_response(
-			[ 'success' => $success, 'error_message' => 'Sorry, the table is probably not indexable.' ]);
-		
+		csrf_json_response($data);
 	}
-
-
 }

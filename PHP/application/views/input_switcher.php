@@ -43,9 +43,6 @@ $label = isset($label)?'<label>'.$label.'</label>':'';
 	<span ng-switch-when="TEXTAREA">
 		<textarea <?= $input.$required.$init_st ?> ></textarea>
 	</span>
-	<span ng-switch-when="NUMERIC">
-		<input type="number" step="0.000001" <?= $input.$required.$init_st ?> ></input>
-	</span>
 	<span ng-switch-when="URL">
 		<input type="url" <?= $input.$required.$init_st ?> >
 	</span>
