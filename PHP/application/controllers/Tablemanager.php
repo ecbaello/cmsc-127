@@ -43,7 +43,7 @@ class Tablemanager extends CI_Controller {
 				$categtable = $title.'_type_table';
 				$arrid = $title.'_type';
 				$cattitle = $title.'_type_title';
-
+				
 				$this->load->model('custom_array_model');
 	            $this->custom_array_model->loadCustom($name, $title, $prefix, $categtable, $arrid, $cattitle);
 				$success = $this->custom_array_model->createTableWithID();
@@ -78,7 +78,9 @@ class Tablemanager extends CI_Controller {
 				$permiss = $this->permission_model;
 
 				$this->db->where('table_name', $table);
-				$success = $success && $this->db->delete($permiss::tableName);
+				$this->db->delete($permiss::tableName);
+
+				if ($qry->table_array_table != null) $success = $success &&  $this->dbforge->drop_table($table, TRUE);
 			}
 
 			csrf_json_response(['success' => $success]);
