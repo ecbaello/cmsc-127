@@ -43,7 +43,7 @@ class Tablemanager extends CI_Controller {
 				$categtable = $title.'_type_table';
 				$arrid = $title.'_type';
 				$cattitle = $title.'_type_title';
-				
+
 				$this->load->model('custom_array_model');
 	            $this->custom_array_model->loadCustom($name, $title, $prefix, $categtable, $arrid, $cattitle);
 				$success = $this->custom_array_model->createTableWithID();

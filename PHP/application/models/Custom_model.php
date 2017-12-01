@@ -9,12 +9,11 @@ class Custom_model extends MY_DBmodel
 
 	protected $willRegister = FALSE;
 
-	public function loadCustom($ModelTitle, $TableName, $FieldPrefix, $pk = null)
+	public function loadCustom($ModelTitle, $TableName, $FieldPrefix)
 	{
 		$this->ModelTitle = $ModelTitle;
 		$this->TableName = $TableName;
 		$this->FieldPrefix = $FieldPrefix;
-		if (!empty($pk)) $this->TablePrimaryKey = $pk;
 
 		return $this->db->table_exists($this->TableName);
 	}
