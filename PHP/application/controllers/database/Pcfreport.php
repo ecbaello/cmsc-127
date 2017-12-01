@@ -42,18 +42,12 @@ class Pcfreport extends MY_DBarraycontroller {
 
 
     }
-
-	protected function switchModel($subtable){
-        $modelName = $this->model->getModel($subtable);	
-        $this->load->model($modelName);
-        return $this->$modelName;
-    }
 	
     public function administrate($subtable,$action = null,$data = null){
 
         $subtable = urldecode($subtable);
 
-        $this->model = $this->switchModel($subtable);
+        $this->model = $this->model->getModel($subtable);
 
         if($action != null){
 			if(!$this->permission_model->adminAllow()) {
@@ -142,7 +136,7 @@ class Pcfreport extends MY_DBarraycontroller {
 
 		
 		foreach($categories as $category){
-			$this->model = $this->switchModel($category);
+			$this->model = $this->model->getModel($subtable);
 			$body = array();
 			array_push($body,$category);
 			
@@ -158,29 +152,11 @@ class Pcfreport extends MY_DBarraycontroller {
 		
 	}
 
-    public function getMonthlyExpenses($year){
-
-        $expenses = array();
-		
-        $categories = $this->model->getCategories();
-        foreach($categories as $subtable) {
-			$this->model = $this->switchModel($subtable);
-            for ($i = 1; $i <= 12; $i++) {
-
-                $expenses[$subtable][date("F", mktime(0, 0, 0, $i, 10))] = $this->model->getExpense(date($year .'-'. $i . '-01'), date($year . '-'.$i . '-t'));
-
-            }
-        }
-        echo json_encode($expenses);
-
-        return $expenses;
-    }
-
     public function getExpenseTable($subtable,$mode=0,$fromDate=null,$toDate=null){
 		// mode 0 - all expenses
 		// mode 1 - unreplenished expenses
 		$subtable = urldecode($subtable);
-		$this->model = $this->switchModel($subtable);
+		$this->model = $this->model->getModel($subtable);
         $table = array();
 
 		/** Header Names **/

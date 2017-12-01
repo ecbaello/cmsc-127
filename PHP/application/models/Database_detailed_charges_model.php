@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Database_detailed_charges_model extends MY_DBArchmodel
 {
 	public $ModelTitle = 'Detailed Charges';
-	public $TableName = 'detailed_charges'; // Overideable
+	public $TableName = 'fin_detailed_charges'; // Overideable
 	public $TablePrimaryKey = 'dc_charge_id'; // Overideable
 	public $FieldPrefix = 'dc';
 
