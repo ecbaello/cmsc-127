@@ -25,7 +25,7 @@ if (!isset($permission)) $permission = -1;
 						<i class="fa fa-filter fa-lg"></i>
 					</md-button>
 					<?php if ($permission >= PERMISSION_ADD): ?>
-					<md-button class="md-icon-button md-primary md-raised" ng-click="showAddDialog($event)">
+					<md-button class="md-icon-button md-primary md-raised" ng-click="showDialog($event, 'addDialog', true)">
 						<i class="fa fa-plus fa-lg"></i>
 					</md-button>
 					<?php endif ?>
@@ -121,26 +121,33 @@ if (!isset($permission)) $permission = -1;
 							<md-button class="md-raised w-100" ng-disabled="!newFilter.header || !newFilter.operation" ng-click="addFilter(filterOr==false)">Add Filter</md-button>
 						</div>
 						<div class="col-lg-2 col-sm-6">
-							<md-button class="md-raised md-primary w-100" ng-disabled="filter.length==0" ng-click="rebuild(false)">Filter</md-button>
+							<md-button class="md-raised md-primary w-100" ng-disabled="filter.length==0" ng-click="goFilter()">Filter</md-button>
 						</div>
 					</div>
 				</form>
 				<?php if ($permission >= PERMISSION_LOGIN): ?>
-				<div>
-					<div>
-						<md-select class="m-0" ng-model="currentUserFilterId" ng-change="filterChanged()" placeholder="Use saved filter" ng-init="loadFilters()">
-							<md-option ng-repeat="(id, filter) in userFilters" ng-value="id" ng-selected="currentUserFilterId==id">
-								<em>{{ filter.query_title }}</em>
-							</md-option>
-						</md-select>
-						<md-button class="md-raised md-primary" ng-click="showFilterNameDialog($event)">Save...</md-button>
+				<div class="pl-3 pr-3">
+					<h5>
+						Available Filters
+					</h5>
+					<div class="filters" ng-init="loadFilters()">
+						<md-button class="md-raised md-accent" ng-click="showDialog($event, 'filterManager', true)">Manage...</md-button>
+						<md-button ng-disabled="filter.rules.length == 0" class="md-raised md-primary" ng-click="showDialog($event, 'filterNameDialog', false)">Save...</md-button>
+						|
+						<span ng-repeat="(id, filter) in userFilters" >
+							<md-button class="md-accent" ng-disabled="currentUserFilterId==id" ng-click="filterChanged(id)">{{ filter.query_title }}</md-button>
+						</span>
+						<em class="font-weight-italic" ng-if="(userFilters|keyLength)==0"> &nbsp; Add to the available filters by clicking on save.</em>
 					</div>
 				</div>
 				<?php endif ?>
 				<div class="row" layout-padding>
-					<div class="col-lg-11 col-md-10 col-sm-8 text-right">Limit items by</div>
-					<div class="col-lg-1 col-md-2 col-sm-4">
-						<md-select class="m-0" ng-model="limit" ng-change="rebuild(false)" placeholder="Entries by">
+					<div class="col-lg-11 col-md-10 col-sm-8 text-right">
+						<md-button class="mr-3 md-raised" ng-click="cleanFilter()">Clear Filter</md-button>
+						<span>Limit items by</span>
+					</div>
+					<div class="col-lg-1 col-md-2 col-sm-4 align-items-center">
+						<md-select class="mt-2 ml-0 mr-0 mb-0" ng-model="limit" ng-change="rebuild(false)" placeholder="Entries by">
 							<md-option ng-repeat="limiter in limitOptions" ng-value="limiter">
 								<em>{{ limiter }}</em>
 							</md-option>
@@ -252,19 +259,25 @@ if (!isset($permission)) $permission = -1;
 									<?= $permission >= PERMISSION_CHANGE?'+1':'' ?> }}">
 									<div class="text-center" layout-padding>
 										<div>
-											<div style="padding-left: 15%; padding-right: 15%;}}">
+											<div ng-if="!filtered" style="padding-left: 15%; padding-right: 15%;}}">
 												
-												<i class="fa fa-minus-circle fa-3x pb-3" style="color: {{ colors('primary-400'); }}"></i>
+												<i class="fa fa-minus-circle fa-3x pb-3" style="color: {{ colors('warn-400'); }}"></i>
 												<h5 class="font-weight-bold">The Table is Empty</h5>
 
 												<?php if ($permission >= PERMISSION_ADD): ?>
 												<p>You might want to add an item by clicking on the (+) button located on the upper right of the page or this button here.</p>
-												<md-button class="md-primary md-raised" ng-click="showAddDialog($event)">
+												<md-button class="md-primary md-raised" ng-click="showDialog($event, 'addDialog', true)">
 													Add an Item
 												</md-button>
 												<?php else: ?>
 												<p>It looks like this table is yet to be filled up.</p>
 												<?php endif ?>
+											</div>
+											<div ng-if="filtered" style="padding-left: 15%; padding-right: 15%;}}">
+												
+												<i class="fa fa-search fa-3x pb-3" style="color: {{ colors('primary-400'); }}"></i>
+												<h5 class="font-weight-bold">No result found</h5>
+												<p>The table did not have anything that matches your filter.</p>
 											</div>
 										</div>
 									</div>
@@ -301,6 +314,28 @@ if (!isset($permission)) $permission = -1;
 							<md-button ng-disabled="!nameform.$valid" type="submit" class="btn-confirm md-raised md-primary"><i class="fa fa-save"></i> Save</md-button>
 						</md-dialog-actions>
 						</form>
+					</md-dialog>
+				</div>
+			</div>
+			<div style="visibility: hidden">
+				<div class="md-dialog-container" id="filterManager">
+					<md-dialog>
+						<md-toolbar>
+							<div class="md-toolbar-tools">
+								<h2>Manage Filters</h2>
+								<span flex></span>
+								<md-button class="md-icon-button" ng-click="closeDialog()">
+									<i class="fa fa-times fa-lg"></i>
+								</md-button>
+							</div>
+						</md-toolbar>
+						<md-list>
+							<md-list-item class="md-2-line align-items-center secondary-button-padding" ng-repeat-start="(id, filter) in userFilters">
+								<p>{{ filter.query_title }}</p>
+								<md-button class="md-secondary md-raised md-warn" ng-click="deleteFilter(id)">Delete</md-button>
+							</md-list-item>
+							<md-divider ng-repeat-end></md-divider>
+						</md-list>
 					</md-dialog>
 				</div>
 			</div>

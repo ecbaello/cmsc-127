@@ -17,8 +17,8 @@ $show_category = isset($show_category)&&$show_category;
 		</div>
 	    <div>
 			<md-list>
-				<md-list-item class="md-2-line align-items-center" ng-repeat-start="(key, item) in options" class="secondary-button-padding" ng-click="redirect(item.link)">
-					<p class="d-inline">{{item.title}}</p>
+				<md-list-item class="md-2-line align-items-center secondary-button-padding" ng-repeat-start="(key, item) in options" ng-click="redirect(item.link)">
+					<h4>{{item.title}}</h4>
 					<?php if ($permission >= PERMISSION_ALTER): ?>
 					<md-button class="md-secondary md-raised md-warn" ng-click="removeCategory(item.title)">Delete</md-button>
 					<?php endif ?>

@@ -22,7 +22,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		lesser: 'is less than',
 	};
 
-
 	function getSelectedRows() {
 		// compile selection
 		var ids = [];
@@ -43,6 +42,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			$scope.selection = {};
 		}
 	};
+
 	$scope.performSelectAction = function(action, refresh) {
 		var ids = getSelectedRows();
 
@@ -56,6 +56,7 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			}
 			);
 	};
+
 	$scope.downloadSelected = function() {
 		var ids = getSelectedRows();
 		window.location.href = tables.downloadRowsUrl(ids);
@@ -81,8 +82,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 			data.filter = filterQry;
 
-			filtering = true;
-		} 
+			$scope.filtered = true;
+		} else $scope.filtered = false;
 
 		$scope.serverRequesting = true;
 
@@ -143,6 +144,8 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		}
 	};
 
+
+
 	$scope.loadFilters = function() {
 		tables.filters(
 			function(response) {
@@ -152,9 +155,15 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 	};
 	$scope.userFilters = {};
 	$scope.currentUserFilterId = -1;
-	$scope.filterChanged = function () {
-		$scope.filter = angular.extend({},$scope.userFilters[$scope.currentUserFilterId].search_query);
-		$scope.currentUserFilterId = -1;
+	$scope.filterChanged = function (id) {
+		$scope.filter.rules = [];
+		$scope.filter = angular.extend({},$scope.userFilters[id].search_query);
+		$scope.currentUserFilterId = id;
+		
+	};
+	$scope.filtered = false;
+	$scope.goFilter = function() {
+		$scope.rebuild(false);
 	};
 	$scope.saveFilter = function(title) {
 		var data = {};
@@ -172,20 +181,27 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			}
 		);
 	};
+	$scope.cleanFilter = function() {
+		$scope.currentUserFilterId = -1;
+		$scope.filter.rules = [];
+		$scope.rebuild(false);
+	};
 	$scope.deleteFilter = function(id) {
 		tables.deleteFilter(
 			id,
 			function(resultData) {
+				$scope.loadFilters();
+				$scope.$apply();
 			}
 		);
 	};
-	$scope.showFilterNameDialog = function(ev) {
+	$scope.showDialog = function(ev, id, fullscreen) {
 		$mdDialog.show({
-			contentElement: '#filterNameDialog',
+			contentElement: '#'+id,
 			parent: angular.element(document.body),
 			targetEvent: ev,
 			clickOutsideToClose: true,
-			fullscreen: false
+			fullscreen: fullscreen
 		});
 	};
 
@@ -200,8 +216,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		$scope.rebuild(false);
 	};
 
-	// filtering Tables
-	var filtering = false;
 	$scope.filter = 
 	{
 		condition: 'OR',
@@ -242,16 +256,18 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 			arr.rules.push(filter);
 			$scope.filter.rules.push(arr);
 		}
+		$scope.currentUserFilterId = -1;
 	};
 	$scope.removeFilter = function (i, j) {
 		if ($scope.filter.rules[i].rules.length == 1 && j == 0) {
 			if ($scope.filter.rules.length == 1 && i == 0) {
-				$scope.filter.rules = [];
-				$scope.rebuild(false);
+				$scope.cleanFilter();
+				
 			}
 			else delete $scope.filter.rules.splice(i,1);
 		}
 		else $scope.filter.rules[i].rules.splice(j,1);
+		$scope.currentUserFilterId = -1;
 	};
 
 	$scope.limitOptions = [5, 10, 20, 30, 50 ,100, 150];
