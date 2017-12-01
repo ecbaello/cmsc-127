@@ -34,7 +34,7 @@ class Database_patient_expenses_model extends MY_DBArchmodel
 			$this->dbforge->add_key 		($this->TablePrimaryKey, TRUE);
 			$this->dbforge->create_table	($this->TableName);
 
-			$this->registerFieldTitle($this->TablePrimaryKey, '#');
+			$this->registerFieldTitle($this->TablePrimaryKey, 'Patient ID');
 			$this->registerFieldTitle('pe_patient_name', 'Patient Name', 'TEXTAREA');
 			$this->registerFieldTitle('pe_date_of_operation', 'Date of Operation', 'DATE');
 			$this->registerFieldTitle('pe_date_discharged', 'Date Discharged', 'DATE');
