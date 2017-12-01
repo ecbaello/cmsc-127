@@ -97,7 +97,7 @@ class MY_DBArchmodel extends MY_DBmodel // lazy class for archive support
 	public function removeField($field) {
 		if ($this->archiveMode) return false;
 		$remove = parent::removeField($field);
-		$remove = $remove && $this->dbforge->drop_column($this->archiveTableName(), $field );
+		$remove = $remove || $this->dbforge->drop_column($this->archiveTableName(), $field );
 		return $remove;
 	}
 

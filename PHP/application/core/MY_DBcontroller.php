@@ -250,6 +250,21 @@ class MY_DBcontroller extends CI_Controller
 
 	}
 
+	public function renamefield() {
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;	
+		}
+
+		$key = $this->input->post('header');
+		$title = $this->input->post('title');
+
+		$success = $this->model->renameField($key, $title);
+
+		csrf_json_response(
+			[ 'success' => $success ]);
+	}
+
 	public function headers () {
 
 		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
@@ -308,7 +323,7 @@ class MY_DBcontroller extends CI_Controller
 		}
 
 		$insert = json_decode($this->input->post('data'), true);
-		
+
     	if ($this->model->updateWithPK($id, $insert))
     		$this->get($id);
     	else

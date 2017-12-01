@@ -387,16 +387,6 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		if (!quick) $mdDialog.hide();
 	};
 
-	$scope.showAddDialog = function(ev) {
-		$mdDialog.show({
-			contentElement: '#addDialog',
-			parent: angular.element(document.body),
-			targetEvent: ev,
-			clickOutsideToClose: true,
-			fullscreen: true
-		});
-	};
-
 	$scope.closeDialog = function() {
 		$mdDialog.cancel();
 	};

@@ -1,4 +1,4 @@
-app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($scope, tables, tableChanged){
+app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', '$mdDialog', function ($scope, tables, tableChanged, $mdDialog){
 	tables.headers(
 			function (response) {
 				$scope.headers = response.data.headers;
@@ -95,15 +95,41 @@ app.controller('tableSettings', ['$scope', 'tables', 'tableChanged', function ($
 	};
 
 	$scope.removeColumn = function (key) {
-		var data = {
-			header: key
-		};
-		tables.removeColumn(data,
+		tables.removeColumn(key,
 			function(){
 				tableChanged.notify();
 			},
 			function(){
 				tableChanged.notify();
 			});
+		$scope.closeDialog();
+	};
+
+	$scope.editColumn = function(key) {
+		$scope.columnNewName = $scope.headers[key].title;
+		$scope.editing = key;
+		$mdDialog.show({
+			contentElement: '#renameColumnDialog',
+			parent: angular.element(document.body),
+			targetEvent: $scope.$event,
+			clickOutsideToClose: true,
+			fullscreen: false
+		});
+	};
+
+	$scope.editing = null;
+	$scope.columnNewName = '';
+	$scope.renameColumn = function (key, name) {
+		tables.renameColumn(key, name,
+			function(){
+				tableChanged.notify();
+			},
+			function(){
+				tableChanged.notify();
+			});
+	};
+
+	$scope.closeDialog = function() {
+		$mdDialog.cancel();
 	};
 }]);

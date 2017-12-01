@@ -1,4 +1,4 @@
-app.controller('selector', ['$scope', '$http', 'selectorUrl', 'selectorSelection', function($scope, $http, selectorUrl, selectorSelection){
+app.controller('selector', ['$scope', '$http', 'selectorUrl', 'selectorSelection','$mdDialog', function($scope, $http, selectorUrl, selectorSelection, $mdDialog){
 
 	$scope.options = {};
 
@@ -38,6 +38,41 @@ app.controller('selector', ['$scope', '$http', 'selectorUrl', 'selectorSelection
 				
 			}
 			);
+	};
+
+	$scope.rename = function(key) {
+		$scope.renaming = $scope.options[key].title;
+		$scope.newName = $scope.renaming;
+		$mdDialog.show({
+			contentElement: '#renameCategoryDialog',
+			parent: angular.element(document.body),
+			targetEvent: $scope.$event,
+			clickOutsideToClose: true,
+			fullscreen: false
+		});
+	};
+
+	$scope.renaming = null;
+	$scope.newName = '';
+
+	$scope.renameCategory = function(category, pn) {
+		requestpost(
+			selectorUrl+'/renamecategory',
+			{title: category, name: pn},
+			null,
+			function(data) {
+				loadOptions();
+				$scope.$apply();
+			},
+			function() {
+				
+			}
+			);
+		$scope.closeDialog();
+	};
+
+	$scope.closeDialog = function() {
+		$mdDialog.cancel();
 	};
 
 	function loadOptions() {

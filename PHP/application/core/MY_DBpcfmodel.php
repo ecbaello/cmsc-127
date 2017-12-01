@@ -173,6 +173,12 @@ class MY_DBpcfmodel extends MY_DBarraymodel
 		}
 		return false;
 	}
+
+	public function renameCategory($name, $title) {
+		if($name==='Smile Train'||$name==='General'||$name==='Cataract')
+			return false;
+		return parent::renameCategory($name, $title);
+	}
 	
 	public function registerReport(){
 		$this->report_model->register($this->TableName,$this->dateField);

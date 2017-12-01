@@ -116,12 +116,13 @@ $CI =& get_instance();
 						</md-tab-body>
 					</md-tab>
 					<md-tab id="ts-tab3">
-						<md-tab-label>Remove Field</md-tab-label>
+						<md-tab-label>Edit Field</md-tab-label>
 						<md-tab-body>
 							<div layout-padding>
 								<div>
-									<md-button class="{{ item.derived ? 'md-accent' : 'md-warn' }} md-raised" ng-repeat="(key, item) in headers" ng-if="key!=idHeader" ng-click="removeColumn(key)">
-										{{ item.title }}&nbsp; <i class="fa fa-times"></i>
+									<md-button class="{{ item.derived ? 'md-accent' : 'md-primary' }} md-raised" ng-repeat="(key, item) in headers" ng-if="key!=idHeader" ng-click="editColumn(key)">
+										<i class="fa fa-pencil">&nbsp;</i> 
+										{{ item.title }}</i>
 									</md-button>
 								</div>
 							</div>
@@ -130,5 +131,37 @@ $CI =& get_instance();
 				</md-tabs>
 			</md-card>
 	</md-content>
+	<div style="visibility: hidden">
+				<div class="md-dialog-container" id="renameColumnDialog">
+					<md-dialog>
+						<md-toolbar>
+							<div class="md-toolbar-tools">
+								<h2>Edit Field</h2>
+								<span flex></span>
+								<md-button class="md-icon-button" ng-click="closeDialog()">
+									<i class="fa fa-times fa-lg"></i>
+								</md-button>
+							</div>
+						</md-toolbar>
+						<form ng-cloak name="renamecolumnform" ng-submit="renameColumn(editing, columnNewName)">
+						<md-dialog-content>
+								<div class="pt-3" layout-padding>
+									<md-input-container class="w-100">
+										<input placeholder="Name" type="text" ng-model="columnNewName" required>
+									</md-input-container>
+								</div>
+						</md-dialog-content>
+						<md-dialog-actions layout="row">
+							<md-button type="submit" ng-disabled="!renamecolumnform.$valid" class="md-primary md-raised">
+											Rename
+							</md-button>
+							<md-button class="{{ headers[editing].derived ? 'md-accent' : 'md-warn' }} md-raised" ng-click="removeColumn(editing)">
+								Delete {{ headers[editing].title }}
+							</md-button>
+						</md-dialog-actions>
+						</form>
+					</md-dialog>
+				</div>
+			</div>
 </div>
 <script type="text/javascript" src="<?= base_url().'js/controllers/tablesettings.js' ?>"></script>

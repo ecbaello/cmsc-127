@@ -169,8 +169,21 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		reqpost('addfield', null, data, fsuccess, ferror);
 	};
 
-	tables.removeColumn = function (data, fsuccess, ferror) {
-		reqpost('removefield', null, data, fsuccess, ferror);
+	tables.removeColumn = function (key, fsuccess, ferror) {
+		reqpost('removefield', null,
+		{
+			header: key
+		},
+		fsuccess, ferror);
+	};
+
+	tables.renameColumn = function (key, name, fsuccess, ferror) {
+		reqpost('renamefield', null,
+		{
+			header: key,
+			title: name
+		},
+		fsuccess, ferror);
 	};
 
 	tables.downloadUrl = function() {

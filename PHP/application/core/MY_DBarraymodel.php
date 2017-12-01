@@ -159,6 +159,12 @@ class MY_DBarraymodel extends MY_DBmodel
 		return $assocs;
 	}
 
+	public function renameCategory($name, $title) {
+		$id = $this->convertNameToCategory($name);
+		$this->db->where($this->arrayFieldName, $id);
+		return $this->db->update($this->categoryTableName, [ $this->categoryFieldName => $title ]);
+	}
+
 	public function getCategoryAssociations() {
 		$query = $this->db->get($this->categoryTableName);
 

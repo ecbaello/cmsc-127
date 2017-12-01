@@ -113,4 +113,24 @@ class Pcf extends MY_DBarraycontroller {
 		]);
 	}
 
+	public function renamecategory()
+	{
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$success = false;
+		$name = $this->input->post('name');
+		$title = $this->input->post('title');
+
+		if (!empty($name))
+			$success = $this->model->renameCategory($title, $name);
+
+		csrf_json_response([
+    		'success' => $success,
+    		'error_message'=>'Action Not Allowed'
+		]);
+	}
+
 }

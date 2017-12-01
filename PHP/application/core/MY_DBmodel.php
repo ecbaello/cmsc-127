@@ -527,6 +527,13 @@ class MY_DBmodel extends CI_Model
 		return $done; 
 	}
 
+	public function renameField($field, $name) {
+		$this->db->where( "table_field", $field );
+		$this->db->where( "table_name", $this->TableName );
+
+		return $this->db->update( self::metaTableName, ['table_field_title' => $name] );
+	}
+
 	public function insertDerivedField($title, $expression, $prefix = null, $suffix = null) {
 
 		$selectValue = '';

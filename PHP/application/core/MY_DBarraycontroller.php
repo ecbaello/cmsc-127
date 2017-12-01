@@ -323,6 +323,21 @@ class MY_DBarraycontroller extends CI_Controller {
 		
 	}
 
+	protected function renamefield() {
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;	
+		}
+
+		$key = $this->input->post('header');
+		$title = $this->input->post('title');
+
+		$success = $this->model->renameField($key, $title);
+
+		csrf_json_response(
+			[ 'success' => $success ]);
+	}
+
 	protected function headers () {
 
 		if ($this->getUserPermission() < PERMISSION_PUBLIC) {
@@ -360,6 +375,25 @@ class MY_DBarraycontroller extends CI_Controller {
 
 		if (!empty($name))
 			$success = $this->model->registerCategoryTable($name);
+
+		csrf_json_response([
+    		'success' => $success
+		]);
+	}
+
+	public function renamecategory()
+	{
+		if ($this->getUserPermission() < PERMISSION_ALTER) {
+			show_404();
+			return;
+		}
+
+		$success = false;
+		$name = $this->input->post('name');
+		$title = $this->input->post('title');
+
+		if (!empty($name))
+			$success = $this->model->renameCategory($title, $name);
 
 		csrf_json_response([
     		'success' => $success

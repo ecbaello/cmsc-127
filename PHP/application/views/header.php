@@ -204,10 +204,10 @@ $selectNav = defined('NAV_SELECT') ? NAV_SELECT : -1;
             <form ng-cloak name="bookname" ng-submit="bookmark(bookmarkName)">
             <md-dialog-content>
               
-                <div layout-padding>
+                <div class="pt-3" layout-padding>
                   <md-input-container>
                     <label>Name</label>
-                    <input ng-model="bookmarkName">
+                    <input ng-model="bookmarkName" md-no-asterisk required>
                   </md-input-container>
                 </div>
               
