@@ -20,7 +20,7 @@ class Database_patient_expenses_model extends MY_DBArchmodel
 	            )
        		);
 			$this->dbforge->add_field		($fields);
-			$this->dbforge->add_field		("pe_patient_name INT NOT NULL");
+			$this->dbforge->add_field		("pe_patient_name varchar(100)");
 			$this->dbforge->add_field		("pe_date_of_operation DATE NOT NULL");
 			$this->dbforge->add_field		("pe_date_discharged DATE NOT NULL");
 			$this->dbforge->add_field		("pe_hospital_bill numeric(12,2) DEFAULT 0.0");
@@ -35,7 +35,7 @@ class Database_patient_expenses_model extends MY_DBArchmodel
 			$this->dbforge->create_table	($this->TableName);
 
 			$this->registerFieldTitle($this->TablePrimaryKey, '#');
-			$this->registerFieldTitle('pe_patient_name', 'Patient Name', 'NUMBER');
+			$this->registerFieldTitle('pe_patient_name', 'Patient Name', 'TEXTAREA');
 			$this->registerFieldTitle('pe_date_of_operation', 'Date of Operation', 'DATE');
 			$this->registerFieldTitle('pe_date_discharged', 'Date Discharged', 'DATE');
 			$this->registerFieldTitle('pe_hospital_bill', 'Hospital Bill', 'FLOAT');

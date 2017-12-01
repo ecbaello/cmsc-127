@@ -36,10 +36,10 @@ $CI =& get_instance();
 									</div>
 									<div>
 										<div layout="row" layout-align="center center" class="buttonGroup">
-											<md-button class="left {{permissionTable[model.table_name][group.id]==undefined||permissionTable[model.table_name][group.id]==0?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 0)" value="0">View</md-button>
-											<md-button class="middle {{permissionTable[model.table_name][group.id]==1?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 1)" value="1">Add</md-button>
-											<md-button class="middle {{permissionTable[model.table_name][group.id]==2?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 2)" value="2">Change</md-button>
-											<md-button class="right {{permissionTable[model.table_name][group.id]==3?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 3)" value="3">Alter</md-button>
+											<md-button class="left {{permissionTable[model.table_name][group.id]==undefined||permissionTable[model.table_name][group.id]==2?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 2)" value="2">View</md-button>
+											<md-button class="middle {{permissionTable[model.table_name][group.id]==3?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 3)" value="3">Add</md-button>
+											<md-button class="middle {{permissionTable[model.table_name][group.id]==4?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 4)" value="4">Change</md-button>
+											<md-button class="right {{permissionTable[model.table_name][group.id]==5?'group-focused':''}}" ng-click="changed(model.table_name, group.id, 5)" value="5">Alter</md-button>
 										</div>
 									</div>
 								</md-list-item>
