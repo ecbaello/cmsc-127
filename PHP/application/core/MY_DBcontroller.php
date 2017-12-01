@@ -18,10 +18,10 @@ class MY_DBcontroller extends CI_Controller
 		defined('NAV_SELECT') or define('NAV_SELECT', 1);
 	}
 
-	public function _loadCustom ($ModelTitle, $TableName, $FieldPrefix) {
+	public function _loadCustom ($ModelTitle, $TableName, $FieldPrefix, $pk = null) {
 		$this->load->model('custom_model');
 		$this->model = $this->custom_model;
-		return $this->model->loadCustom($ModelTitle, $TableName, $FieldPrefix);
+		return $this->model->loadCustom($ModelTitle, $TableName, $FieldPrefix, $pk);
 	}
 
 	public function _useModel ($model) {

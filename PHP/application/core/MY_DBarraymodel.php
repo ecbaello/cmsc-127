@@ -15,6 +15,8 @@ class MY_DBarraymodel extends MY_DBmodel
 		parent::__construct(); // do constructor for parent class
 
 		if ($this->willRegister) $this->createCategoryTable();
+
+		
 	}
 
 	protected function registerModel() {
@@ -28,7 +30,7 @@ class MY_DBarraymodel extends MY_DBmodel
 			$this->TableName,
 			$this->TablePrimaryKey,
 			$this->FieldPrefix,
-			false,
+			0,
 			$this->categoryTableName,
 			$this->arrayFieldName,
 			$this->categoryFieldName
