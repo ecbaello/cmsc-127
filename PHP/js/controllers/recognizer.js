@@ -1,8 +1,10 @@
-app.controller('selector', ['$scope', '$http', 'recognizerUrl', '$mdDialog', function($scope, $http, recognizerUrl, $mdDialog){
+app.controller('recognizer', ['$scope', '$http', 'recognizerUrl', '$mdDialog', function($scope, $http, recognizerUrl, $mdDialog){
 
 	$scope.data = {};
 	$scope.recognizing = null;
 	$scope.title = '';
+
+	$scope.recognized = [];
 
 	function loadOptions() {
 		requestget(
@@ -10,6 +12,8 @@ app.controller('selector', ['$scope', '$http', 'recognizerUrl', '$mdDialog', fun
 			null,
 			function (data) {
 				$scope.data = data.data;
+				$scope.recognized = data.recognized;
+
 				$scope.$apply();
 
 				console.log($scope.data);
@@ -29,7 +33,19 @@ app.controller('selector', ['$scope', '$http', 'recognizerUrl', '$mdDialog', fun
 			clickOutsideToClose: true,
 			fullscreen: false
 		});
-		$scope.closeDialog();
+		
+	};
+
+	$scope.unrecognize = function (data) {
+		requestpost(
+			recognizerUrl+'/unidentify',
+			{ table:data},
+			null,
+			function () {
+				loadOptions();
+			},
+			function () {}
+		);
 	};
 
 	$scope.recognizeTable = function(data, name) {
@@ -42,6 +58,7 @@ app.controller('selector', ['$scope', '$http', 'recognizerUrl', '$mdDialog', fun
 			},
 			function () {}
 		);
+		$scope.closeDialog();
 	};
 
 	$scope.closeDialog = function() {

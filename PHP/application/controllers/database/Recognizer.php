@@ -32,19 +32,8 @@ class Recognizer extends CI_Controller {
 		}
 
 		$data = [
-			'data' => $this->registry->notRegistered()
-		];
-		csrf_json_response($data);
-	}
-
-	public function recognized() {
-		if (!$this->permission_model->adminAllow()) {
-			show_404();
-			return;
-		}
-
-		$data = [
-			'data' => $this->registry->imports()->result()
+			'data' => $this->registry->notRegistered(),
+			'recognized' => $this->registry->imports()->result()
 		];
 		csrf_json_response($data);
 	}
@@ -62,6 +51,21 @@ class Recognizer extends CI_Controller {
 
 		csrf_json_response(
 			[ 'success' => $success, 'error_message' => 'Sorry, the table is probably not indexable.' ]);
+		
+	}
+
+	public function unidentify () {
+		if (!$this->permission_model->adminAllow()) {
+			show_404();
+			return;
+		}
+
+		$key = $this->input->post('table');
+
+		$success = $this->registry->unregisterTable($key);
+
+		csrf_json_response(
+			[ 'success' => $success, 'error_message' => 'Sorry, table not found.' ]);
 		
 	}
 

@@ -14,7 +14,7 @@ $CI =& get_instance();
 				<span class="md-headline" flex>Table Manager</span>
 			</md-card-title>
 			<md-card-content>
-				<table class="table">
+				<table class="table table-striped">
 					<tr>
 						<th>
 							Custom Table Name

@@ -5,6 +5,7 @@ class Registry
 	public function __construct()
 	{
 		$this->load->model('Registry_model');
+		$this->load->model('Permission_model');
 	}
 	public function __call($method, $arguments)
 	{	
@@ -14,6 +15,28 @@ class Registry
 	public function __get($var)
 	{
 		return get_instance()->$var;
+	}
+
+	public function unregisterTable($tablename) {
+		if (empty($tablename)) return false;
+
+		if (!($this->db->table_exists($tablename))) return false;
+
+		$reg = $this->Registry_model;
+
+		$this->db->where('imported', 1);
+		$this->db->where('table_name', $tablename);
+		$success = $this->db->delete($reg::modelTableName);
+		
+		if ($success) {
+			$this->db->where('table_name', $tablename);
+			$this->db->delete(MY_DBmodel::metaTableName);
+
+			$permiss = $this->Permission_model;
+
+			$this->db->where('table_name', $tablename);
+			$this->db->delete($permiss::tableName);
+		}
 	}
 
 	public function registerTable($tablename, $title) {

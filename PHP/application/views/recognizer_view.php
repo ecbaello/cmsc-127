@@ -5,13 +5,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <script type="text/javascript">
 	app.constant('recognizerUrl', '<?= isset($url)?$url:current_url() ?>');
 </script>
-<div ng-controller="selector">
+<div ng-controller="recognizer">
 	<md-content layout-padding>
 	  <md-card class="p-0">
 	    <div class="p-3">
 			<h5 class="md-headline" flex><i class="fa fa-search"> &nbsp;</i>Recognize foreign tables in the database</h5>
 		</div>
-	    <div>
 			<md-list>
 				<md-list-item ng-repeat-start="item in data" class="md-2-line align-items-center secondary-button-padding">
 					<h5>{{ item }}</h5>
@@ -24,7 +23,57 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<em>This only works for indexable tables in your database.</em>
 			</md-content>
 	  </md-card>
+	  <md-card class="p-0">
+	    <div class="p-3">
+			<h5 class="md-headline" flex><i class="fa fa-check"> &nbsp;</i>Recognized Tables</h5>
+		</div>
+	    <div>
+	    	<table class="table table-striped">
+				<tr>
+					<th>
+						Recognized Table Title
+					</th>
+					<th>
+						Recognized Table Mapping
+					</th>
+					<th>
+						Recognized Table Primary Key
+					</th>
+					<th>
+						
+					</th>
+				</tr>
+				<tr ng-repeat="item in recognized">
+					<td>
+						{{ item.table_name }}
+					</td>
+					<td>
+						{{ item.mdl_name }}
+					</td>
+					<td>
+						{{ table.table_pk }}
+					</td>
+					<th class="text-right">
+						<md-button class="md-raised md-warn" ng-click="unrecognize(item.table_name)">
+							<i class="fa fa-ban"></i>
+							Unrecognize
+						</md-button>
+					</th>
+				</tr>
+				<tr ng-if="recognized.length == 0" class="text-center">
+					<td colspan="4" class="pb-5 pt-5">
+						<div style="padding-left: 15%; padding-right: 15%;}}">
+							<em>You don't have any foreign tables recognized.</em>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	  </md-card>
+
+
 	</md-content>
+	
 	<div style="visibility: hidden">
 		<div class="md-dialog-container" id="recognizerDialog">
 			<md-dialog>
