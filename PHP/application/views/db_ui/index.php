@@ -2,6 +2,8 @@
 	defined('BASEPATH') OR exit('No direct script access allowed');
 // $item_type, item_value
 	$CI =& get_instance();
+	$CI->load->model('permission_model');
+	$permission = $CI->permission_model->adminAllow();
 ?>
 <md-content layout-padding>
 	<md-card>
@@ -52,6 +54,9 @@
 				<?php 	endforeach; ?>
 				<?php endif ?>
 			</md-grid-list>
+			<?php if ($permission): ?>
+				<p class="pt-3">You may want to recognize foreign tables in your database <a href="<?=base_url().'database/recognizer'?>">here</a>.</p>
+			<?php endif ?>
 		</md-card-content>
 	</md-card>
 </md-content>

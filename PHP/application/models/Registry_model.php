@@ -67,9 +67,10 @@ class Registry_model extends CI_Model
 	                'type' => 'TEXT',
 	                'default'=>null
 	            ),
-	            'archive_table' => array(
-	                'type' => 'TEXT',
-	                'default'=>null
+	            'imported' => array(
+	                'type' => 'TINYINT',
+	                'constraint' => 1,
+	                'default'=>0
 	            )
        		);
 
@@ -79,7 +80,7 @@ class Registry_model extends CI_Model
 		}
 	}
 
-	public function registerModel($title, $class, $array, $tablename, $pk, $prefix = null, $private = false, $arrayTable = null, $arrayId = null, $arrayTitle = null) {
+	public function registerModel($title, $class, $array, $tablename, $pk, $prefix = null, $private = false, $arrayTable = null, $arrayId = null, $arrayTitle = null, $imported = false) {
 		return $this->db->insert(self::modelTableName,
 			array(
 				MDL_NAME => $title,
@@ -91,7 +92,8 @@ class Registry_model extends CI_Model
 				'private' => $private,
 				'table_array_table' => $arrayTable,
 				'table_array_id' => $arrayId,
-				'table_array_title' => $arrayTitle
+				'table_array_title' => $arrayTitle,
+				'imported' => $imported
 			)
 		);
 	}
@@ -106,9 +108,20 @@ class Registry_model extends CI_Model
 		return $this->db->get(self::modelTableName);
 	}
 
-	public function customs() {
+	public function loadable() {
 		$this->db->where('mdl_class IS NULL', null, false);
 		return $this->db->get(self::modelTableName);
+	}
+
+	public function customs() {
+		$this->db->where('imported', 0);
+		return $this->loadable();
+	}
+
+	public function imports() {
+		$this->db->select('table_name, table_pk, '.MDL_NAME);
+		$this->db->where('imported', 1);
+		return $this->loadable();
 	}
 
 	public function setTablePrivate($table, $bl) {
@@ -141,5 +154,4 @@ class Registry_model extends CI_Model
 
 		return array_values(array_diff($tables, $list_main, self::systemTables));
 	}
-
 }

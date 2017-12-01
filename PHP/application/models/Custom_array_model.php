@@ -13,7 +13,7 @@ class Custom_array_model extends MY_DBarraymodel
 
 	protected $willRegister = FALSE;
 
-	public function loadCustom($ModelTitle, $TableName, $FieldPrefix, $categoryTableName, $arrayFieldName, $categoryFieldName)
+	public function loadCustom($ModelTitle, $TableName, $FieldPrefix, $categoryTableName, $arrayFieldName, $categoryFieldName, $pk = null)
 	{
 		$this->ModelTitle = $ModelTitle;
 		$this->TableName = $TableName;
@@ -22,6 +22,8 @@ class Custom_array_model extends MY_DBarraymodel
 		$this->categoryTableName = $categoryTableName;
 		$this->arrayFieldName = $arrayFieldName;
 		$this->categoryFieldName = $categoryFieldName;
+
+		if (!empty($pk)) $this->TablePrimaryKey = $pk;
 
 		return $this->db->table_exists($this->TableName);
 	}

@@ -17,7 +17,7 @@ class Main extends CI_Controller {
 		
 		$this->load->view('header');
 
-		$extratables = $this->registry->customs()->result();
+		$extratables = $this->registry->loadable()->result();
 
 		$this->load->view('db_ui/index', ['extratables' => $extratables]);
 		$this->load->view('footer');

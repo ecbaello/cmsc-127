@@ -62,13 +62,19 @@ $CI =& get_instance();
 			<md-toolbar>
 				<h5 class="md-toolbar-tools">New Custom Table</h5>
 			</md-toolbar>
-			<form class="p-4" ng-submit="new()">
+			<form name="newcustomtableform" class="p-4" ng-submit="new()">
 				<md-input-container>
-					<input placeholder="Title" ng-model="newItem.title" required>
-
+					<input placeholder="Title" name="title" ng-model="newItem.title" required>
+					<div ng-messages style="color: {{ colors('accent') }}">
+						Once set, the custom table's title can not be renamed. You will need to backup the table and reimport it again.
+					</div>
 				</md-input-container>
+				
 				<md-input-container>
-					<input placeholder="Prefix" ng-model="newItem.prefix" required>
+					<input placeholder="Shortname" ng-model="newItem.prefix">
+					<div ng-messages style="color: {{ colors('primary') }}">
+						Example for 'Petty Cash Fund' write 'pcf'.
+					</div>
 				</md-input-container>
 				<md-input-container>
 					<p>Table Type</p>
@@ -77,9 +83,11 @@ $CI =& get_instance();
 				      <md-radio-button ng-value="1">Array</md-radio-button>
 				    </md-radio-group>
 				</md-input-container>
-				<md-button class="md-raised md-primary" type="submit">
+				<md-button ng-disabled="!newcustomtableform.$valid" class="md-raised md-primary" type="submit">
 					Add New
 				</md-button>
+
+
 			</form>
 		</md-card>
 	</md-content>

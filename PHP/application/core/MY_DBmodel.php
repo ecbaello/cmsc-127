@@ -5,7 +5,7 @@ class MY_DBmodel extends CI_Model
 	
 	const metaTableName = 'fin_db_meta';
 	const fieldInputTypeField = 'table_field_input_type';
-	const fieldTypes = ['TEXT', 'TEXTAREA', 'CHECKBOX', 'FLOAT', 'NUMBER', 'DATE'];
+	const fieldTypes = ['TEXT', 'TEXTAREA', 'FLOAT', 'NUMBER', 'DATE', 'NUMERIC'];
 
 	public $ModelTitle = '';
 	public $TableName = ''; // Overideable
@@ -56,11 +56,11 @@ class MY_DBmodel extends CI_Model
 		} else return false;
 	}
 
-	protected function registerModel() {
+	public function registerModel() {
 
-		$this->load->model('registry_model');
+		$this->load->library('registry');
 
-		return $this->registry_model->registerModel(
+		return $this->registry->registerModel(
 			$this->ModelTitle,
 			$this->getModelClass(),
 			0,
