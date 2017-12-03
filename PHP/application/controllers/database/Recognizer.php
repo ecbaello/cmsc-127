@@ -50,7 +50,8 @@ class Recognizer extends CI_Controller {
 		$success = $this->registry->registerTable($key, $title);
 
 		csrf_json_response(
-			[ 'success' => $success, 'error_message' => 'Sorry, the table is probably not indexable.' ]);
+			[ 'success' => $success,
+			  'error_message' => 'Sorry, the table is probably not indexable.' ]);
 		
 	}
 
@@ -65,7 +66,8 @@ class Recognizer extends CI_Controller {
 		$success = $this->registry->unregisterTable($key);
 
 		csrf_json_response(
-			[ 'success' => $success, 'error_message' => 'Sorry, table not found.' ]);
+			[ 'success' => $success,
+			  'error_message' => 'Sorry, table not found.' ]);
 		
 	}
 

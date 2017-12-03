@@ -220,17 +220,20 @@ class MY_DBcontroller extends CI_Controller
 
 		if (isset($data['prefix'])) $prefix = $data['prefix'];
 		if (isset($data['suffix'])) $suffix = $data['suffix'];
-		if (isset($data['required'])) $required = $data['required'];
+		if (isset($data['required'])) $required = $data['required']==1;
+
+
 
 		$success = false;
 		if ($data['derived']) {
-			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix, $required);
+			$success = $this->model->insertDerivedField($data['title'], $data['expression'], $prefix, $suffix);
 		} else {
-			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix);
+			$success = $this->model->insertField($data['title'], $data['kind'], $data['default'], $prefix, $suffix, $required);
 		}
 
 		csrf_json_response(
-			[	'success' => $success ]);
+			[	'success' => $success,
+				'debug' => 'Field is derived? '.$required ]);
 		
 	}
 

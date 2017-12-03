@@ -36,8 +36,6 @@ class Importer extends CI_Controller {
 
             csrf_json_response([
                     'headers' => $fields,
-                    'csrf' => $token,
-                    'csrf_hash' => $hash
                 ]); 
         }
     }

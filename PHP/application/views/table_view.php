@@ -366,7 +366,6 @@ if (!isset($permission)) $permission = -1;
 												'initialize' => 'item.default_value'
 											]
 										, true); ?>
-										
 									</div>
 								</div>
 						</md-dialog-content>

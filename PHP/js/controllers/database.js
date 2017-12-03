@@ -370,6 +370,9 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 
 	// Adding to Tables
 	$scope.newItem = {};
+	$scope.loadDefaults = function() {
+		
+	};
 	$scope.add = function (quick) {
 		$scope.serverRequesting = true;
 		var data = {};

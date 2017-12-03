@@ -113,7 +113,7 @@ class MY_DBmodel extends CI_Model
 		        'table_field_input_type' => $inputType, 
 		        'field_prefix' => $presuff[0],
 		        'field_suffix' => $presuff[1],
-		        'required' => $required,
+		        'required' => $required?1:0,
 		        'default_value' => $default
 		);
 
@@ -122,7 +122,7 @@ class MY_DBmodel extends CI_Model
 
 	}
 
-	public function registerDerivedFieldTitle( $table_field, $field_title, $derivation, $presuff = ['', ''], $required = false) {
+	public function registerDerivedFieldTitle( $table_field, $field_title, $derivation, $presuff = ['', '']) {
 		// Input Types: TEXT, TEXTAREA, CHECKBOX, DROPDOWN, RADIO, NUMBER
 
 		$data = array(
@@ -131,8 +131,7 @@ class MY_DBmodel extends CI_Model
 		        'table_field_title' => $field_title,
 		        'table_field_derived' => $derivation, 
 		        'field_prefix' => $presuff[0],
-		        'field_suffix' => $presuff[1],
-		        'required' => $required
+		        'field_suffix' => $presuff[1]
 		);
 
 		return $this->db->insert(self::metaTableName, $data);
@@ -189,7 +188,7 @@ class MY_DBmodel extends CI_Model
 				FLD_DERIVATION => !empty($assoc['table_field_derived'])?$assoc['table_field_derived']:null,
 				'prefix' => $assoc['field_prefix'],
 				'suffix' => $assoc['field_suffix'],
-				'required' => $assoc['required'],
+				'required' => $assoc['required']==1,
 				'default_value' => $assoc['default_value']
 			);
 		}
