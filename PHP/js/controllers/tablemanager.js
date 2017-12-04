@@ -30,8 +30,6 @@ app.controller("tablemanager", ['$scope', '$http', 'tablemanagerURL', function (
 			data,
 			function(resultData) {
 				var object = JSON.parse(resultData);
-				csrf = object.csrf;
-				csrfHash = object.csrf_hash;
 
 				$scope.loadTables();
 			}, function() {
