@@ -71,8 +71,8 @@ class Database_ion_model extends CI_Model
 			$this->dbforge->create_table($this->groups, TRUE);
 			
 			// default data
-			$this->db->insert($this->groups, array('id'=>null,'name'=>'admin','description'=>'Administrator'));
-			$this->db->insert($this->groups, array('id'=>null,'name'=>'members','description'=>'General User'));
+			$this->db->insert($this->groups, array('id'=>1,'name'=>'admin','description'=>'Administrator'));
+			$this->db->insert($this->groups, array('id'=>2,'name'=>'members','description'=>'General User'));
 		}
 
 		// users

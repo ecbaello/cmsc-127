@@ -712,8 +712,6 @@ class Auth extends CI_Controller {
 					$data['password'] = $this->input->post('password');
 				}
 
-
-
 				// Only allow updating groups if user is admin
 				if ($this->ion_auth->is_admin())
 				{
@@ -727,6 +725,7 @@ class Auth extends CI_Controller {
 						foreach ($groupData as $grp) {
 							$this->ion_auth->add_to_group($grp, $id);
 						}
+						$this->ion_auth->add_to_group(2, $id); // add to members
 
 					}
 				}

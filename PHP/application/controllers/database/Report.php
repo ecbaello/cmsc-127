@@ -166,8 +166,7 @@ class Report extends CI_Controller {
 
         $expenses = array();
 		
-        $categories = $this->getModelNames();
-		ob_clean();
+        $categories = $this->report_model->getModelNames();
 		
         foreach($categories as $model) {
             for ($i = 1; $i <= 12; $i++) {
