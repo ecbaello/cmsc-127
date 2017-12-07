@@ -108,7 +108,7 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		var href = tableURL+'/'+link;
 
 		if (id !== null) {
-			href += '/'+id;
+			href += '/'+encodeURIComponent(id);
 		}
 
 		requestpost(href, data, null, fsuccess, ferror);
@@ -200,6 +200,10 @@ app.factory('tables', ['tableURL', '$http', function(tableURL, $http) {
 		var link = '/rows';
 		link += encodeObject({action: perform});
 		reqpost(link, null, data, fsuccess, ferror);
+	};
+
+	tables.editor = function (index) {
+		window.location.href = tableURL+'/editor/'+encodeURIComponent(index);
 	};
 
 	

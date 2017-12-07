@@ -250,6 +250,8 @@ if (!isset($permission)) $permission = -1;
 										<md-button class="btn-edit md-square md-warn" ng-click="delete(index)"><i class="fa fa-trash"></i></md-button>
 										<md-button class="btn-confirm md-square md-raised md-accent" ng-click="send()"><i class="fa fa-check"></i></md-button>
 										<md-button class="btn-confirm md-square md-raised md-warn" ng-click="cancel()"><i class="fa fa-times"></i></md-button>
+
+										<md-button class="btn-editor md-square md-accent" ng-click="editor(index)"><i class="fa fa-list-alt"></i></md-button>
 									</td>
 									<?php endif ?>
 								</form>

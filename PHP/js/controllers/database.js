@@ -305,6 +305,10 @@ app.controller('database', ['$scope', '$http', '$mdDialog', 'tables', 'tableChan
 		$scope.editIndex = index;
 	};
 
+	$scope.editor = function (index) {
+		tables.editor($scope.data[index][$scope.idName]);
+	};
+
 	$scope.delete = function (index) {
 		$scope.isEdit = false;
 		$scope.editIndex = index;

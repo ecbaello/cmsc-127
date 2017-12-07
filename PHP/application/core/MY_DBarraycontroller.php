@@ -42,7 +42,7 @@ class MY_DBarraycontroller extends CI_Controller {
 	{
 		$this->load->view('header');
 
-		$this->makeSelector($subtable, site_url(str_replace('\\','/',$this->getAccessURL($this->filepath))) );
+		$this->makeSelector($subtable, site_url( $this->getAccessURL() ));
 
 		$this->load->view($this->tableView, [
 			'url'=>current_url(),
@@ -74,8 +74,8 @@ class MY_DBarraycontroller extends CI_Controller {
 		return $this->userPermission;
 	}
 
-	protected function getAccessURL($file_url) {
-		return preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers'.DIRECTORY_SEPARATOR, '', $file_url));
+	protected function getAccessURL() {
+		return str_replace('\\','/', preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers'.DIRECTORY_SEPARATOR, '', $this->filepath)));
 	}
 
 	protected function makeSelector($table = null, $replacelink = null, $modifiable = false) {
@@ -210,8 +210,13 @@ class MY_DBarraycontroller extends CI_Controller {
 		if ($action == null) {
 			$data = $this->model->getByPK($id)->row();
 
+			if (empty($data)) {
+				show_404();
+				return;
+			}
+
 			$this->load->view('header');
-			// load editor ui w/ data
+			$this->load->view('editor_view', ['item' => $this->model->getByPK($id)->row() ]);
 			$this->load->view('footer');
 		} else {
 			$data = [];
@@ -222,6 +227,10 @@ class MY_DBarraycontroller extends CI_Controller {
 
 				case 'remove':
 					$this->remove($id);
+					break;
+
+				case 'headers':
+					$this->headers();
 					break;
 				
 				default:

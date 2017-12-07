@@ -7,9 +7,12 @@ class MY_DBcontroller extends CI_Controller
 	protected $userPermission = null;
 	protected $tableView = 'table_view';
 
-	public function __construct()
+	protected $filepath = '';
+
+	public function __construct($file = __FILE__)
 	{
 		parent::__construct(); // do constructor for parent class
+		$this->filepath = $file;
 
 		$this->load->helper("csrf_helper");
 
@@ -32,8 +35,8 @@ class MY_DBcontroller extends CI_Controller
 		$this->makeHTML();
 	}
 
-	protected function getAccessURL($file_url) {
-		return preg_replace('/\\.[^.\\s]{2,4}$/', '', str_replace(APPPATH.'controllers/', '', $file_url));
+	protected function getAccessURL() {
+		return str_replace('\\','/', preg_replace('/\\.[^.\\s]{3,4}$/', '', str_replace(APPPATH.'controllers'.DIRECTORY_SEPARATOR, '', $this->filepath)));
 	}
 
 	protected function loggedIn() {
@@ -138,8 +141,13 @@ class MY_DBcontroller extends CI_Controller
 		if ($action == null) {
 			$data = $this->model->getByPK($id)->row();
 
+			if (empty($data)) {
+				show_404();
+				return;
+			}
+
 			$this->load->view('header');
-			// load editor ui w/ data
+			$this->load->view('editor_view', ['item' => $this->model->getByPK($id)->row() ]);
 			$this->load->view('footer');
 		} else {
 			$data = [];
@@ -150,6 +158,10 @@ class MY_DBcontroller extends CI_Controller
 
 				case 'remove':
 					$this->remove($id);
+					break;
+
+				case 'headers':
+					$this->headers();
 					break;
 				
 				default:

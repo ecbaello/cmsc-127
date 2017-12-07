@@ -29,7 +29,7 @@ app.controller("tablemanager", ['$scope', '$http', 'tablemanagerURL', function (
 			tablemanagerURL+'/new',
 			data,
 			function(resultData) {
-				var object = JSON.parse(resultData);
+				var object = resultData;
 
 				$scope.loadTables();
 			}, function() {
@@ -38,8 +38,6 @@ app.controller("tablemanager", ['$scope', '$http', 'tablemanagerURL', function (
 	};
 
 	$scope.delete = function(table) {
-		console.log($scope.newItem);
-
 		var data = {};
 		data.table = table;
 
@@ -47,9 +45,7 @@ app.controller("tablemanager", ['$scope', '$http', 'tablemanagerURL', function (
 			tablemanagerURL+'/delete',
 			data,
 			function(resultData) {
-				var object = JSON.parse(resultData);
-				csrf = object.csrf;
-				csrfHash = object.csrf_hash;
+				var object = resultData;
 
 				$scope.loadTables();
 			}, function() {
